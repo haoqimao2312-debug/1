@@ -1,6 +1,8 @@
 # MatchU · 心遇
 
-AI 性格测评驱动的真人交友/匹配产品（MVP 阶段）。
+🌐 **在线演示**：https://matchu-nine.vercel.app
+
+AI 性格测评驱动的真人交友/匹配产品（MVP 阶段 · Mock AI 版）。
 
 ## 当前状态
 
