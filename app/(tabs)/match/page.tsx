@@ -47,20 +47,22 @@ export default function MatchPage() {
         <EmptyMatchState onRefresh={() => setIdx(0)} />
       ) : (
         <>
-          <div className="relative mx-4 flex-1 min-h-[480px]">
-            {remaining.slice(0, 3).reverse().map((user, revIndex) => {
-              const stackOffset = remaining.slice(0, 3).length - 1 - revIndex
-              const isTop = stackOffset === 0
-              return (
-                <MatchCard
-                  key={user.id}
-                  user={user}
-                  isTop={isTop}
-                  stackOffset={stackOffset}
-                  onSwipe={isTop ? swipeNext : undefined}
-                />
-              )
-            })}
+          <div className="flex-1 flex items-center justify-center px-4 py-2 min-h-0">
+            <div className="relative w-full aspect-[3/4] max-h-[520px]">
+              {remaining.slice(0, 3).reverse().map((user, revIndex) => {
+                const stackOffset = remaining.slice(0, 3).length - 1 - revIndex
+                const isTop = stackOffset === 0
+                return (
+                  <MatchCard
+                    key={user.id}
+                    user={user}
+                    isTop={isTop}
+                    stackOffset={stackOffset}
+                    onSwipe={isTop ? swipeNext : undefined}
+                  />
+                )
+              })}
+            </div>
           </div>
 
           <MatchActions onAction={handleAction} />
