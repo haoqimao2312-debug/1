@@ -38,15 +38,24 @@ export function MatchCard({
       className="absolute inset-0 rounded-3xl overflow-hidden"
     >
       <div className="absolute inset-0">
-        <PortraitSvg
-          from={user.avatarGradientFrom}
-          to={user.avatarGradientTo}
-          faceTone={user.faceTone}
-          hairColor={user.hairColor}
-          className="w-full h-full"
-        />
+        {user.photo ? (
+          <img
+            src={user.photo}
+            alt={user.displayName}
+            draggable={false}
+            className="w-full h-full object-cover pointer-events-none select-none"
+          />
+        ) : (
+          <PortraitSvg
+            from={user.avatarGradientFrom}
+            to={user.avatarGradientTo}
+            faceTone={user.faceTone}
+            hairColor={user.hairColor}
+            className="w-full h-full"
+          />
+        )}
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80 pointer-events-none" />
 
       <div className="absolute top-4 left-4 right-4 flex justify-between">
         <span className="px-2.5 py-1 rounded-full bg-black/40 backdrop-blur text-[12px] font-semibold">

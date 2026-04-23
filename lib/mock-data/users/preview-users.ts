@@ -13,6 +13,7 @@ export type PreviewUser = {
   avatarGradientTo: string
   faceTone: string
   hairColor: string
+  photo?: string
   chatPreview: string
   chatTime: string
   unread?: number
@@ -42,6 +43,7 @@ export const previewUsers: PreviewUser[] = [
     avatarGradientTo: '#a970ff',
     faceTone: '#ffe0d0',
     hairColor: '#3a1f1a',
+    photo: '/users/linnian.jpg',
     chatPreview: '那家店的猫真的很粘人 🐱',
     chatTime: '09:28',
     unread: 2,
