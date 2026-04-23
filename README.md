@@ -6,6 +6,7 @@ AI 性格测评驱动的真人交友/匹配产品（MVP 阶段 · Mock AI 版）
 
 ## 当前状态
 
+### Phase 1 ✅
 - [x] 产品设计：[docs/superpowers/specs/2026-04-23-matchu-mvp-design.md](docs/superpowers/specs/2026-04-23-matchu-mvp-design.md)
 - [x] 实施计划：[docs/superpowers/plans/2026-04-23-matchu-mvp-plan.md](docs/superpowers/plans/2026-04-23-matchu-mvp-plan.md)
 - [x] M1 项目骨架
@@ -13,11 +14,30 @@ AI 性格测评驱动的真人交友/匹配产品（MVP 阶段 · Mock AI 版）
 - [x] M3 AI 助聊聊天页
 - [x] M4 PWA + Vercel 部署
 
+### Phase 2 ✅
+- [x] 产品设计：[docs/superpowers/specs/2026-04-23-matchu-phase2-design.md](docs/superpowers/specs/2026-04-23-matchu-phase2-design.md)
+- [x] 实施计划：[docs/superpowers/plans/2026-04-23-matchu-phase2-plan.md](docs/superpowers/plans/2026-04-23-matchu-phase2-plan.md)
+- [x] M5 TabBar + 路由重构
+- [x] M6 匹配推荐屏（5 Mock 用户 + 滑卡）
+- [x] M7 消息列表屏（契合度 hero + 6 条聊天）
+- [x] M8 虚拟视频屏（樱花场景 + 花瓣动画）
+- [x] M9 我的屏 + SVIP 卡
+- [x] M10 AI 工具占位页（12 款）
+- [x] 烛光暖调主题 + 质感升级（italic Serif 标题 / 玻璃方块图标 / 分区渐隐线 / 双色图标底）
+
 ## 主要路由
 
-- `/` — 首页（欢迎 + 开始测评 / 跳过测评入口）
+**沉浸流**（无 TabBar）
+- `/` — 首页（欢迎 + 开始测评 / 已测评→/match）
 - `/onboard` — AI 性格测评（8 道题 · 流式点评 · 生成性格画像）
 - `/chat/xiaoyu` — 和 Mock 真人"小雨"聊天 + AI 助聊副驾驶
+
+**5-Tab 主流**（底部 TabBar）
+- `/match` — 智能匹配推荐（5 个 Mock 假人 · 卡片堆叠 · 拖拽滑卡）
+- `/messages` — 契合度 hero 卡 + AI 助聊提示 + 最近聊天列表
+- `/tools` — AI 工具占位页（12 款 · Phase 3 开放）
+- `/virtual` — 虚拟人物视频（樱花场景 + 动漫少女 + 花瓣飘落）
+- `/me` — 我的 + SVIP 卡 + 4 菜单项
 
 ## 本地开发
 
