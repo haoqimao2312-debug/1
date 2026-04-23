@@ -1,10 +1,16 @@
+'use client'
 import Link from 'next/link'
+import { useUserStore } from '@/lib/store/user'
 import { Phone } from '@/components/phone/Phone'
 import { StatusBar } from '@/components/phone/StatusBar'
 import { AppBody } from '@/components/phone/AppBody'
 import { Button } from '@/components/common/Button'
 
 export default function Home() {
+  const completed = useUserStore((s) => Boolean(s.profile.completedAt))
+  const primaryHref = completed ? '/match' : '/onboard'
+  const primaryLabel = completed ? '进入心遇' : '开始心遇之旅'
+
   return (
     <Phone>
       <StatusBar />
@@ -26,7 +32,7 @@ export default function Home() {
             从一次聊天测评开始，遇见最合得来的那个人
           </p>
           <div className="flex flex-col gap-3 w-full max-w-xs">
-            <Link href="/onboard"><Button className="w-full">开始心遇之旅</Button></Link>
+            <Link href={primaryHref}><Button className="w-full">{primaryLabel}</Button></Link>
             <Link href="/chat/xiaoyu"><Button variant="glass" className="w-full">跳过测评，直接聊</Button></Link>
           </div>
         </div>
