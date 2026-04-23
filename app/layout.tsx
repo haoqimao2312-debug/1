@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { StorageWarning } from '@/components/common/StorageWarning'
+import { ToastContainer } from '@/components/common/Toast'
 
 export const metadata: Metadata = {
   title: 'MatchU · 心遇',
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <StorageWarning />
+        <ToastContainer />
         {children}
       </body>
     </html>
