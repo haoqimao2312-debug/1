@@ -85,6 +85,52 @@ body::before {
   color: transparent;
 }
 
+/* 页面大标题：italic Serif + 暖渐变 */
+.page-title {
+  font-family: 'Instrument Serif', 'Noto Serif SC', serif;
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  background: var(--grad-love);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 右上图标盒子：32×32 圆角玻璃 */
+.topbar-icon-box {
+  width: 32px; height: 32px;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink);
+  font-size: 14px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* 分区标签 · 带渐隐横线 */
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0 20px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--glass-border), transparent);
+}
+
 /* 打字指示器动画 */
 @keyframes typing-bounce {
   0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }

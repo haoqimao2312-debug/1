@@ -28,11 +28,11 @@ export default function MessagesPage() {
 
   return (
     <>
-      <div className="flex items-center justify-between px-5 pt-3 pb-2">
-        <div className="text-[16px] font-semibold">消息 · 心遇</div>
+      <div className="flex items-center justify-between px-5 pt-3 pb-3">
+        <div className="page-title">消息 · 心遇</div>
         <button
           onClick={() => show('搜索即将开放', '🔍')}
-          className="w-8 h-8 rounded-full glass flex items-center justify-center text-[var(--ink-dim)]"
+          className="topbar-icon-box"
           aria-label="搜索"
         >
           🔍
@@ -42,14 +42,10 @@ export default function MessagesPage() {
       <div className="flex-1 overflow-y-auto">
         <CompatibilityHero />
 
-        <div className="px-5 pt-2 pb-1 text-[11px] tracking-[0.1em] text-[var(--ink-faint)]">
-          AI 助聊 · 智能推荐
-        </div>
+        <div className="section-label mt-2">AI 助聊 · 智能推荐</div>
         <AIAssistHint />
 
-        <div className="px-5 pt-4 pb-1 text-[11px] tracking-[0.1em] text-[var(--ink-faint)]">
-          最近聊天
-        </div>
+        <div className="section-label mt-5">最近聊天</div>
         <div>
           <ChatListItem
             href="/chat/xiaoyu"

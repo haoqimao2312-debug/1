@@ -10,10 +10,10 @@ export default function VirtualPage() {
   return (
     <>
       <div className="flex items-center justify-between px-5 pt-3 pb-3">
-        <div className="text-[16px] font-semibold">虚拟视频 · 樱花场景</div>
+        <div className="page-title">虚拟视频 · 樱花场景</div>
         <button
           onClick={() => show('更多场景与设置即将开放', '⋯')}
-          className="w-8 h-8 rounded-full glass flex items-center justify-center text-[var(--ink-dim)]"
+          className="topbar-icon-box"
           aria-label="更多"
         >
           ⋯

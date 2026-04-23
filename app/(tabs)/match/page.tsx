@@ -30,11 +30,11 @@ export default function MatchPage() {
 
   return (
     <>
-      <div className="flex items-center justify-between px-5 pt-3 pb-2">
-        <div className="text-[16px] font-semibold">探索 · 今日推荐</div>
+      <div className="flex items-center justify-between px-5 pt-3 pb-3">
+        <div className="page-title">探索 · 今日推荐</div>
         <button
           onClick={() => show('偏好设置即将开放', '⚙')}
-          className="w-8 h-8 rounded-full glass flex items-center justify-center text-[var(--ink-dim)]"
+          className="topbar-icon-box"
           aria-label="设置"
         >
           ⚙
