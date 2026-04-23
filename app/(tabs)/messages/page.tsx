@@ -73,6 +73,7 @@ export default function MessagesPage() {
               avatarTo={u.avatarGradientTo}
               faceTone={u.faceTone}
               hairColor={u.hairColor}
+              photo={u.photo}
             />
           ))}
         </div>

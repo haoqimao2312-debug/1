@@ -16,6 +16,7 @@ type Props = {
   avatarTo: string
   faceTone?: string
   hairColor?: string
+  photo?: string
 }
 
 export function ChatListItem({
@@ -31,6 +32,7 @@ export function ChatListItem({
   avatarTo,
   faceTone,
   hairColor,
+  photo,
 }: Props) {
   const body = (
     <div className="flex items-center gap-3 px-4 py-3 active:bg-white/5 transition">
@@ -40,6 +42,8 @@ export function ChatListItem({
         faceTone={faceTone}
         hairColor={hairColor}
         online={online}
+        photo={photo}
+        alt={displayName}
       />
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline justify-between gap-2">

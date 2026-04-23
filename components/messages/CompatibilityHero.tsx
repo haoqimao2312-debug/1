@@ -28,9 +28,9 @@ export function CompatibilityHero() {
         <div className="text-2xl font-bold text-grad-love">92<sup className="text-xs">%</sup></div>
       </div>
       <div className="flex items-center justify-center gap-3 mb-4">
-        <ChatListAvatar from="#5df0ff" to="#7c3aed" faceTone="#f8d8b8" hairColor="#2a3040" size={44} />
+        <ChatListAvatar from="#ffd176" to="#ff8f6b" faceTone="#ffdcc0" hairColor="#2a1a30" size={44} />
         <div className="text-lg" style={{ color: '#ff8f6b' }}>♥</div>
-        <ChatListAvatar from="#ff8fbc" to="#a970ff" faceTone="#ffe0d0" hairColor="#3a1f1a" size={44} />
+        <ChatListAvatar from="#ff8fbc" to="#a970ff" faceTone="#ffe0d0" hairColor="#3a1f1a" size={44} photo="/users/linnian.jpg" alt="林念念" />
       </div>
       <div className="grid grid-cols-3 gap-2">
         {DIMENSIONS.map((d) => (
