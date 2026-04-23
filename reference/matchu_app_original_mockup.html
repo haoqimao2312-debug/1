@@ -1,0 +1,2463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MatchU · 心遇</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+
+:root {
+  --bg-0: #0d0520;
+  --bg-1: #1a0d35;
+  --bg-2: #281550;
+  --ink: #faf5ff;
+  --ink-dim: #b8a8d8;
+  --ink-faint: #7a6b9a;
+  --pink: #ff5ea0;
+  --rose: #ff8fbc;
+  --purple: #a970ff;
+  --violet: #7c3aed;
+  --cyan: #5df0ff;
+  --mint: #6fffd4;
+  --gold: #ffd176;
+  --glass: rgba(255, 255, 255, 0.08);
+  --glass-strong: rgba(255, 255, 255, 0.14);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  --grad-love: linear-gradient(135deg, #ff5ea0 0%, #a970ff 50%, #5df0ff 100%);
+  --grad-pink: linear-gradient(135deg, #ff5ea0 0%, #ff8fbc 100%);
+  --grad-purple: linear-gradient(135deg, #a970ff 0%, #7c3aed 100%);
+  --grad-cyan: linear-gradient(135deg, #5df0ff 0%, #6fffd4 100%);
+  --grad-warm: linear-gradient(135deg, #ffd176 0%, #ff8fbc 100%);
+}
+
+html, body {
+  background: #0a0414;
+  color: var(--ink);
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* =================== STAGE =================== */
+.stage {
+  min-height: 100vh;
+  padding: 32px 20px 60px;
+  position: relative;
+  background:
+    radial-gradient(ellipse 900px 700px at 10% 5%, rgba(169, 112, 255, 0.28), transparent 55%),
+    radial-gradient(ellipse 700px 600px at 95% 85%, rgba(255, 94, 160, 0.25), transparent 55%),
+    radial-gradient(ellipse 600px 500px at 95% 10%, rgba(93, 240, 255, 0.15), transparent 60%),
+    linear-gradient(180deg, #0a0414 0%, #150829 100%);
+}
+.stage::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0);
+  background-size: 32px 32px;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.stage-header {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 32px;
+  position: relative;
+  z-index: 2;
+}
+.stage-header .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 99px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  font-size: 11px;
+  color: var(--ink-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+  margin-bottom: 16px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.stage-header .tag::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 10px var(--mint);
+  animation: pulse 2s infinite;
+}
+.stage-header h1 {
+  font-family: 'Instrument Serif', 'Noto Serif SC', serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  margin-bottom: 10px;
+}
+.stage-header h1 em {
+  background: var(--grad-love);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.stage-header p {
+  font-size: 13px;
+  color: var(--ink-dim);
+  line-height: 1.6;
+}
+
+/* =================== APP GALLERY =================== */
+.gallery {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* =================== PHONE FRAME =================== */
+.phone {
+  position: relative;
+  width: 320px;
+  height: 660px;
+  background: #000;
+  border-radius: 44px;
+  padding: 8px;
+  box-shadow:
+    0 0 0 1.5px #2a1a4a,
+    0 0 0 2.5px #3d2860,
+    0 30px 60px -15px rgba(169, 112, 255, 0.4),
+    0 50px 100px -30px rgba(255, 94, 160, 0.3),
+    inset 0 0 0 1px rgba(255,255,255,0.05);
+  flex: none;
+}
+.phone::before {
+  content: '';
+  position: absolute;
+  top: 14px; left: 50%;
+  transform: translateX(-50%);
+  width: 98px; height: 24px;
+  background: #000;
+  border-radius: 16px;
+  z-index: 100;
+}
+.phone::after {
+  content: '';
+  position: absolute;
+  top: 22px; left: calc(50% + 30px);
+  width: 8px; height: 8px;
+  background: #1a1330;
+  border-radius: 50%;
+  z-index: 101;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  background: var(--bg-0);
+  border-radius: 36px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-label {
+  text-align: center;
+  margin-top: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.phone-label span {
+  color: var(--pink);
+  margin-right: 6px;
+}
+
+/* =================== STATUS BAR =================== */
+.statusbar {
+  height: 38px;
+  padding: 12px 22px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+  z-index: 50;
+  flex: none;
+}
+.statusbar .time {
+  font-family: 'JetBrains Mono', monospace;
+}
+.statusbar .right {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.statusbar svg { width: 14px; height: 10px; }
+
+/* =================== COMMON =================== */
+.app-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.app-content::-webkit-scrollbar { display: none; }
+
+.app-topbar {
+  padding: 6px 20px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+}
+.topbar-title {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 22px;
+  background: var(--grad-love);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -0.01em;
+}
+.topbar-icon {
+  width: 32px; height: 32px;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink);
+  font-size: 14px;
+  backdrop-filter: blur(10px);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  font-size: 10px;
+  color: var(--ink-dim);
+}
+.chip.hot { background: rgba(255, 94, 160, 0.15); border-color: rgba(255, 94, 160, 0.4); color: var(--rose); }
+.chip.ai { background: rgba(169, 112, 255, 0.15); border-color: rgba(169, 112, 255, 0.4); color: #d4b8ff; }
+.chip.mint { background: rgba(111, 255, 212, 0.12); border-color: rgba(111, 255, 212, 0.35); color: var(--mint); }
+.chip.gold { background: rgba(255, 209, 118, 0.15); border-color: rgba(255, 209, 118, 0.35); color: var(--gold); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* =================== AVATAR (SVG PEOPLE) =================== */
+.avatar {
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  position: relative;
+}
+
+/* =================== ================ PAGE 1: AI 性格测评 ============= =================== */
+.page-onboard {
+  background:
+    radial-gradient(ellipse 400px 500px at 80% 10%, rgba(255, 94, 160, 0.3), transparent 60%),
+    radial-gradient(ellipse 400px 400px at 10% 90%, rgba(93, 240, 255, 0.15), transparent 60%),
+    linear-gradient(180deg, #1a0d35 0%, #0d0520 100%);
+}
+
+.chat-header {
+  padding: 10px 20px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--glass-border);
+  flex: none;
+}
+.ai-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--grad-love);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  position: relative;
+  box-shadow: 0 0 20px rgba(169, 112, 255, 0.5);
+}
+.ai-avatar::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; right: -1px;
+  width: 10px; height: 10px;
+  background: var(--mint);
+  border: 2px solid var(--bg-0);
+  border-radius: 50%;
+}
+.chat-header-info { flex: 1; }
+.chat-header-info .name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.chat-header-info .name::after {
+  content: 'AI';
+  font-size: 8px;
+  padding: 1px 4px;
+  background: var(--grad-love);
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+}
+.chat-header-info .sub {
+  font-size: 10px;
+  color: var(--mint);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.chat-header-info .sub::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 6px var(--mint);
+  animation: pulse 2s infinite;
+}
+
+.progress-bar {
+  padding: 10px 20px;
+  flex: none;
+}
+.progress-bar .pb-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9.5px;
+  color: var(--ink-dim);
+  margin-bottom: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+}
+.progress-bar .pb-meta .pct {
+  background: var(--grad-love);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
+.progress-bar .pb-track {
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-bar .pb-fill {
+  width: 58%;
+  height: 100%;
+  background: var(--grad-love);
+  border-radius: 99px;
+  box-shadow: 0 0 10px rgba(255, 94, 160, 0.6);
+}
+
+.chat-msgs {
+  flex: 1;
+  padding: 12px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.msg {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  max-width: 88%;
+}
+.msg.you {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+.msg-av {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+.msg-ai .msg-av {
+  background: var(--grad-love);
+}
+.msg-you .msg-av { display: none; }
+.msg-bubble {
+  padding: 10px 13px;
+  border-radius: 16px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.msg-ai .msg-bubble {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-bottom-left-radius: 4px;
+  color: var(--ink);
+  backdrop-filter: blur(10px);
+}
+.msg-you .msg-bubble {
+  background: var(--grad-pink);
+  color: white;
+  border-bottom-right-radius: 4px;
+  font-weight: 500;
+}
+
+.opt-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  padding-left: 32px;
+}
+.opt-btn {
+  padding: 10px 14px;
+  background: rgba(169, 112, 255, 0.1);
+  border: 1px solid rgba(169, 112, 255, 0.3);
+  border-radius: 14px;
+  font-size: 11.5px;
+  color: var(--ink);
+  text-align: left;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.opt-btn:hover { background: rgba(169, 112, 255, 0.18); }
+.opt-btn .k {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  color: var(--purple);
+  font-size: 14px;
+  flex: none;
+}
+
+.typing {
+  align-self: flex-start;
+  padding: 12px 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  display: flex;
+  gap: 4px;
+}
+.typing span {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--ink-dim);
+  animation: typing 1.4s infinite;
+}
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+.profile-peek {
+  margin: 4px 0 0 32px;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, rgba(255, 94, 160, 0.1), rgba(169, 112, 255, 0.1));
+  border: 1px solid rgba(255, 94, 160, 0.3);
+  border-radius: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.profile-peek .pp-icon {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: var(--grad-love);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex: none;
+}
+.profile-peek .pp-txt .pp-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.profile-peek .pp-txt .pp-sub {
+  font-size: 9.5px;
+  color: var(--ink-dim);
+  margin-top: 1px;
+}
+
+/* =================== ================ PAGE 2: 推荐卡匹配 ============= =================== */
+.page-match {
+  background:
+    radial-gradient(ellipse 400px 500px at 90% 0%, rgba(255, 94, 160, 0.2), transparent 60%),
+    radial-gradient(ellipse 400px 400px at 0% 100%, rgba(169, 112, 255, 0.2), transparent 60%),
+    linear-gradient(180deg, #130725 0%, #0a0414 100%);
+}
+
+.match-filter {
+  display: flex;
+  gap: 6px;
+  padding: 0 20px 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: none;
+}
+.match-filter::-webkit-scrollbar { display: none; }
+.filter-chip {
+  padding: 5px 12px;
+  border-radius: 99px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  font-size: 10px;
+  color: var(--ink-dim);
+  white-space: nowrap;
+  flex: none;
+}
+.filter-chip.active {
+  background: var(--grad-love);
+  border-color: transparent;
+  color: white;
+  font-weight: 600;
+}
+
+.card-stack {
+  flex: 1;
+  padding: 0 20px;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.match-card {
+  position: absolute;
+  width: calc(100% - 40px);
+  aspect-ratio: 3/4.6;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+.match-card:nth-child(2) {
+  transform: scale(0.94) translateY(14px) rotate(-3deg);
+  opacity: 0.6;
+  z-index: -1;
+}
+.match-card:nth-child(3) {
+  transform: scale(0.88) translateY(28px) rotate(2deg);
+  opacity: 0.3;
+  z-index: -2;
+}
+
+.card-portrait {
+  width: 100%; height: 100%;
+  position: relative;
+}
+.card-portrait svg {
+  width: 100%; height: 100%;
+  display: block;
+}
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.85) 100%);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+.card-badge {
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  font-size: 10px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.card-badge.match {
+  background: var(--grad-love);
+  border: none;
+  font-weight: 700;
+}
+
+.card-bot .card-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: white;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.card-bot .card-name .age {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.85);
+}
+.card-bot .card-meta {
+  font-size: 10px;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.card-bot .card-bio {
+  font-size: 11px;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.45;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.card-tag {
+  padding: 3px 8px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 99px;
+  font-size: 9px;
+  color: white;
+}
+
+.match-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 20px 14px;
+  flex: none;
+}
+.action-btn {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--ink);
+  backdrop-filter: blur(10px);
+}
+.action-btn.pass { color: var(--ink-faint); }
+.action-btn.rewind { width: 38px; height: 38px; font-size: 14px; color: var(--gold); }
+.action-btn.like {
+  width: 58px; height: 58px;
+  background: var(--grad-love);
+  border: none;
+  box-shadow: 0 8px 24px rgba(255, 94, 160, 0.5);
+  font-size: 24px;
+  color: white;
+}
+.action-btn.super { color: var(--cyan); }
+.action-btn.boost { width: 38px; height: 38px; font-size: 14px; color: var(--rose); }
+
+/* =================== ================ PAGE 3: 契合度+聊天列表 ============= =================== */
+.page-compat {
+  background:
+    radial-gradient(ellipse 400px 400px at 100% 0%, rgba(169, 112, 255, 0.2), transparent 60%),
+    linear-gradient(180deg, #140825 0%, #0a0414 100%);
+}
+
+.compat-hero {
+  margin: 0 20px 14px;
+  padding: 14px;
+  background:
+    radial-gradient(ellipse at top right, rgba(255, 94, 160, 0.25), transparent 60%),
+    linear-gradient(135deg, rgba(169, 112, 255, 0.18), rgba(93, 240, 255, 0.1));
+  border: 1px solid rgba(169, 112, 255, 0.3);
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.compat-hero-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.compat-hero-head .lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-dim);
+  letter-spacing: 0.2em;
+}
+.compat-hero-head .score {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+  font-style: italic;
+  background: var(--grad-love);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1;
+}
+.compat-hero-head .score sup {
+  font-size: 12px;
+  color: var(--ink-dim);
+  font-family: 'Noto Sans SC', sans-serif;
+  background: none;
+  -webkit-text-fill-color: initial;
+  margin-left: 2px;
+}
+
+.compat-pair {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.pair-av {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--ink);
+}
+.pair-connect {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px;
+  color: var(--pink);
+  animation: pulse 2s infinite;
+}
+.pair-info .pn {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.pair-info .ps {
+  font-size: 9.5px;
+  color: var(--ink-dim);
+}
+
+.radar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.radar-dim {
+  text-align: center;
+  padding: 6px 4px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 10px;
+}
+.radar-dim .dn {
+  font-size: 9px;
+  color: var(--ink-dim);
+  margin-bottom: 3px;
+}
+.radar-dim .dv {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+}
+.radar-dim:nth-child(1) .dv { color: var(--pink); }
+.radar-dim:nth-child(2) .dv { color: var(--purple); }
+.radar-dim:nth-child(3) .dv { color: var(--cyan); }
+.radar-dim:nth-child(4) .dv { color: var(--mint); }
+.radar-dim:nth-child(5) .dv { color: var(--gold); }
+.radar-dim:nth-child(6) .dv { color: var(--rose); }
+
+.section-label {
+  padding: 0 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  color: var(--ink-faint);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--glass-border), transparent);
+}
+
+.chat-list {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.chat-item {
+  padding: 10px 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  position: relative;
+}
+.chat-item:last-child { border-bottom: none; }
+.chat-av {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex: none;
+  position: relative;
+}
+.chat-av::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 9px; height: 9px;
+  border: 2px solid var(--bg-0);
+  border-radius: 50%;
+  background: var(--ink-faint);
+}
+.chat-av.online::after { background: var(--mint); box-shadow: 0 0 6px var(--mint); }
+.chat-av.ai-icon { background: var(--grad-love); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.chat-av.ai-icon::after { display: none; }
+
+.chat-body {
+  flex: 1;
+  min-width: 0;
+}
+.chat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2px;
+}
+.chat-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.chat-time {
+  font-size: 9px;
+  color: var(--ink-faint);
+  font-family: 'JetBrains Mono', monospace;
+}
+.chat-preview {
+  font-size: 10.5px;
+  color: var(--ink-dim);
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.chat-preview .ai-hint {
+  color: var(--purple);
+  font-size: 9px;
+  font-weight: 600;
+}
+.chat-badge {
+  min-width: 16px;
+  height: 16px;
+  border-radius: 99px;
+  background: var(--grad-pink);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  flex: none;
+}
+
+/* =================== ================ PAGE 4: AI 助聊 ============= =================== */
+.page-assist {
+  background:
+    radial-gradient(ellipse 400px 500px at 100% 0%, rgba(169, 112, 255, 0.2), transparent 60%),
+    radial-gradient(ellipse 400px 400px at 0% 100%, rgba(93, 240, 255, 0.15), transparent 60%),
+    linear-gradient(180deg, #0d0520 0%, #0a0414 100%);
+}
+
+.chat-header-full {
+  padding: 8px 14px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--glass-border);
+  flex: none;
+}
+.back-btn {
+  width: 28px; height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  font-size: 18px;
+}
+.chat-header-full .ha {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+}
+.chat-header-full .ha::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 8px; height: 8px;
+  background: var(--mint);
+  border: 2px solid var(--bg-0);
+  border-radius: 50%;
+}
+.chat-header-full .hi { flex: 1; }
+.chat-header-full .hn {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.chat-header-full .hs {
+  font-size: 9px;
+  color: var(--mint);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.chat-header-full .hr {
+  display: flex;
+  gap: 8px;
+}
+.chat-header-full .hr-ico {
+  width: 32px; height: 32px;
+  background: var(--glass);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  font-size: 14px;
+  border: 1px solid var(--glass-border);
+}
+
+.compat-banner {
+  margin: 10px 16px;
+  padding: 8px 12px;
+  background: linear-gradient(90deg, rgba(255, 94, 160, 0.15), rgba(169, 112, 255, 0.1));
+  border: 1px solid rgba(255, 94, 160, 0.25);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--ink-dim);
+}
+.compat-banner .cb-score {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 18px;
+  background: var(--grad-love);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1;
+}
+.compat-banner .cb-txt { flex: 1; }
+.compat-banner .cb-arrow { color: var(--pink); font-size: 14px; }
+
+.assist-chat-msgs {
+  padding: 4px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.msg-sm {
+  display: flex;
+  gap: 6px;
+  max-width: 82%;
+}
+.msg-sm.them { align-self: flex-start; }
+.msg-sm.me { align-self: flex-end; flex-direction: row-reverse; }
+.msg-sm-av {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex: none;
+}
+.msg-sm.me .msg-sm-av { display: none; }
+.msg-sm-b {
+  padding: 8px 11px;
+  border-radius: 14px;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+.msg-sm.them .msg-sm-b {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-bottom-left-radius: 3px;
+  color: var(--ink);
+}
+.msg-sm.me .msg-sm-b {
+  background: var(--grad-pink);
+  color: white;
+  border-bottom-right-radius: 3px;
+}
+
+.msg-time {
+  align-self: center;
+  font-size: 9px;
+  color: var(--ink-faint);
+  font-family: 'JetBrains Mono', monospace;
+  margin: 4px 0;
+}
+
+.ai-copilot {
+  margin: 8px 14px 0;
+  padding: 10px 12px;
+  background:
+    radial-gradient(ellipse at top left, rgba(169, 112, 255, 0.25), transparent 60%),
+    linear-gradient(135deg, rgba(169, 112, 255, 0.15), rgba(255, 94, 160, 0.1));
+  border: 1px solid rgba(169, 112, 255, 0.35);
+  border-radius: 14px;
+}
+.ai-copilot-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.ai-copilot-head .ico {
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  background: var(--grad-love);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+.ai-copilot-head .lb {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.ai-copilot-head .hint {
+  margin-left: auto;
+  font-size: 9px;
+  color: var(--ink-dim);
+}
+.ai-analysis {
+  font-size: 10px;
+  color: var(--ink-dim);
+  line-height: 1.45;
+  padding: 6px 8px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.ai-analysis span {
+  color: var(--rose);
+  font-weight: 600;
+}
+
+.ai-sugs {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.ai-sug {
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ai-sug .style {
+  font-size: 8.5px;
+  padding: 2px 6px;
+  border-radius: 99px;
+  flex: none;
+  font-weight: 600;
+}
+.ai-sug:nth-child(1) .style { background: rgba(255, 94, 160, 0.2); color: var(--rose); }
+.ai-sug:nth-child(2) .style { background: rgba(169, 112, 255, 0.2); color: #c9b5ff; }
+.ai-sug:nth-child(3) .style { background: rgba(93, 240, 255, 0.15); color: var(--cyan); }
+.ai-sug .txt {
+  font-size: 10.5px;
+  color: var(--ink);
+  flex: 1;
+  line-height: 1.35;
+}
+.ai-sug .send-ic {
+  color: var(--purple);
+  font-size: 12px;
+  flex: none;
+}
+
+.chat-input {
+  padding: 10px 14px 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border-top: 1px solid var(--glass-border);
+  flex: none;
+  background: rgba(13, 5, 32, 0.7);
+  backdrop-filter: blur(10px);
+}
+.chat-input-field {
+  flex: 1;
+  height: 34px;
+  padding: 0 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 99px;
+  font-size: 11px;
+  color: var(--ink-dim);
+  display: flex;
+  align-items: center;
+}
+.chat-input-tool {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--grad-love);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  flex: none;
+  box-shadow: 0 4px 12px rgba(255, 94, 160, 0.4);
+}
+.chat-input-tool.outline {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--ink-dim);
+  box-shadow: none;
+}
+
+/* =================== ================ PAGE 5: 虚拟人物+视频 ============= =================== */
+.page-virtual {
+  background:
+    radial-gradient(ellipse 500px 600px at 50% 20%, rgba(169, 112, 255, 0.3), transparent 60%),
+    radial-gradient(ellipse 400px 400px at 20% 100%, rgba(255, 94, 160, 0.25), transparent 60%),
+    linear-gradient(180deg, #1a0d35 0%, #0a0414 100%);
+}
+
+.virtual-preview {
+  position: relative;
+  margin: 0 20px 14px;
+  aspect-ratio: 4/5;
+  border-radius: 22px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #2a1550 0%, #4a2880 100%);
+  box-shadow: 0 20px 40px rgba(169, 112, 255, 0.4);
+}
+.virtual-preview svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.virtual-preview .badge-live {
+  position: absolute;
+  top: 12px; left: 12px;
+  padding: 4px 10px;
+  background: var(--grad-love);
+  border-radius: 99px;
+  font-size: 9px;
+  color: white;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+}
+.virtual-preview .badge-live::before {
+  content: '';
+  width: 5px; height: 5px;
+  background: white;
+  border-radius: 50%;
+  animation: pulse 1.2s infinite;
+}
+.virtual-preview .timer {
+  position: absolute;
+  top: 12px; right: 12px;
+  padding: 4px 10px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 99px;
+  font-size: 10px;
+  color: white;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+}
+
+.partner-pip {
+  position: absolute;
+  bottom: 14px; right: 14px;
+  width: 74px; height: 98px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.partner-pip svg { width: 100%; height: 100%; }
+.partner-pip .pip-name {
+  position: absolute;
+  bottom: 4px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: white;
+  font-weight: 600;
+  background: rgba(0,0,0,0.5);
+  padding: 1px 6px;
+  border-radius: 99px;
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+}
+
+.scene-label {
+  position: absolute;
+  bottom: 14px; left: 14px;
+  padding: 5px 10px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 99px;
+  font-size: 10px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.style-picker {
+  margin: 0 20px 12px;
+}
+.style-picker .sp-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.style-picker .sp-head .t {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.style-picker .sp-head .m {
+  font-size: 9px;
+  color: var(--purple);
+}
+.style-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.style-chips::-webkit-scrollbar { display: none; }
+.style-chip {
+  padding: 5px 11px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 99px;
+  font-size: 10px;
+  color: var(--ink-dim);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  flex: none;
+}
+.style-chip.active {
+  background: var(--grad-love);
+  color: white;
+  border-color: transparent;
+  font-weight: 600;
+}
+.style-chip .lock { color: var(--gold); font-size: 9px; }
+
+.call-controls {
+  padding: 10px 20px 16px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex: none;
+}
+.ctrl-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: var(--ink);
+}
+.ctrl-btn.scene { background: var(--grad-purple); border: none; color: white; }
+.ctrl-btn.gift { background: var(--grad-warm); border: none; color: white; }
+.ctrl-btn.end { background: linear-gradient(135deg, #ff4444, #ff6b7d); border: none; color: white; font-size: 18px; }
+
+.intimacy-bar {
+  margin: 0 20px 8px;
+  padding: 8px 12px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+}
+.intimacy-bar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.intimacy-bar-top .lb {
+  font-size: 9.5px;
+  color: var(--ink-dim);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.intimacy-bar-top .lb .ht { color: var(--rose); }
+.intimacy-bar-top .vl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--grad-love);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.intimacy-bar .track {
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 99px;
+  overflow: hidden;
+  position: relative;
+}
+.intimacy-bar .fill {
+  width: 72%;
+  height: 100%;
+  background: var(--grad-love);
+  border-radius: 99px;
+  box-shadow: 0 0 8px rgba(255, 94, 160, 0.6);
+}
+.intimacy-bar .milestones {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 8px;
+  color: var(--ink-faint);
+  font-family: 'JetBrains Mono', monospace;
+}
+.intimacy-bar .milestones .active { color: var(--mint); }
+
+/* =================== ================ PAGE 6: 资料卡+会员 ============= =================== */
+.page-profile {
+  background:
+    radial-gradient(ellipse 500px 400px at 50% 0%, rgba(255, 94, 160, 0.3), transparent 60%),
+    radial-gradient(ellipse 400px 500px at 100% 100%, rgba(169, 112, 255, 0.2), transparent 60%),
+    linear-gradient(180deg, #1a0d35 0%, #0a0414 100%);
+}
+
+.profile-hero {
+  padding: 14px 20px 16px;
+  text-align: center;
+  flex: none;
+}
+.profile-av-wrap {
+  width: 84px; height: 84px;
+  margin: 0 auto 10px;
+  position: relative;
+}
+.profile-av-wrap .av {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(var(--bg-0), var(--bg-0)) padding-box,
+    var(--grad-love) border-box;
+}
+.profile-av-wrap .verified {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--grad-cyan);
+  border: 2px solid var(--bg-0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #0a0414;
+  font-weight: 700;
+}
+.profile-name {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.profile-name .age {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-style: normal;
+  font-size: 15px;
+  color: var(--ink-dim);
+  margin-left: 4px;
+}
+.profile-loc {
+  font-size: 10px;
+  color: var(--ink-dim);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.profile-badges {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 0 20px;
+  margin-bottom: 14px;
+  flex: none;
+}
+.p-stat {
+  padding: 10px 6px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  text-align: center;
+}
+.p-stat .pn {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 18px;
+  background: var(--grad-love);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.p-stat .pl {
+  font-size: 9px;
+  color: var(--ink-dim);
+}
+
+.svip-card {
+  margin: 0 20px 14px;
+  padding: 14px;
+  background:
+    radial-gradient(ellipse at top right, rgba(255, 209, 118, 0.3), transparent 60%),
+    linear-gradient(135deg, #3a2010 0%, #5a2c1a 50%, #3a2010 100%);
+  border: 1px solid rgba(255, 209, 118, 0.35);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  flex: none;
+}
+.svip-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 140px; height: 140px;
+  background: radial-gradient(circle, rgba(255, 209, 118, 0.25), transparent 70%);
+  border-radius: 50%;
+}
+.svip-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  position: relative;
+}
+.svip-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 16px;
+  font-style: italic;
+  background: linear-gradient(135deg, #ffd176, #ffa55a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 400;
+}
+.svip-title::before {
+  content: '♛ ';
+  font-family: 'Noto Sans SC', sans-serif;
+  font-style: normal;
+  font-size: 14px;
+}
+.svip-price {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  text-align: right;
+}
+.svip-price .p {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold);
+}
+.svip-desc {
+  font-size: 10.5px;
+  color: #f0d8b8;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  position: relative;
+}
+.svip-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #ffd176, #ffa55a);
+  color: #3a2010;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 99px;
+  position: relative;
+}
+
+.profile-menu {
+  padding: 0 20px 16px;
+  flex: none;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.menu-item:last-child { border-bottom: none; }
+.mi-icon {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex: none;
+}
+.mi-icon.m1 { background: linear-gradient(135deg, rgba(255, 94, 160, 0.2), rgba(255, 143, 188, 0.1)); color: var(--pink); }
+.mi-icon.m2 { background: linear-gradient(135deg, rgba(169, 112, 255, 0.2), rgba(124, 58, 237, 0.1)); color: var(--purple); }
+.mi-icon.m3 { background: linear-gradient(135deg, rgba(93, 240, 255, 0.15), rgba(111, 255, 212, 0.1)); color: var(--cyan); }
+.mi-icon.m4 { background: linear-gradient(135deg, rgba(255, 209, 118, 0.2), rgba(255, 143, 188, 0.1)); color: var(--gold); }
+.mi-body { flex: 1; }
+.mi-body .t {
+  font-size: 12px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.mi-body .s {
+  font-size: 9.5px;
+  color: var(--ink-dim);
+  margin-top: 1px;
+}
+.mi-arrow { color: var(--ink-faint); font-size: 14px; }
+
+/* tabbar */
+.tabbar {
+  height: 54px;
+  padding: 6px 20px 8px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: rgba(13, 5, 32, 0.85);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--glass-border);
+  flex: none;
+}
+.tabbar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 9px;
+  color: var(--ink-faint);
+}
+.tabbar-item .ti { font-size: 16px; }
+.tabbar-item.active {
+  color: var(--pink);
+}
+.tabbar-item.active .ti {
+  background: var(--grad-love);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* =================== RESPONSIVE =================== */
+@media (max-width: 740px) {
+  .stage { padding: 20px 8px 40px; }
+  .gallery { gap: 20px; }
+  .phone {
+    width: 300px;
+    height: 620px;
+  }
+}
+@media (max-width: 380px) {
+  .phone {
+    width: 280px;
+    height: 580px;
+  }
+}
+
+/* footer note */
+.footnote {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--glass-border);
+  max-width: 620px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+  letter-spacing: 0.15em;
+  line-height: 1.8;
+}
+.footnote span {
+  background: var(--grad-love);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="stage-header">
+    <div class="tag">MATCHU · DESIGN PREVIEW</div>
+    <h1>让 AI 帮你 <em>遇见对的人</em></h1>
+    <p>六个核心页面,一段完整的恋爱旅程 · 滑动体验每一屏</p>
+  </div>
+
+  <div class="gallery">
+
+    <!-- ============================ PHONE 1: AI 性格测评 ============================ -->
+    <div>
+    <div class="phone">
+      <div class="screen page-onboard">
+        <div class="statusbar">
+          <span class="time">9:41</span>
+          <span class="right">
+            <svg viewBox="0 0 14 10" fill="currentColor"><path d="M1 7h1.5v2H1zM4 5h1.5v4H4zM7 3h1.5v6H7zM10 1h1.5v8h-1.5z"/></svg>
+            <svg viewBox="0 0 18 10" fill="none"><rect x="1" y="2" width="14" height="6" rx="1.5" stroke="currentColor" stroke-width="0.8"/><rect x="2.5" y="3.5" width="10" height="3" rx="0.5" fill="currentColor"/><rect x="16" y="3.5" width="1" height="3" rx="0.3" fill="currentColor"/></svg>
+          </span>
+        </div>
+
+        <div class="app-body">
+          <div class="chat-header">
+            <div class="ai-avatar">♥</div>
+            <div class="chat-header-info">
+              <div class="name">心遇 AI</div>
+              <div class="sub">正在深度了解你</div>
+            </div>
+          </div>
+
+          <div class="progress-bar">
+            <div class="pb-meta">
+              <span>性格画像 · 第 14/24 题</span>
+              <span class="pct">58%</span>
+            </div>
+            <div class="pb-track"><div class="pb-fill"></div></div>
+          </div>
+
+          <div class="app-content">
+          <div class="chat-msgs">
+
+            <div class="msg msg-ai">
+              <div class="msg-av">♥</div>
+              <div class="msg-bubble">你好呀,我是心遇 AI 😊<br>接下来我会通过聊天的方式了解你,比填表有趣多啦~</div>
+            </div>
+
+            <div class="msg msg-ai">
+              <div class="msg-av">♥</div>
+              <div class="msg-bubble">周末朋友临时约你出门<br>但你已经躺平在家刷剧,通常会怎么做?</div>
+            </div>
+
+            <div class="opt-group">
+              <div class="opt-btn"><span class="k">A</span>立刻爬起来赴约,一个人太无聊</div>
+              <div class="opt-btn"><span class="k">B</span>看心情,如果是不熟的就算了</div>
+              <div class="opt-btn" style="background:rgba(255,94,160,0.15);border-color:rgba(255,94,160,0.4);"><span class="k" style="color:var(--pink);">C</span>婉拒,我需要自己的充电时间</div>
+              <div class="opt-btn"><span class="k">D</span>邀请朋友来家一起躺平</div>
+            </div>
+
+            <div class="msg msg-you">
+              <div class="msg-bubble">C · 更喜欢独处充电</div>
+            </div>
+
+            <div class="msg msg-ai">
+              <div class="msg-av">♥</div>
+              <div class="msg-bubble">看出来了,你在社交里是个「补能型」选手 🔋<br>不是不爱玩,是需要回血。</div>
+            </div>
+
+            <div class="profile-peek">
+              <div class="pp-icon">🌙</div>
+              <div class="pp-txt">
+                <div class="pp-title">+1 INFJ 倾向 · 内向补能</div>
+                <div class="pp-sub">已识别 5/10 维度性格标签</div>
+              </div>
+            </div>
+
+            <div class="typing">
+              <span></span><span></span><span></span>
+            </div>
+
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phone-label"><span>01</span>AI 性格测评</div>
+    </div>
+
+    <!-- ============================ PHONE 2: 推荐卡匹配 ============================ -->
+    <div>
+    <div class="phone">
+      <div class="screen page-match">
+        <div class="statusbar">
+          <span class="time">9:41</span>
+          <span class="right">
+            <svg viewBox="0 0 14 10" fill="currentColor"><path d="M1 7h1.5v2H1zM4 5h1.5v4H4zM7 3h1.5v6H7zM10 1h1.5v8h-1.5z"/></svg>
+            <svg viewBox="0 0 18 10" fill="none"><rect x="1" y="2" width="14" height="6" rx="1.5" stroke="currentColor" stroke-width="0.8"/><rect x="2.5" y="3.5" width="10" height="3" rx="0.5" fill="currentColor"/><rect x="16" y="3.5" width="1" height="3" rx="0.3" fill="currentColor"/></svg>
+          </span>
+        </div>
+
+        <div class="app-body">
+          <div class="app-topbar">
+            <div class="topbar-title">探索 · 今日推荐</div>
+            <div class="topbar-icon">⚙</div>
+          </div>
+
+          <div class="match-filter">
+            <div class="filter-chip active">✦ 为你精选</div>
+            <div class="filter-chip">附近</div>
+            <div class="filter-chip">同频</div>
+            <div class="filter-chip">新人</div>
+            <div class="filter-chip">兴趣</div>
+          </div>
+
+          <div class="card-stack">
+            <!-- back cards -->
+            <div class="match-card">
+              <div class="card-portrait">
+                <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                  <defs>
+                    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#4a2880"/>
+                      <stop offset="1" stop-color="#7a3050"/>
+                    </linearGradient>
+                  </defs>
+                  <rect width="300" height="400" fill="url(#bg3)"/>
+                </svg>
+              </div>
+            </div>
+            <div class="match-card">
+              <div class="card-portrait">
+                <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                  <defs>
+                    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#5a2880"/>
+                      <stop offset="1" stop-color="#4a3080"/>
+                    </linearGradient>
+                  </defs>
+                  <rect width="300" height="400" fill="url(#bg2)"/>
+                </svg>
+              </div>
+            </div>
+            <!-- front card -->
+            <div class="match-card">
+              <div class="card-portrait">
+                <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                  <defs>
+                    <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#ff8fbc"/>
+                      <stop offset="0.5" stop-color="#a970ff"/>
+                      <stop offset="1" stop-color="#5a2880"/>
+                    </linearGradient>
+                    <radialGradient id="face-grad" cx="0.5" cy="0.45">
+                      <stop offset="0" stop-color="#ffe0d0"/>
+                      <stop offset="1" stop-color="#e8b8a0"/>
+                    </radialGradient>
+                    <linearGradient id="hair-grad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" stop-color="#3a1f1a"/>
+                      <stop offset="1" stop-color="#6a2a3a"/>
+                    </linearGradient>
+                  </defs>
+                  <rect width="300" height="400" fill="url(#bg1)"/>
+                  <!-- abstract stylized portrait -->
+                  <circle cx="150" cy="340" r="120" fill="url(#face-grad)" opacity="0.9"/>
+                  <ellipse cx="150" cy="180" rx="70" ry="85" fill="url(#face-grad)"/>
+                  <!-- hair -->
+                  <path d="M 80 170 Q 80 90 150 85 Q 220 90 220 170 Q 225 140 210 120 Q 195 95 150 95 Q 105 95 90 120 Q 75 140 80 170 Z" fill="url(#hair-grad)"/>
+                  <path d="M 85 160 Q 70 200 75 260 Q 80 220 90 200 Z" fill="url(#hair-grad)"/>
+                  <path d="M 215 160 Q 230 200 225 260 Q 220 220 210 200 Z" fill="url(#hair-grad)"/>
+                  <!-- eyes -->
+                  <ellipse cx="128" cy="185" rx="5" ry="3" fill="#2a1810"/>
+                  <ellipse cx="172" cy="185" rx="5" ry="3" fill="#2a1810"/>
+                  <!-- blush -->
+                  <circle cx="120" cy="210" r="10" fill="#ff8fbc" opacity="0.35"/>
+                  <circle cx="180" cy="210" r="10" fill="#ff8fbc" opacity="0.35"/>
+                  <!-- lips -->
+                  <path d="M 140 225 Q 150 230 160 225 Q 155 232 150 232 Q 145 232 140 225" fill="#d05070"/>
+                  <!-- decorative sparkles -->
+                  <circle cx="60" cy="80" r="3" fill="#fff" opacity="0.8"/>
+                  <circle cx="250" cy="60" r="4" fill="#fff" opacity="0.9"/>
+                  <circle cx="220" cy="110" r="2" fill="#fff" opacity="0.7"/>
+                  <circle cx="80" cy="130" r="2" fill="#fff" opacity="0.6"/>
+                  <path d="M 245 55 L 250 60 L 245 65 L 240 60 Z" fill="#fff" opacity="0.7"/>
+                </svg>
+              </div>
+              <div class="card-overlay">
+                <div class="card-top">
+                  <div class="card-badge match">♥ 92% 契合</div>
+                  <div class="card-badge">✓ 已认证</div>
+                </div>
+                <div class="card-bot">
+                  <div class="card-name">林念念 <span class="age">25</span></div>
+                  <div class="card-meta">
+                    📍 上海·徐汇 · 1.2km · INFJ · 设计师
+                  </div>
+                  <div class="card-bio">"喜欢下雨天看书,猫比人可爱一点点。"</div>
+                  <div class="card-tags">
+                    <span class="card-tag">✦ 读书</span>
+                    <span class="card-tag">🎨 插画</span>
+                    <span class="card-tag">🌧 独处</span>
+                    <span class="card-tag">🐈 猫控</span>
+                    <span class="card-tag">☕ 咖啡</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="match-actions">
+            <div class="action-btn rewind">↺</div>
+            <div class="action-btn pass">✕</div>
+            <div class="action-btn like">♥</div>
+            <div class="action-btn super">★</div>
+            <div class="action-btn boost">⚡</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phone-label"><span>02</span>智能匹配推荐</div>
+    </div>
+
+    <!-- ============================ PHONE 3: 契合度+聊天列表 ============================ -->
+    <div>
+    <div class="phone">
+      <div class="screen page-compat">
+        <div class="statusbar">
+          <span class="time">9:41</span>
+          <span class="right">
+            <svg viewBox="0 0 14 10" fill="currentColor"><path d="M1 7h1.5v2H1zM4 5h1.5v4H4zM7 3h1.5v6H7zM10 1h1.5v8h-1.5z"/></svg>
+            <svg viewBox="0 0 18 10" fill="none"><rect x="1" y="2" width="14" height="6" rx="1.5" stroke="currentColor" stroke-width="0.8"/><rect x="2.5" y="3.5" width="10" height="3" rx="0.5" fill="currentColor"/><rect x="16" y="3.5" width="1" height="3" rx="0.3" fill="currentColor"/></svg>
+          </span>
+        </div>
+
+        <div class="app-body">
+          <div class="app-topbar">
+            <div class="topbar-title">消息 · 心遇</div>
+            <div class="topbar-icon">🔍</div>
+          </div>
+
+          <div class="app-content">
+          <!-- 最新契合度卡片 -->
+          <div class="compat-hero">
+            <div class="compat-hero-head">
+              <div class="lbl">NEW · 契合度解读卡</div>
+              <div class="score">92<sup>%</sup></div>
+            </div>
+            <div class="compat-pair">
+              <div class="pair-av">
+                <svg viewBox="0 0 44 44"><defs><linearGradient id="p1a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8fbc"/><stop offset="1" stop-color="#a970ff"/></linearGradient></defs><rect width="44" height="44" fill="url(#p1a)"/><circle cx="22" cy="18" r="7" fill="#ffe0d0"/><path d="M 8 44 Q 8 30 22 30 Q 36 30 36 44 Z" fill="#ffe0d0"/></svg>
+              </div>
+              <div class="pair-connect">♥</div>
+              <div class="pair-av">
+                <svg viewBox="0 0 44 44"><defs><linearGradient id="p1b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5df0ff"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs><rect width="44" height="44" fill="url(#p1b)"/><circle cx="22" cy="18" r="7" fill="#f8d8b8"/><path d="M 8 44 Q 8 30 22 30 Q 36 30 36 44 Z" fill="#2a3040"/></svg>
+              </div>
+            </div>
+            <div class="radar-grid">
+              <div class="radar-dim"><div class="dn">性格</div><div class="dv">95</div></div>
+              <div class="radar-dim"><div class="dn">三观</div><div class="dv">88</div></div>
+              <div class="radar-dim"><div class="dn">兴趣</div><div class="dv">94</div></div>
+              <div class="radar-dim"><div class="dn">节奏</div><div class="dv">90</div></div>
+              <div class="radar-dim"><div class="dn">依恋</div><div class="dv">89</div></div>
+              <div class="radar-dim"><div class="dn">生活圈</div><div class="dv">96</div></div>
+            </div>
+          </div>
+
+          <div class="section-label">AI 助聊 · 智能推荐</div>
+          <div class="chat-list">
+            <div class="chat-item">
+              <div class="chat-av ai-icon">♥</div>
+              <div class="chat-body">
+                <div class="chat-top">
+                  <div class="chat-name">心遇 AI 助手</div>
+                  <div class="chat-time">刚刚</div>
+                </div>
+                <div class="chat-preview"><span class="ai-hint">[AI]</span> 林念念回复了你 3 小时没回,要来看看吗?</div>
+              </div>
+              <div class="chat-badge">1</div>
+            </div>
+          </div>
+
+          <div class="section-label">最近聊天</div>
+          <div class="chat-list">
+            <div class="chat-item">
+              <div class="chat-av online">
+                <svg viewBox="0 0 42 42"><defs><linearGradient id="ci1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8fbc"/><stop offset="1" stop-color="#a970ff"/></linearGradient></defs><rect width="42" height="42" fill="url(#ci1)"/><circle cx="21" cy="17" r="7" fill="#ffe0d0"/><path d="M 8 42 Q 8 28 21 28 Q 34 28 34 42 Z" fill="#ffe0d0"/></svg>
+              </div>
+              <div class="chat-body">
+                <div class="chat-top">
+                  <div class="chat-name">林念念 <span class="chip mint" style="font-size:8px;padding:1px 5px;">92%</span></div>
+                  <div class="chat-time">09:28</div>
+                </div>
+                <div class="chat-preview">那家店的猫真的很粘人 🐱</div>
+              </div>
+              <div class="chat-badge">2</div>
+            </div>
+
+            <div class="chat-item">
+              <div class="chat-av online">
+                <svg viewBox="0 0 42 42"><defs><linearGradient id="ci2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5df0ff"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs><rect width="42" height="42" fill="url(#ci2)"/><circle cx="21" cy="17" r="7" fill="#f0cfa0"/><path d="M 8 42 Q 8 28 21 28 Q 34 28 34 42 Z" fill="#2a2040"/></svg>
+              </div>
+              <div class="chat-body">
+                <div class="chat-top">
+                  <div class="chat-name">Sara · 沙拉</div>
+                  <div class="chat-time">昨天</div>
+                </div>
+                <div class="chat-preview"><span class="ai-hint">[AI 建议]</span> 她提到了周末去展览,你可以...</div>
+              </div>
+            </div>
+
+            <div class="chat-item">
+              <div class="chat-av">
+                <svg viewBox="0 0 42 42"><defs><linearGradient id="ci3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd176"/><stop offset="1" stop-color="#ff8fbc"/></linearGradient></defs><rect width="42" height="42" fill="url(#ci3)"/><circle cx="21" cy="17" r="7" fill="#f8d8b8"/><path d="M 8 42 Q 8 28 21 28 Q 34 28 34 42 Z" fill="#6a3050"/></svg>
+              </div>
+              <div class="chat-body">
+                <div class="chat-top">
+                  <div class="chat-name">Amy_夏夏</div>
+                  <div class="chat-time">昨天</div>
+                </div>
+                <div class="chat-preview">哈哈,那下次有机会一起去呀~</div>
+              </div>
+            </div>
+
+            <div class="chat-item">
+              <div class="chat-av">
+                <svg viewBox="0 0 42 42"><defs><linearGradient id="ci4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6fffd4"/><stop offset="1" stop-color="#5df0ff"/></linearGradient></defs><rect width="42" height="42" fill="url(#ci4)"/><circle cx="21" cy="17" r="7" fill="#e8c8a0"/><path d="M 8 42 Q 8 28 21 28 Q 34 28 34 42 Z" fill="#3a2030"/></svg>
+              </div>
+              <div class="chat-body">
+                <div class="chat-top">
+                  <div class="chat-name">小鹿Luna</div>
+                  <div class="chat-time">周二</div>
+                </div>
+                <div class="chat-preview">🎵 一首歌 · 晴天 - 周杰伦</div>
+              </div>
+            </div>
+
+            <div class="chat-item">
+              <div class="chat-av online">
+                <svg viewBox="0 0 42 42"><defs><linearGradient id="ci5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a970ff"/><stop offset="1" stop-color="#ff5ea0"/></linearGradient></defs><rect width="42" height="42" fill="url(#ci5)"/><circle cx="21" cy="17" r="7" fill="#ffdcc0"/><path d="M 8 42 Q 8 28 21 28 Q 34 28 34 42 Z" fill="#4a2060"/></svg>
+              </div>
+              <div class="chat-body">
+                <div class="chat-top">
+                  <div class="chat-name">一诺</div>
+                  <div class="chat-time">周一</div>
+                </div>
+                <div class="chat-preview">好呀,什么时候方便?</div>
+              </div>
+            </div>
+          </div>
+          <div style="height:10px;"></div>
+          </div>
+
+          <div class="tabbar">
+            <div class="tabbar-item"><span class="ti">◉</span>探索</div>
+            <div class="tabbar-item active"><span class="ti">♥</span>消息</div>
+            <div class="tabbar-item"><span class="ti">✦</span>AI 工具</div>
+            <div class="tabbar-item"><span class="ti">◐</span>虚拟</div>
+            <div class="tabbar-item"><span class="ti">◆</span>我的</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phone-label"><span>03</span>契合度 &amp; 聊天列表</div>
+    </div>
+
+    <!-- ============================ PHONE 4: AI 助聊副驾驶 ============================ -->
+    <div>
+    <div class="phone">
+      <div class="screen page-assist">
+        <div class="statusbar">
+          <span class="time">9:41</span>
+          <span class="right">
+            <svg viewBox="0 0 14 10" fill="currentColor"><path d="M1 7h1.5v2H1zM4 5h1.5v4H4zM7 3h1.5v6H7zM10 1h1.5v8h-1.5z"/></svg>
+            <svg viewBox="0 0 18 10" fill="none"><rect x="1" y="2" width="14" height="6" rx="1.5" stroke="currentColor" stroke-width="0.8"/><rect x="2.5" y="3.5" width="10" height="3" rx="0.5" fill="currentColor"/><rect x="16" y="3.5" width="1" height="3" rx="0.3" fill="currentColor"/></svg>
+          </span>
+        </div>
+
+        <div class="app-body">
+          <div class="chat-header-full">
+            <div class="back-btn">‹</div>
+            <div class="ha">
+              <svg viewBox="0 0 34 34"><defs><linearGradient id="hp1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8fbc"/><stop offset="1" stop-color="#a970ff"/></linearGradient></defs><rect width="34" height="34" fill="url(#hp1)"/><circle cx="17" cy="14" r="6" fill="#ffe0d0"/><path d="M 5 34 Q 5 22 17 22 Q 29 22 29 34 Z" fill="#ffe0d0"/></svg>
+            </div>
+            <div class="hi">
+              <div class="hn">林念念</div>
+              <div class="hs"><span style="width:5px;height:5px;background:var(--mint);border-radius:50%;display:inline-block;box-shadow:0 0 6px var(--mint);"></span> 在线</div>
+            </div>
+            <div class="hr">
+              <div class="hr-ico">📞</div>
+              <div class="hr-ico">◐</div>
+            </div>
+          </div>
+
+          <div class="compat-banner">
+            <div class="cb-score">92%</div>
+            <div class="cb-txt">你们聊得很来,继续吧</div>
+            <div class="cb-arrow">→</div>
+          </div>
+
+          <div class="app-content">
+          <div class="assist-chat-msgs">
+
+            <div class="msg-time">今天 15:28</div>
+
+            <div class="msg-sm me">
+              <div class="msg-sm-b">你平时周末喜欢做什么呀?</div>
+            </div>
+
+            <div class="msg-sm them">
+              <div class="msg-sm-av">
+                <svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#ff8fbc"/><circle cx="12" cy="10" r="4" fill="#ffe0d0"/><path d="M 3 24 Q 3 16 12 16 Q 21 16 21 24 Z" fill="#ffe0d0"/></svg>
+              </div>
+              <div class="msg-sm-b">一般窝家里看书画画 🎨 偶尔去逛展,<br>上周末去看了草间弥生的展,人太多</div>
+            </div>
+
+            <div class="msg-sm them">
+              <div class="msg-sm-av">
+                <svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#ff8fbc"/><circle cx="12" cy="10" r="4" fill="#ffe0d0"/><path d="M 3 24 Q 3 16 12 16 Q 21 16 21 24 Z" fill="#ffe0d0"/></svg>
+              </div>
+              <div class="msg-sm-b">你呢?</div>
+            </div>
+
+            <div class="ai-copilot">
+              <div class="ai-copilot-head">
+                <div class="ico">✦</div>
+                <div class="lb">AI 副驾驶建议</div>
+                <div class="hint">点击发送或微调</div>
+              </div>
+              <div class="ai-analysis">
+                <span>情绪分析:</span> 她主动反问表示兴趣,提到"草间弥生展"是可延展话题;情绪温和,适合用轻松语气回应。
+              </div>
+              <div class="ai-sugs">
+                <div class="ai-sug">
+                  <span class="style">幽默款</span>
+                  <span class="txt">被你种草了,那我要不要也去看看,回头跟你汇报 🫡</span>
+                  <span class="send-ic">▶</span>
+                </div>
+                <div class="ai-sug">
+                  <span class="style">走心款</span>
+                  <span class="txt">我也喜欢独处时间,偶尔爬山、听播客,喜欢慢慢认识世界</span>
+                  <span class="send-ic">▶</span>
+                </div>
+                <div class="ai-sug">
+                  <span class="style">话题款</span>
+                  <span class="txt">你看展会做笔记吗?我一直好奇设计师是怎么看展的</span>
+                  <span class="send-ic">▶</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          </div>
+
+          <div class="chat-input">
+            <div class="chat-input-tool outline">+</div>
+            <div class="chat-input-field">发消息...</div>
+            <div class="chat-input-tool">✦</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phone-label"><span>04</span>AI 助聊副驾驶</div>
+    </div>
+
+    <!-- ============================ PHONE 5: 虚拟人物视频通话 ============================ -->
+    <div>
+    <div class="phone">
+      <div class="screen page-virtual">
+        <div class="statusbar">
+          <span class="time">9:41</span>
+          <span class="right">
+            <svg viewBox="0 0 14 10" fill="currentColor"><path d="M1 7h1.5v2H1zM4 5h1.5v4H4zM7 3h1.5v6H7zM10 1h1.5v8h-1.5z"/></svg>
+            <svg viewBox="0 0 18 10" fill="none"><rect x="1" y="2" width="14" height="6" rx="1.5" stroke="currentColor" stroke-width="0.8"/><rect x="2.5" y="3.5" width="10" height="3" rx="0.5" fill="currentColor"/><rect x="16" y="3.5" width="1" height="3" rx="0.3" fill="currentColor"/></svg>
+          </span>
+        </div>
+
+        <div class="app-body">
+          <div class="app-topbar">
+            <div class="topbar-title">虚拟视频 · 樱花场景</div>
+            <div class="topbar-icon">⋯</div>
+          </div>
+
+          <div class="app-content" style="padding-top:0;">
+          <div class="virtual-preview">
+            <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#ffd9e8"/>
+                  <stop offset="0.6" stop-color="#e8a8cc"/>
+                  <stop offset="1" stop-color="#a970ff"/>
+                </linearGradient>
+                <radialGradient id="bloom" cx="0.5" cy="0.5">
+                  <stop offset="0" stop-color="#ffe0f0"/>
+                  <stop offset="1" stop-color="#ff8fbc" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="face2" cx="0.5" cy="0.4">
+                  <stop offset="0" stop-color="#fff0e5"/>
+                  <stop offset="1" stop-color="#ffccb0"/>
+                </radialGradient>
+              </defs>
+              <!-- sky -->
+              <rect width="400" height="500" fill="url(#sky)"/>
+              <!-- distant mountains -->
+              <path d="M 0 280 Q 100 240 200 260 Q 300 280 400 250 L 400 500 L 0 500 Z" fill="#8a5ac0" opacity="0.35"/>
+              <!-- cherry blossom tree branches -->
+              <path d="M -20 150 Q 40 130 90 100 Q 110 90 130 85 M 90 100 Q 120 80 160 70 M 400 160 Q 340 140 300 110 Q 280 100 270 100 M 300 110 Q 270 90 230 80" stroke="#4a2a1a" stroke-width="4" fill="none" opacity="0.7"/>
+              <!-- blossoms clusters -->
+              <circle cx="40" cy="140" r="18" fill="url(#bloom)"/>
+              <circle cx="90" cy="95" r="22" fill="url(#bloom)"/>
+              <circle cx="130" cy="80" r="18" fill="url(#bloom)"/>
+              <circle cx="170" cy="70" r="14" fill="url(#bloom)"/>
+              <circle cx="20" cy="180" r="14" fill="url(#bloom)"/>
+              <circle cx="360" cy="150" r="22" fill="url(#bloom)"/>
+              <circle cx="320" cy="120" r="18" fill="url(#bloom)"/>
+              <circle cx="270" cy="100" r="16" fill="url(#bloom)"/>
+              <circle cx="230" cy="80" r="14" fill="url(#bloom)"/>
+              <!-- petals falling -->
+              <path d="M 100 200 Q 103 197 106 200 Q 103 203 100 200" fill="#ff8fbc" opacity="0.8"/>
+              <path d="M 280 180 Q 283 177 286 180 Q 283 183 280 180" fill="#ff8fbc" opacity="0.8"/>
+              <path d="M 180 250 Q 183 247 186 250 Q 183 253 180 250" fill="#ff8fbc" opacity="0.8"/>
+              <path d="M 330 300 Q 333 297 336 300 Q 333 303 330 300" fill="#ff8fbc" opacity="0.8"/>
+              <path d="M 60 280 Q 63 277 66 280 Q 63 283 60 280" fill="#ff8fbc" opacity="0.8"/>
+              <path d="M 220 320 Q 223 317 226 320 Q 223 323 220 320" fill="#ff8fbc" opacity="0.8"/>
+              <!-- character (girl - stylized anime style) -->
+              <!-- body/kimono -->
+              <path d="M 150 500 L 130 360 Q 130 340 150 335 L 250 335 Q 270 340 270 360 L 250 500 Z" fill="#ff8fbc"/>
+              <path d="M 145 500 L 155 400 L 165 500 Z" fill="#d05080" opacity="0.7"/>
+              <!-- neck -->
+              <rect x="185" y="310" width="30" height="30" rx="6" fill="url(#face2)"/>
+              <!-- hair back -->
+              <path d="M 140 240 Q 130 300 135 360 Q 125 320 130 240 Z" fill="#2a1a1a"/>
+              <path d="M 260 240 Q 270 300 265 360 Q 275 320 270 240 Z" fill="#2a1a1a"/>
+              <!-- face -->
+              <ellipse cx="200" cy="250" rx="55" ry="65" fill="url(#face2)"/>
+              <!-- hair front -->
+              <path d="M 145 230 Q 150 160 200 155 Q 250 160 255 230 Q 252 200 240 185 Q 225 175 200 173 Q 175 175 160 185 Q 148 200 145 230 Z" fill="#2a1a1a"/>
+              <path d="M 148 220 Q 145 260 155 290 Q 150 270 150 230 Z" fill="#2a1a1a"/>
+              <path d="M 252 220 Q 255 260 245 290 Q 250 270 250 230 Z" fill="#2a1a1a"/>
+              <!-- side locks -->
+              <path d="M 160 230 Q 155 280 165 310 Q 160 290 162 240 Z" fill="#3a2020"/>
+              <path d="M 240 230 Q 245 280 235 310 Q 240 290 238 240 Z" fill="#3a2020"/>
+              <!-- large anime eyes -->
+              <ellipse cx="178" cy="258" rx="11" ry="14" fill="#ffffff"/>
+              <ellipse cx="222" cy="258" rx="11" ry="14" fill="#ffffff"/>
+              <ellipse cx="178" cy="260" rx="9" ry="12" fill="#7c3aed"/>
+              <ellipse cx="222" cy="260" rx="9" ry="12" fill="#7c3aed"/>
+              <circle cx="178" cy="262" r="5" fill="#2a0a4a"/>
+              <circle cx="222" cy="262" r="5" fill="#2a0a4a"/>
+              <circle cx="180" cy="258" r="2.5" fill="#ffffff"/>
+              <circle cx="224" cy="258" r="2.5" fill="#ffffff"/>
+              <!-- tiny nose -->
+              <path d="M 200 275 L 198 282 L 202 282 Z" fill="#e8b098" opacity="0.5"/>
+              <!-- blush -->
+              <ellipse cx="170" cy="282" rx="9" ry="5" fill="#ff8fbc" opacity="0.5"/>
+              <ellipse cx="230" cy="282" rx="9" ry="5" fill="#ff8fbc" opacity="0.5"/>
+              <!-- smiling mouth -->
+              <path d="M 190 297 Q 200 303 210 297" stroke="#d05070" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <!-- hair ornament -->
+              <circle cx="165" cy="195" r="6" fill="#ff5ea0"/>
+              <circle cx="165" cy="195" r="3" fill="#ffd176"/>
+              <!-- decorative sparkles foreground -->
+              <circle cx="50" cy="380" r="2" fill="#fff" opacity="0.9"/>
+              <circle cx="350" cy="360" r="2.5" fill="#fff" opacity="0.9"/>
+              <circle cx="310" cy="420" r="1.5" fill="#fff" opacity="0.8"/>
+              <circle cx="80" cy="440" r="2" fill="#fff" opacity="0.8"/>
+            </svg>
+
+            <div class="badge-live">LIVE · 虚拟驱动</div>
+            <div class="timer">04:38</div>
+
+            <div class="partner-pip">
+              <svg viewBox="0 0 74 98" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <linearGradient id="pipbg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#5df0ff"/>
+                    <stop offset="1" stop-color="#7c3aed"/>
+                  </linearGradient>
+                </defs>
+                <rect width="74" height="98" fill="url(#pipbg)"/>
+                <!-- simple boy avatar -->
+                <ellipse cx="37" cy="45" rx="18" ry="22" fill="#ffdcc0"/>
+                <path d="M 19 40 Q 19 22 37 20 Q 55 22 55 40 Q 55 30 50 26 Q 43 22 37 22 Q 31 22 24 26 Q 19 30 19 40 Z" fill="#2a2040"/>
+                <ellipse cx="30" cy="48" rx="2" ry="2.5" fill="#2a0a4a"/>
+                <ellipse cx="44" cy="48" rx="2" ry="2.5" fill="#2a0a4a"/>
+                <path d="M 32 58 Q 37 61 42 58" stroke="#d07060" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                <path d="M 20 98 L 22 75 Q 37 70 52 75 L 54 98 Z" fill="#5a4080"/>
+              </svg>
+              <div class="pip-name">你</div>
+            </div>
+
+            <div class="scene-label">🌸 樱花树下</div>
+          </div>
+
+          <div class="intimacy-bar">
+            <div class="intimacy-bar-top">
+              <div class="lb"><span class="ht">♥</span> 亲密度</div>
+              <div class="vl">72 / 100</div>
+            </div>
+            <div class="track"><div class="fill"></div></div>
+            <div class="milestones">
+              <span class="active">✓ 文字</span>
+              <span class="active">✓ 视频</span>
+              <span class="active">◉ 场景</span>
+              <span>○ 真人</span>
+            </div>
+          </div>
+
+          <div class="style-picker">
+            <div class="sp-head">
+              <div class="t">你的虚拟形象风格</div>
+              <div class="m">切换风格 ›</div>
+            </div>
+            <div class="style-chips">
+              <div class="style-chip active">🌸 日漫风</div>
+              <div class="style-chip">🎭 3D 写实</div>
+              <div class="style-chip">✨ 轻美化</div>
+              <div class="style-chip">🏮 国风 <span class="lock">🔒</span></div>
+              <div class="style-chip">🔮 赛博 <span class="lock">🔒</span></div>
+            </div>
+          </div>
+          </div>
+
+          <div class="call-controls">
+            <div class="ctrl-btn">🎤</div>
+            <div class="ctrl-btn scene">🌸</div>
+            <div class="ctrl-btn gift">🎁</div>
+            <div class="ctrl-btn end">✕</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phone-label"><span>05</span>虚拟人物视频</div>
+    </div>
+
+    <!-- ============================ PHONE 6: 个人资料+会员 ============================ -->
+    <div>
+    <div class="phone">
+      <div class="screen page-profile">
+        <div class="statusbar">
+          <span class="time">9:41</span>
+          <span class="right">
+            <svg viewBox="0 0 14 10" fill="currentColor"><path d="M1 7h1.5v2H1zM4 5h1.5v4H4zM7 3h1.5v6H7zM10 1h1.5v8h-1.5z"/></svg>
+            <svg viewBox="0 0 18 10" fill="none"><rect x="1" y="2" width="14" height="6" rx="1.5" stroke="currentColor" stroke-width="0.8"/><rect x="2.5" y="3.5" width="10" height="3" rx="0.5" fill="currentColor"/><rect x="16" y="3.5" width="1" height="3" rx="0.3" fill="currentColor"/></svg>
+          </span>
+        </div>
+
+        <div class="app-body">
+          <div class="app-topbar">
+            <div class="topbar-title">我的</div>
+            <div class="topbar-icon">⚙</div>
+          </div>
+
+          <div class="app-content">
+          <div class="profile-hero">
+            <div class="profile-av-wrap">
+              <div class="av">
+                <svg viewBox="0 0 84 84" width="100%" height="100%">
+                  <defs>
+                    <linearGradient id="mybg" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#5df0ff"/>
+                      <stop offset="1" stop-color="#7c3aed"/>
+                    </linearGradient>
+                  </defs>
+                  <rect width="84" height="84" fill="url(#mybg)"/>
+                  <ellipse cx="42" cy="36" rx="16" ry="20" fill="#ffdcc0"/>
+                  <path d="M 22 32 Q 22 14 42 12 Q 62 14 62 32 Q 62 24 55 20 Q 48 16 42 16 Q 36 16 29 20 Q 22 24 22 32 Z" fill="#2a1a30"/>
+                  <ellipse cx="35" cy="38" rx="2.5" ry="3" fill="#2a0a4a"/>
+                  <ellipse cx="49" cy="38" rx="2.5" ry="3" fill="#2a0a4a"/>
+                  <path d="M 36 48 Q 42 52 48 48" stroke="#d07060" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                  <path d="M 20 84 L 25 64 Q 42 58 59 64 L 64 84 Z" fill="#4a3070"/>
+                </svg>
+              </div>
+              <div class="verified">✓</div>
+            </div>
+            <div class="profile-name">Alex <span class="age">· 27</span></div>
+            <div class="profile-loc">📍 上海 · 浦东 · 程序员</div>
+            <div class="profile-badges">
+              <span class="chip mint">✓ 实名认证</span>
+              <span class="chip ai">ENTP</span>
+              <span class="chip hot">♥ 热门用户</span>
+            </div>
+          </div>
+
+          <div class="profile-stats">
+            <div class="p-stat"><div class="pn">148</div><div class="pl">收到喜欢</div></div>
+            <div class="p-stat"><div class="pn">23</div><div class="pl">匹配成功</div></div>
+            <div class="p-stat"><div class="pn">92%</div><div class="pl">最高契合</div></div>
+          </div>
+
+          <div class="svip-card">
+            <div class="svip-head">
+              <div class="svip-title">SVIP 会员</div>
+              <div class="svip-price"><div class="p">¥58</div>月卡 · 首月 ¥38</div>
+            </div>
+            <div class="svip-desc">
+              无限 AI 助聊 · 深度匹配报告 · 虚拟形象多风格 · 虚拟视频无限时长 · 优先曝光
+            </div>
+            <div class="svip-cta">立即开通 ♛ →</div>
+          </div>
+
+          <div class="profile-menu">
+            <div class="menu-item">
+              <div class="mi-icon m1">✦</div>
+              <div class="mi-body">
+                <div class="t">AI 资料卡诊断</div>
+                <div class="s">评分 B+ · 有 3 条优化建议</div>
+              </div>
+              <div class="mi-arrow">›</div>
+            </div>
+            <div class="menu-item">
+              <div class="mi-icon m2">◐</div>
+              <div class="mi-body">
+                <div class="t">我的虚拟形象</div>
+                <div class="s">已解锁 3 种风格 · 管理道具</div>
+              </div>
+              <div class="mi-arrow">›</div>
+            </div>
+            <div class="menu-item">
+              <div class="mi-icon m3">🧠</div>
+              <div class="mi-body">
+                <div class="t">AI 恋爱人格报告</div>
+                <div class="s">ENTP · 安全型依恋 · 查看全文</div>
+              </div>
+              <div class="mi-arrow">›</div>
+            </div>
+            <div class="menu-item">
+              <div class="mi-icon m4">◆</div>
+              <div class="mi-body">
+                <div class="t">我的道具</div>
+                <div class="s">超级喜欢 × 5 · 曝光加速 × 2</div>
+              </div>
+              <div class="mi-arrow">›</div>
+            </div>
+          </div>
+          </div>
+
+          <div class="tabbar">
+            <div class="tabbar-item"><span class="ti">◉</span>探索</div>
+            <div class="tabbar-item"><span class="ti">♥</span>消息</div>
+            <div class="tabbar-item"><span class="ti">✦</span>AI 工具</div>
+            <div class="tabbar-item"><span class="ti">◐</span>虚拟</div>
+            <div class="tabbar-item active"><span class="ti">◆</span>我的</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phone-label"><span>06</span>个人资料 &amp; 会员</div>
+    </div>
+
+  </div>
+
+  <div class="footnote">
+    MATCHU · 心遇 <span>♥</span> AI · DATING · VIRTUAL · 2026<br>
+    设计原型 · 六屏交互流程 · 滑动体验完整用户旅程
+  </div>
+</div>
+
+</body>
+</html>
