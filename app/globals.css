@@ -1,27 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --bg-0: #0d0520;
-  --bg-1: #1a0d35;
-  --bg-2: #281550;
-  --ink: #faf5ff;
-  --ink-dim: #b8a8d8;
-  --ink-faint: #7a6b9a;
-  --pink: #ff5ea0;
-  --rose: #ff8fbc;
-  --purple: #a970ff;
-  --violet: #7c3aed;
-  --cyan: #5df0ff;
-  --mint: #6fffd4;
-  --gold: #ffd176;
-  --glass: rgba(255, 255, 255, 0.08);
-  --glass-strong: rgba(255, 255, 255, 0.14);
-  --glass-border: rgba(255, 255, 255, 0.16);
-  --grad-love: linear-gradient(135deg, #ff5ea0 0%, #a970ff 50%, #5df0ff 100%);
-  --grad-pink: linear-gradient(135deg, #ff5ea0 0%, #ff8fbc 100%);
-  --grad-purple: linear-gradient(135deg, #a970ff 0%, #7c3aed 100%);
-  --grad-cyan: linear-gradient(135deg, #5df0ff 0%, #6fffd4 100%);
-  --grad-warm: linear-gradient(135deg, #ffd176 0%, #ff8fbc 100%);
+  /* 背景色阶 · 暖炭紫 */
+  --bg-0: #1a0f14;
+  --bg-1: #261822;
+  --bg-2: #352230;
+  /* 文字色阶 · 奶油色系 */
+  --ink: #fdf4e8;
+  --ink-dim: #c9b89a;
+  --ink-faint: #8a7360;
+  /* 主色 · 烛光暖调（保留旧变量名以兼容既有组件）*/
+  --pink: #ff8f6b;     /* 珊瑚粉 · 主色 */
+  --rose: #ff7a8c;     /* 暖玫瑰 */
+  --purple: #b87a80;   /* 暖紫灰 */
+  --violet: #8a5560;   /* 深紫玫瑰 */
+  --cyan: #e8b86f;     /* 琥珀金 · 替换电子青 */
+  --mint: #d4a870;     /* 淡金 · 替换薄荷 */
+  --gold: #ffd176;     /* 金 · 保留 */
+  /* 玻璃与边框 · 奶油白 */
+  --glass: rgba(253, 244, 232, 0.06);
+  --glass-strong: rgba(253, 244, 232, 0.10);
+  --glass-border: rgba(253, 244, 232, 0.14);
+  /* 渐变 · 去彩虹化 */
+  --grad-love: linear-gradient(135deg, #ff8f6b 0%, #e8b86f 100%);
+  --grad-pink: linear-gradient(135deg, #ff8f6b 0%, #ff7a8c 100%);
+  --grad-purple: linear-gradient(135deg, #b87a80 0%, #8a5560 100%);
+  --grad-cyan: linear-gradient(135deg, #e8b86f 0%, #d4a870 100%);
+  --grad-warm: linear-gradient(135deg, #ffd176 0%, #ff8f6b 100%);
 }
 
 * {
@@ -32,7 +37,7 @@
 }
 
 html, body {
-  background: #0a0414;
+  background: #1a0f14;
   color: var(--ink);
   font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
   min-height: 100vh;
@@ -41,19 +46,19 @@ html, body {
 
 body {
   background:
-    radial-gradient(ellipse 900px 700px at 10% 5%, rgba(169, 112, 255, 0.28), transparent 55%),
-    radial-gradient(ellipse 700px 600px at 95% 85%, rgba(255, 94, 160, 0.25), transparent 55%),
-    radial-gradient(ellipse 600px 500px at 95% 10%, rgba(93, 240, 255, 0.15), transparent 60%),
-    linear-gradient(180deg, #0a0414 0%, #150829 100%);
+    radial-gradient(ellipse 900px 700px at 10% 5%, rgba(232, 184, 111, 0.22), transparent 55%),
+    radial-gradient(ellipse 700px 600px at 95% 85%, rgba(255, 143, 107, 0.20), transparent 55%),
+    radial-gradient(ellipse 600px 500px at 95% 10%, rgba(255, 209, 118, 0.12), transparent 60%),
+    linear-gradient(180deg, #1a0f14 0%, #2a1820 100%);
 }
 
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, rgba(253, 244, 232, 0.05) 1px, transparent 0);
   background-size: 32px 32px;
-  opacity: 0.35;
+  opacity: 0.3;
   pointer-events: none;
   z-index: 0;
 }

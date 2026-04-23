@@ -3,11 +3,11 @@
 type ActionKey = 'rewind' | 'pass' | 'like' | 'super' | 'boost'
 
 const actions: { key: ActionKey; glyph: string; label: string; color: string }[] = [
-  { key: 'rewind', glyph: '↺', label: '撤回',    color: '#b8a8d8' },
-  { key: 'pass',   glyph: '✕', label: '跳过',    color: '#ff8fbc' },
-  { key: 'like',   glyph: '♥', label: '喜欢',    color: '#ff5ea0' },
-  { key: 'super',  glyph: '★', label: '超级',    color: '#5df0ff' },
-  { key: 'boost',  glyph: '⚡', label: '加速',    color: '#ffd176' },
+  { key: 'rewind', glyph: '↺', label: '撤回',    color: '#c9b89a' },
+  { key: 'pass',   glyph: '✕', label: '跳过',    color: '#8a7360' },
+  { key: 'like',   glyph: '♥', label: '喜欢',    color: '#ff8f6b' },
+  { key: 'super',  glyph: '★', label: '超级',    color: '#ffd176' },
+  { key: 'boost',  glyph: '⚡', label: '加速',    color: '#e8b86f' },
 ]
 
 export function MatchActions({

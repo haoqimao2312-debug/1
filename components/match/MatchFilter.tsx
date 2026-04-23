@@ -13,9 +13,9 @@ export function MatchFilter() {
           <button
             key={c}
             onClick={() => setActive(i)}
-            className={`shrink-0 px-3 py-1.5 rounded-full text-[12px] transition ${
+            className={`shrink-0 px-3.5 py-1.5 rounded-full text-[12px] transition ${
               isActive
-                ? 'bg-[rgba(255,94,160,0.18)] border border-[rgba(255,94,160,0.4)] text-white'
+                ? 'bg-[rgba(255,143,107,0.18)] border border-[rgba(255,143,107,0.38)] text-[var(--ink)]'
                 : 'glass text-[var(--ink-dim)]'
             }`}
           >

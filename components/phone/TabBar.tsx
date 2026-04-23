@@ -29,13 +29,17 @@ export function TabBar() {
             className="flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5"
           >
             <span
-              className={`text-[18px] leading-none ${isActive ? 'text-grad-love' : 'text-[var(--ink-faint)]'}`}
-              style={{ fontFamily: 'JetBrains Mono, monospace' }}
+              className="text-[18px] leading-none"
+              style={{
+                fontFamily: 'JetBrains Mono, monospace',
+                color: isActive ? '#ff8f6b' : 'var(--ink-faint)',
+              }}
             >
               {t.icon}
             </span>
             <span
-              className={`text-[10px] ${isActive ? 'text-grad-love font-semibold' : 'text-[var(--ink-faint)]'}`}
+              className={`text-[10px] ${isActive ? 'font-semibold' : ''}`}
+              style={{ color: isActive ? '#ff8f6b' : 'var(--ink-faint)' }}
             >
               {t.label}
             </span>
