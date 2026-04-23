@@ -14,7 +14,7 @@ export function ChatHeader({
 }) {
   return (
     <div className="flex items-center gap-3 px-4 py-3 border-b border-white/10">
-      <Link href="/" className="p-1 -ml-1 text-[var(--ink-dim)]">
+      <Link href="/messages" className="p-1 -ml-1 text-[var(--ink-dim)]">
         <ChevronLeft size={22} />
       </Link>
       <div

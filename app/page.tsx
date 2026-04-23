@@ -1,16 +1,10 @@
-'use client'
 import Link from 'next/link'
-import { useUserStore } from '@/lib/store/user'
 import { Phone } from '@/components/phone/Phone'
 import { StatusBar } from '@/components/phone/StatusBar'
 import { AppBody } from '@/components/phone/AppBody'
 import { Button } from '@/components/common/Button'
 
 export default function Home() {
-  const completed = useUserStore((s) => Boolean(s.profile.completedAt))
-  const primaryHref = completed ? '/match' : '/onboard'
-  const primaryLabel = completed ? '进入心遇' : '开始心遇之旅'
-
   return (
     <Phone>
       <StatusBar />
@@ -29,11 +23,13 @@ export default function Home() {
             让 AI 帮你 <em className="text-grad-love not-italic">遇见对的人</em>
           </h1>
           <p className="text-[var(--ink-dim)] text-sm leading-relaxed max-w-xs">
-            从一次聊天测评开始，遇见最合得来的那个人
+            在这里遇见最合得来的那个人
           </p>
           <div className="flex flex-col gap-3 w-full max-w-xs">
-            <Link href={primaryHref}><Button className="w-full">{primaryLabel}</Button></Link>
-            <Link href="/chat/xiaoyu"><Button variant="glass" className="w-full">跳过测评，直接聊</Button></Link>
+            <Link href="/match"><Button className="w-full">进入心遇</Button></Link>
+            <Link href="/onboard" className="text-[12px] text-[var(--ink-dim)] hover:text-[var(--ink)] transition mt-1">
+              先做一次性格测评 →
+            </Link>
           </div>
         </div>
       </AppBody>
