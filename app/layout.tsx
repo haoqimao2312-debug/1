@@ -1,9 +1,23 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import { StorageWarning } from '@/components/common/StorageWarning'
 
 export const metadata: Metadata = {
   title: 'MatchU · 心遇',
   description: 'AI 帮你遇见对的人',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    title: '心遇',
+    statusBarStyle: 'black-translucent',
+  },
+  icons: {
+    icon: [
+      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
 }
 
 export const viewport: Viewport = {
@@ -25,7 +39,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <StorageWarning />
+        {children}
+      </body>
     </html>
   )
 }

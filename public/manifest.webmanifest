@@ -1,0 +1,14 @@
+{
+  "name": "MatchU · 心遇",
+  "short_name": "心遇",
+  "description": "AI 帮你遇见对的人",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0414",
+  "theme_color": "#a970ff",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
