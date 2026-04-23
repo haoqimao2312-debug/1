@@ -10,12 +10,13 @@ export default function Home() {
       <StatusBar />
       <AppBody>
         <div className="flex-1 flex flex-col items-center justify-center px-8 text-center gap-6">
-          <div
-            className="text-[11px] tracking-[0.2em] uppercase glass rounded-full px-3.5 py-1.5"
-            style={{ fontFamily: 'JetBrains Mono, monospace' }}
-          >
-            MATCHU · DESIGN PREVIEW
-          </div>
+          <img
+            src="/icon.svg"
+            alt="心遇"
+            width={88}
+            height={88}
+            className="drop-shadow-[0_16px_40px_rgba(255,143,107,0.35)]"
+          />
           <h1
             className="text-4xl font-normal"
             style={{ fontFamily: 'Instrument Serif, Noto Serif SC, serif' }}
