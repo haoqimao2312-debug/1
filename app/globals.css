@@ -1,26 +1,97 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-0: #0d0520;
+  --bg-1: #1a0d35;
+  --bg-2: #281550;
+  --ink: #faf5ff;
+  --ink-dim: #b8a8d8;
+  --ink-faint: #7a6b9a;
+  --pink: #ff5ea0;
+  --rose: #ff8fbc;
+  --purple: #a970ff;
+  --violet: #7c3aed;
+  --cyan: #5df0ff;
+  --mint: #6fffd4;
+  --gold: #ffd176;
+  --glass: rgba(255, 255, 255, 0.08);
+  --glass-strong: rgba(255, 255, 255, 0.14);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  --grad-love: linear-gradient(135deg, #ff5ea0 0%, #a970ff 50%, #5df0ff 100%);
+  --grad-pink: linear-gradient(135deg, #ff5ea0 0%, #ff8fbc 100%);
+  --grad-purple: linear-gradient(135deg, #a970ff 0%, #7c3aed 100%);
+  --grad-cyan: linear-gradient(135deg, #5df0ff 0%, #6fffd4 100%);
+  --grad-warm: linear-gradient(135deg, #ffd176 0%, #ff8fbc 100%);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  background: #0a0414;
+  color: var(--ink);
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(ellipse 900px 700px at 10% 5%, rgba(169, 112, 255, 0.28), transparent 55%),
+    radial-gradient(ellipse 700px 600px at 95% 85%, rgba(255, 94, 160, 0.25), transparent 55%),
+    radial-gradient(ellipse 600px 500px at 95% 10%, rgba(93, 240, 255, 0.15), transparent 60%),
+    linear-gradient(180deg, #0a0414 0%, #150829 100%);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0);
+  background-size: 32px 32px;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 毛玻璃卡片通用 */
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.glass-strong {
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* 渐变文字 */
+.text-grad-love {
+  background: var(--grad-love);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 打字指示器动画 */
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+.typing-dot {
+  animation: typing-bounce 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+/* 禁用全局 user-select 保留输入框 */
+*:not(input):not(textarea):not([contenteditable]) {
+  user-select: none;
 }
