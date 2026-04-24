@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import {
   Heart,
   User,
@@ -328,19 +328,22 @@ export default function App() {
 
 const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) => void }) => {
   const [profileIndex, setProfileIndex] = useState(0);
-  const [leavingCard, setLeavingCard] = useState<{ profile: DetailProfile; direction: "left" | "right" } | null>(null);
+  const [leavingCard, setLeavingCard] = useState<{ profile: DetailProfile; direction: "left" | "right"; velocity: number } | null>(null);
   const [lastAction, setLastAction] = useState<"like" | "pass" | "super" | null>(null);
+  const dragX = useMotionValue(0);
+  const dragProgress = useTransform(dragX, [-140, 0, 140], [1, 0, 1]);
   const featured = matchOrder[profileIndex % matchOrder.length];
   const nextProfiles = Array.from({ length: Math.min(3, matchOrder.length - 1) }, (_, i) => matchOrder[(profileIndex + i + 1) % matchOrder.length]);
 
-  const moveNext = (action: "like" | "pass" | "super") => {
+  const moveNext = (action: "like" | "pass" | "super", velocity = 0) => {
     if (leavingCard) return;
     setLastAction(action);
-    setLeavingCard({ profile: featured, direction: action === "pass" ? "left" : "right" });
+    setLeavingCard({ profile: featured, direction: action === "pass" ? "left" : "right", velocity });
     setProfileIndex((idx) => (idx + 1) % matchOrder.length);
+    dragX.set(0);
     window.setTimeout(() => {
       setLeavingCard(null);
-    }, 220);
+    }, 320);
   };
 
   useEffect(() => {
@@ -372,22 +375,18 @@ const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) 
 
       <div className="flex-1 relative w-full">
         {nextProfiles.slice(0, 2).reverse().map((profile, stackIndex) => (
-          <div
+          <StackProfileCard
             key={profile.id}
-            className="absolute inset-0 glass-panel rounded-[32px] overflow-hidden shadow-2xl shadow-black/30"
-            style={{
-              transform: `scale(${0.93 + stackIndex * 0.035}) translateY(${18 - stackIndex * 8}px)`,
-              opacity: 0.46 + stackIndex * 0.22,
-            }}
-          >
-            <img src={profile.photo} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-          </div>
+            profile={profile}
+            stackIndex={stackIndex}
+            dragProgress={dragProgress}
+          />
         ))}
 
         <SwipeProfileCard
           key={featured.id}
           profile={featured}
+          x={dragX}
           onOpenProfile={onOpenProfile}
           onSwipe={moveNext}
         />
@@ -396,6 +395,7 @@ const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) 
             key={`${leavingCard.profile.id}-${leavingCard.direction}`}
             profile={leavingCard.profile}
             direction={leavingCard.direction}
+            velocity={leavingCard.velocity}
           />
         )}
 
@@ -425,13 +425,13 @@ const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) 
       </div>
 
       <div className="flex justify-center items-center gap-6 mt-4 pb-4">
-        <button onClick={() => moveNext("pass")} className="w-14 h-14 rounded-full glass-panel flex items-center justify-center text-white/50 hover:bg-white/10 transition-all hover:scale-105">
+        <button onClick={() => moveNext("pass", -700)} className="w-14 h-14 rounded-full glass-panel flex items-center justify-center text-white/50 hover:bg-white/10 transition-all hover:scale-105">
           <X className="w-6 h-6" />
         </button>
-        <button onClick={() => moveNext("like")} className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center shadow-[0_8px_20px_rgba(255,94,160,0.4)] hover:scale-105 transition-all border border-pink-400">
+        <button onClick={() => moveNext("like", 700)} className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center shadow-[0_8px_20px_rgba(255,94,160,0.4)] hover:scale-105 transition-all border border-pink-400">
           <Heart className="w-7 h-7 fill-white" />
         </button>
-        <button onClick={() => moveNext("super")} className="w-14 h-14 rounded-full glass-panel flex items-center justify-center text-yellow-400 hover:bg-white/10 transition-all hover:scale-105">
+        <button onClick={() => moveNext("super", 900)} className="w-14 h-14 rounded-full glass-panel flex items-center justify-center text-yellow-400 hover:bg-white/10 transition-all hover:scale-105">
           <Sparkles className="w-6 h-6" />
         </button>
       </div>
@@ -439,36 +439,76 @@ const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) 
   );
 };
 
+const StackProfileCard = ({
+  profile,
+  stackIndex,
+  dragProgress,
+}: {
+  profile: DetailProfile;
+  stackIndex: number;
+  dragProgress: MotionValue<number>;
+}) => {
+  const baseScale = stackIndex === 0 ? 0.93 : 0.965;
+  const liftScale = stackIndex === 0 ? 0.025 : 0.026;
+  const baseY = stackIndex === 0 ? 18 : 10;
+  const liftY = stackIndex === 0 ? 5 : 8;
+  const baseOpacity = stackIndex === 0 ? 0.46 : 0.68;
+  const opacityLift = stackIndex === 0 ? 0.08 : 0.16;
+
+  const scale = useTransform(dragProgress, [0, 1], [baseScale, baseScale + liftScale]);
+  const y = useTransform(dragProgress, [0, 1], [baseY, liftY]);
+  const opacity = useTransform(dragProgress, [0, 1], [baseOpacity, baseOpacity + opacityLift]);
+
+  return (
+    <motion.div
+      className="absolute inset-0 glass-panel rounded-[32px] overflow-hidden shadow-2xl shadow-black/30"
+      style={{ scale, y, opacity }}
+      transition={{ type: "spring", stiffness: 420, damping: 36 }}
+    >
+      <img src={profile.photo} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+    </motion.div>
+  );
+};
+
 const SwipeProfileCard = ({
   profile,
+  x,
   onOpenProfile,
   onSwipe,
 }: {
   profile: DetailProfile;
+  x: MotionValue<number>;
   onOpenProfile: (profile: DetailProfile) => void;
-  onSwipe: (action: "like" | "pass") => void;
+  onSwipe: (action: "like" | "pass", velocity?: number) => void;
 }) => {
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-180, 0, 180], [-14, 0, 14]);
-  const likeOpacity = useTransform(x, [32, 120], [0, 1]);
-  const nopeOpacity = useTransform(x, [-120, -32], [1, 0]);
+  const rotate = useTransform(x, [-220, 0, 220], [-16, 0, 16]);
+  const y = useTransform(x, [-220, 0, 220], [8, 0, 8]);
+  const likeOpacity = useTransform(x, [18, 96], [0, 1]);
+  const nopeOpacity = useTransform(x, [-96, -18], [1, 0]);
+  const cardShadow = useTransform(x, [-180, 0, 180], [
+    "0 24px 60px rgba(0,0,0,0.40)",
+    "0 24px 60px rgba(255,94,160,0.18)",
+    "0 24px 60px rgba(255,94,160,0.40)",
+  ]);
 
   return (
     <motion.div
       className="absolute inset-0 glass-panel rounded-[32px] overflow-hidden shadow-2xl shadow-pink-900/20 text-left cursor-grab active:cursor-grabbing touch-none"
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.12}
-      style={{ x, rotate }}
-      whileDrag={{ scale: 1.015 }}
+      dragElastic={0.22}
+      dragMomentum={false}
+      style={{ x, y, rotate, boxShadow: cardShadow }}
+      whileDrag={{ scale: 1.018 }}
       initial={{ opacity: 1, scale: 1, y: 0 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 420, damping: 34, mass: 0.7 }}
+      transition={{ type: "spring", stiffness: 520, damping: 36, mass: 0.62 }}
       onDragEnd={(_, info) => {
         const offset = info.offset.x;
         const velocity = info.velocity.x;
-        if (offset > 82 || velocity > 450) onSwipe("like");
-        else if (offset < -82 || velocity < -450) onSwipe("pass");
+        if (offset > 78 || velocity > 420) onSwipe("like", velocity);
+        else if (offset < -78 || velocity < -420) onSwipe("pass", velocity);
       }}
       onDoubleClick={() => onOpenProfile(profile)}
     >
@@ -534,20 +574,22 @@ const SwipeProfileCard = ({
 const FlyingProfileCard = ({
   profile,
   direction,
+  velocity,
 }: {
   profile: DetailProfile;
   direction: "left" | "right";
+  velocity: number;
 }) => (
   <motion.div
     className="absolute inset-0 glass-panel rounded-[32px] overflow-hidden shadow-2xl shadow-pink-900/20 pointer-events-none"
     initial={{ x: 0, rotate: 0, opacity: 1, scale: 1 }}
     animate={{
-      x: direction === "left" ? -560 : 560,
-      rotate: direction === "left" ? -24 : 24,
+      x: direction === "left" ? -580 - Math.min(Math.abs(velocity) * 0.08, 90) : 580 + Math.min(Math.abs(velocity) * 0.08, 90),
+      rotate: direction === "left" ? -24 - Math.min(Math.abs(velocity) * 0.006, 8) : 24 + Math.min(Math.abs(velocity) * 0.006, 8),
       opacity: 0,
-      scale: 0.96,
+      scale: 0.965,
     }}
-    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+    transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
   >
     <img src={profile.photo} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover" />
     <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/25 to-transparent" />
