@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { AnimatePresence, motion, useMotionValue, useTransform } from "framer-motion";
 import {
   Heart,
   User,
@@ -326,8 +327,21 @@ export default function App() {
 }
 
 const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) => void }) => {
-  const featured = matchOrder[0];
-  const nextProfiles = matchOrder.slice(1, 4);
+  const [profileIndex, setProfileIndex] = useState(0);
+  const [flyDirection, setFlyDirection] = useState<"left" | "right" | null>(null);
+  const [lastAction, setLastAction] = useState<"like" | "pass" | "super" | null>(null);
+  const featured = matchOrder[profileIndex % matchOrder.length];
+  const nextProfiles = Array.from({ length: Math.min(3, matchOrder.length - 1) }, (_, i) => matchOrder[(profileIndex + i + 1) % matchOrder.length]);
+
+  const moveNext = (action: "like" | "pass" | "super") => {
+    if (flyDirection) return;
+    setLastAction(action);
+    setFlyDirection(action === "pass" ? "left" : "right");
+    window.setTimeout(() => {
+      setProfileIndex((idx) => (idx + 1) % matchOrder.length);
+      setFlyDirection(null);
+    }, 320);
+  };
 
   return (
     <div className="px-5 pt-12 pb-6 flex flex-col h-full animate-msg">
@@ -341,42 +355,41 @@ const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) 
         </div>
       </header>
 
-      <button
-        onClick={() => onOpenProfile(featured)}
-        className="flex-1 relative w-full glass-panel rounded-[32px] overflow-hidden shadow-2xl shadow-pink-900/20 text-left active:scale-[0.99] transition-transform"
-      >
-        <img src={featured.photo} alt={featured.displayName} className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/25 to-transparent pointer-events-none" />
-        <div className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-black/35 border border-white/20 backdrop-blur-xl text-[10px] text-white/80 font-bold flex items-center gap-1">
-          <Eye className="w-3 h-3 text-pink-300" /> 查看详情
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-          <div className="flex items-end justify-between mb-3">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-2xl font-serif font-bold tracking-wide">{featured.displayName}, {featured.age}</span>
-                {featured.online && <div className="w-2 h-2 bg-green-400 rounded-full shadow-[0_0_8px_#4ade80]" />}
-              </div>
-              <p className="text-sm text-white/80 flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5" /> {featured.location} · {featured.distance} · {featured.profession}
-              </p>
-            </div>
-            <div className="w-12 h-12 rounded-full flex flex-col items-center justify-center border border-pink-400/40 bg-pink-500/20 backdrop-blur-md shadow-lg">
-              <span className="text-[10px] text-pink-200">契合</span>
-              <span className="text-sm font-bold text-pink-300">{featured.compatibility}%</span>
-            </div>
+      <div className="flex-1 relative w-full">
+        {nextProfiles.slice(0, 2).reverse().map((profile, stackIndex) => (
+          <div
+            key={profile.id}
+            className="absolute inset-0 glass-panel rounded-[32px] overflow-hidden shadow-2xl shadow-black/30"
+            style={{
+              transform: `scale(${0.93 + stackIndex * 0.035}) translateY(${18 - stackIndex * 8}px)`,
+              opacity: 0.46 + stackIndex * 0.22,
+            }}
+          >
+            <img src={profile.photo} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
           </div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-xs font-medium">{featured.mbti}</span>
-            {featured.tags.slice(0, 3).map((tag) => (
-              <span key={tag.label} className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-xs font-medium">
-                {tag.emoji} {tag.label}
-              </span>
-            ))}
-          </div>
-          <p className="text-sm text-white/80 line-clamp-2 leading-relaxed font-medium">{featured.bio}</p>
+        ))}
+
+        <AnimatePresence mode="wait">
+          <SwipeProfileCard
+            key={featured.id}
+            profile={featured}
+            flyDirection={flyDirection}
+            onOpenProfile={onOpenProfile}
+            onSwipe={moveNext}
+          />
+        </AnimatePresence>
+
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-4 px-3 py-1.5 rounded-full bg-black/35 border border-white/10 backdrop-blur-xl text-[10px] text-white/55 font-bold pointer-events-none">
+          ← 不喜欢　右滑喜欢 →
         </div>
-      </button>
+      </div>
+
+      {lastAction && (
+        <div className="mt-3 text-center text-[11px] text-white/55 font-bold h-4">
+          {lastAction === "like" ? "已喜欢，等待对方回应" : lastAction === "pass" ? "已跳过，继续为你推荐" : "已发送超级喜欢"}
+        </div>
+      )}
 
       <div className="flex gap-3 mt-4 overflow-x-auto pb-1">
         {nextProfiles.map((profile) => (
@@ -393,17 +406,117 @@ const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) 
       </div>
 
       <div className="flex justify-center items-center gap-6 mt-4 pb-4">
-        <button className="w-14 h-14 rounded-full glass-panel flex items-center justify-center text-white/50 hover:bg-white/10 transition-all hover:scale-105">
+        <button onClick={() => moveNext("pass")} className="w-14 h-14 rounded-full glass-panel flex items-center justify-center text-white/50 hover:bg-white/10 transition-all hover:scale-105">
           <X className="w-6 h-6" />
         </button>
-        <button onClick={() => onOpenProfile(featured)} className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center shadow-[0_8px_20px_rgba(255,94,160,0.4)] hover:scale-105 transition-all border border-pink-400">
+        <button onClick={() => moveNext("like")} className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center shadow-[0_8px_20px_rgba(255,94,160,0.4)] hover:scale-105 transition-all border border-pink-400">
           <Heart className="w-7 h-7 fill-white" />
         </button>
-        <button className="w-14 h-14 rounded-full glass-panel flex items-center justify-center text-yellow-400 hover:bg-white/10 transition-all hover:scale-105">
+        <button onClick={() => moveNext("super")} className="w-14 h-14 rounded-full glass-panel flex items-center justify-center text-yellow-400 hover:bg-white/10 transition-all hover:scale-105">
           <Sparkles className="w-6 h-6" />
         </button>
       </div>
     </div>
+  );
+};
+
+const SwipeProfileCard = ({
+  profile,
+  flyDirection,
+  onOpenProfile,
+  onSwipe,
+}: {
+  profile: DetailProfile;
+  flyDirection: "left" | "right" | null;
+  onOpenProfile: (profile: DetailProfile) => void;
+  onSwipe: (action: "like" | "pass") => void;
+}) => {
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-180, 0, 180], [-14, 0, 14]);
+  const likeOpacity = useTransform(x, [32, 120], [0, 1]);
+  const nopeOpacity = useTransform(x, [-120, -32], [1, 0]);
+
+  return (
+    <motion.div
+      className="absolute inset-0 glass-panel rounded-[32px] overflow-hidden shadow-2xl shadow-pink-900/20 text-left cursor-grab active:cursor-grabbing touch-none"
+      drag="x"
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.18}
+      style={{ x, rotate }}
+      initial={{ opacity: 0, scale: 0.94, y: 18 }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        x: flyDirection === "left" ? -520 : flyDirection === "right" ? 520 : 0,
+        rotate: flyDirection === "left" ? -24 : flyDirection === "right" ? 24 : 0,
+      }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ type: "spring", stiffness: 260, damping: 28 }}
+      onDragEnd={(_, info) => {
+        const offset = info.offset.x;
+        const velocity = info.velocity.x;
+        if (offset > 115 || velocity > 700) onSwipe("like");
+        else if (offset < -115 || velocity < -700) onSwipe("pass");
+      }}
+      onDoubleClick={() => onOpenProfile(profile)}
+    >
+      <img src={profile.photo} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/25 to-transparent pointer-events-none" />
+
+      <motion.div
+        style={{ opacity: likeOpacity }}
+        className="absolute top-9 left-6 rotate-[-12deg] px-4 py-2 rounded-2xl border-2 border-pink-300 bg-pink-500/18 backdrop-blur-xl text-pink-100 font-black tracking-[0.2em] text-xl shadow-[0_0_28px_rgba(255,94,160,0.45)]"
+      >
+        LIKE
+      </motion.div>
+      <motion.div
+        style={{ opacity: nopeOpacity }}
+        className="absolute top-9 right-6 rotate-[12deg] px-4 py-2 rounded-2xl border-2 border-white/50 bg-black/30 backdrop-blur-xl text-white/85 font-black tracking-[0.2em] text-xl"
+      >
+        NOPE
+      </motion.div>
+
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          onOpenProfile(profile);
+        }}
+        className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-black/35 border border-white/20 backdrop-blur-xl text-[10px] text-white/80 font-bold flex items-center gap-1"
+      >
+        <Eye className="w-3 h-3 text-pink-300" /> 查看详情
+      </button>
+
+      <div className="absolute bottom-0 left-0 right-0 p-6 text-white pointer-events-none">
+        <div className="flex items-end justify-between mb-3">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-2xl font-serif font-bold tracking-wide">
+                {profile.displayName}, {profile.age}
+              </span>
+              {profile.online && <div className="w-2 h-2 bg-green-400 rounded-full shadow-[0_0_8px_#4ade80]" />}
+            </div>
+            <p className="text-sm text-white/80 flex items-center gap-1">
+              <MapPin className="w-3.5 h-3.5" /> {profile.location} · {profile.distance} · {profile.profession}
+            </p>
+          </div>
+          <div className="w-12 h-12 rounded-full flex flex-col items-center justify-center border border-pink-400/40 bg-pink-500/20 backdrop-blur-md shadow-lg">
+            <span className="text-[10px] text-pink-200">契合</span>
+            <span className="text-sm font-bold text-pink-300">{profile.compatibility}%</span>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2 mb-4">
+          <span className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-xs font-medium">{profile.mbti}</span>
+          {profile.tags.slice(0, 3).map((tag) => (
+            <span key={tag.label} className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-xs font-medium">
+              {tag.emoji} {tag.label}
+            </span>
+          ))}
+        </div>
+        <p className="text-sm text-white/80 line-clamp-2 leading-relaxed font-medium">{profile.bio}</p>
+      </div>
+    </motion.div>
   );
 };
 
