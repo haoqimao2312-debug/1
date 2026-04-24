@@ -20,16 +20,19 @@ import {
   Image as ImageIcon,
   Crown,
   Activity,
+  Eye,
   Share2,
   Video,
   SwitchCamera,
   Upload,
   Zap,
 } from "lucide-react";
+import { matchOrder, previewUsers, type PreviewUser } from "@/lib/mock-data/users/preview-users";
 
 type TabId = "match" | "explore" | "virtual" | "messages" | "profile";
 type ChatTarget = { name: string; isAI?: boolean };
 type ChatMessage = { id: number; type: "user" | "model"; text: string; time: string };
+type DetailProfile = PreviewUser;
 
 const GlobalStyles = () => (
   <style
@@ -247,6 +250,7 @@ export function WarmUApp({
   const [activeTab, setActiveTab] = useState<TabId>(initialTab);
   const [chatTarget, setChatTarget] = useState<ChatTarget | null>(null);
   const [videoCallActive, setVideoCallActive] = useState(false);
+  const [detailProfile, setDetailProfile] = useState<DetailProfile | null>(null);
 
   const handleEnterApp = () => {
     setIsLeavingSplash(true);
@@ -298,14 +302,18 @@ export function WarmUApp({
         </div>
 
         <div className="relative z-10 w-full h-full flex flex-col pb-20 overflow-y-auto">
-          {activeTab === "match" && <MatchView />}
+          {activeTab === "match" && <MatchView onOpenProfile={setDetailProfile} />}
           {activeTab === "explore" && <ExploreView />}
           {activeTab === "virtual" && <VirtualView onStartCall={() => setVideoCallActive(true)} />}
-          {activeTab === "messages" && <MessagesView onOpenChat={(target) => setChatTarget(target)} />}
+          {activeTab === "messages" && <MessagesView onOpenChat={(target) => setChatTarget(target)} onOpenProfile={setDetailProfile} />}
           {activeTab === "profile" && <ProfileView />}
         </div>
 
         <TabBar activeTab={activeTab} setActiveTab={setActiveTab} />
+        {detailProfile && <ProfileDetailModal profile={detailProfile} onClose={() => setDetailProfile(null)} onChat={() => {
+          setDetailProfile(null);
+          setChatTarget({ name: detailProfile.displayName });
+        }} />}
         {chatTarget && <ChatModal target={chatTarget} onClose={() => setChatTarget(null)} />}
         {videoCallActive && <PixelVideoCallModal onClose={() => setVideoCallActive(false)} />}
       </div>
@@ -317,58 +325,87 @@ export default function App() {
   return <WarmUApp />;
 }
 
-const MatchView = () => (
-  <div className="px-5 pt-12 pb-6 flex flex-col h-full animate-msg">
-    <header className="flex justify-between items-center mb-4 px-2">
-      <div>
-        <h1 className="font-serif text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-300 to-rose-300">心动邂逅</h1>
-        <p className="text-[10px] text-white/50 mt-1 font-medium">发现与你灵魂同频的人</p>
-      </div>
-      <div className="px-3 py-1.5 glass-panel rounded-full text-xs text-pink-300 font-bold flex items-center gap-1 border-pink-500/30">
-        <Activity className="w-3 h-3" /> 附近 12 人
-      </div>
-    </header>
+const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) => void }) => {
+  const featured = matchOrder[0];
+  const nextProfiles = matchOrder.slice(1, 4);
 
-    <div className="flex-1 relative w-full glass-panel rounded-[32px] overflow-hidden shadow-2xl shadow-pink-900/20">
-      <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" alt="User" className="absolute inset-0 w-full h-full object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
-      <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-        <div className="flex items-end justify-between mb-3">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-2xl font-serif font-bold tracking-wide">Chloe, 23</span>
-              <div className="w-2 h-2 bg-green-400 rounded-full shadow-[0_0_8px_#4ade80]" />
+  return (
+    <div className="px-5 pt-12 pb-6 flex flex-col h-full animate-msg">
+      <header className="flex justify-between items-center mb-4 px-2">
+        <div>
+          <h1 className="font-serif text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-300 to-rose-300">心动邂逅</h1>
+          <p className="text-[10px] text-white/50 mt-1 font-medium">发现与你灵魂同频的人</p>
+        </div>
+        <div className="px-3 py-1.5 glass-panel rounded-full text-xs text-pink-300 font-bold flex items-center gap-1 border-pink-500/30">
+          <Activity className="w-3 h-3" /> 附近 {previewUsers.length + 7} 人
+        </div>
+      </header>
+
+      <button
+        onClick={() => onOpenProfile(featured)}
+        className="flex-1 relative w-full glass-panel rounded-[32px] overflow-hidden shadow-2xl shadow-pink-900/20 text-left active:scale-[0.99] transition-transform"
+      >
+        <img src={featured.photo} alt={featured.displayName} className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/25 to-transparent pointer-events-none" />
+        <div className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-black/35 border border-white/20 backdrop-blur-xl text-[10px] text-white/80 font-bold flex items-center gap-1">
+          <Eye className="w-3 h-3 text-pink-300" /> 查看详情
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+          <div className="flex items-end justify-between mb-3">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-2xl font-serif font-bold tracking-wide">{featured.displayName}, {featured.age}</span>
+                {featured.online && <div className="w-2 h-2 bg-green-400 rounded-full shadow-[0_0_8px_#4ade80]" />}
+              </div>
+              <p className="text-sm text-white/80 flex items-center gap-1">
+                <MapPin className="w-3.5 h-3.5" /> {featured.location} · {featured.distance} · {featured.profession}
+              </p>
             </div>
-            <p className="text-sm text-white/80 flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5" /> 距离 2.5km · 刚刚活跃
-            </p>
+            <div className="w-12 h-12 rounded-full flex flex-col items-center justify-center border border-pink-400/40 bg-pink-500/20 backdrop-blur-md shadow-lg">
+              <span className="text-[10px] text-pink-200">契合</span>
+              <span className="text-sm font-bold text-pink-300">{featured.compatibility}%</span>
+            </div>
           </div>
-          <div className="w-12 h-12 rounded-full flex flex-col items-center justify-center border border-pink-400/40 bg-pink-500/20 backdrop-blur-md shadow-lg">
-            <span className="text-[10px] text-pink-200">契合</span>
-            <span className="text-sm font-bold text-pink-300">98%</span>
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-xs font-medium">{featured.mbti}</span>
+            {featured.tags.slice(0, 3).map((tag) => (
+              <span key={tag.label} className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-xs font-medium">
+                {tag.emoji} {tag.label}
+              </span>
+            ))}
           </div>
+          <p className="text-sm text-white/80 line-clamp-2 leading-relaxed font-medium">{featured.bio}</p>
         </div>
-        <div className="flex flex-wrap gap-2 mb-4">
-          <span className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-xs font-medium">INFP 调停者</span>
-          <span className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-xs font-medium">看海爱好者</span>
-        </div>
-        <p className="text-sm text-white/80 line-clamp-2 leading-relaxed font-medium">“寻找一个能在午后分享同一首歌，或者哪怕什么都不说也能静静陪伴的人...”</p>
+      </button>
+
+      <div className="flex gap-3 mt-4 overflow-x-auto pb-1">
+        {nextProfiles.map((profile) => (
+          <button
+            key={profile.id}
+            onClick={() => onOpenProfile(profile)}
+            className="w-20 h-20 rounded-2xl overflow-hidden relative flex-shrink-0 border border-white/12 bg-white/5"
+          >
+            <img src={profile.photo} alt={profile.displayName} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent" />
+            <span className="absolute bottom-1.5 left-1.5 right-1.5 text-[9px] font-bold text-white truncate">{profile.displayName}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="flex justify-center items-center gap-6 mt-4 pb-4">
+        <button className="w-14 h-14 rounded-full glass-panel flex items-center justify-center text-white/50 hover:bg-white/10 transition-all hover:scale-105">
+          <X className="w-6 h-6" />
+        </button>
+        <button onClick={() => onOpenProfile(featured)} className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center shadow-[0_8px_20px_rgba(255,94,160,0.4)] hover:scale-105 transition-all border border-pink-400">
+          <Heart className="w-7 h-7 fill-white" />
+        </button>
+        <button className="w-14 h-14 rounded-full glass-panel flex items-center justify-center text-yellow-400 hover:bg-white/10 transition-all hover:scale-105">
+          <Sparkles className="w-6 h-6" />
+        </button>
       </div>
     </div>
-
-    <div className="flex justify-center items-center gap-6 mt-6 pb-4">
-      <button className="w-14 h-14 rounded-full glass-panel flex items-center justify-center text-white/50 hover:bg-white/10 transition-all hover:scale-105">
-        <X className="w-6 h-6" />
-      </button>
-      <button className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center shadow-[0_8px_20px_rgba(255,94,160,0.4)] hover:scale-105 transition-all border border-pink-400">
-        <Heart className="w-7 h-7 fill-white" />
-      </button>
-      <button className="w-14 h-14 rounded-full glass-panel flex items-center justify-center text-yellow-400 hover:bg-white/10 transition-all hover:scale-105">
-        <Sparkles className="w-6 h-6" />
-      </button>
-    </div>
-  </div>
-);
+  );
+};
 
 const ExploreView = () => {
   const [subTab, setSubTab] = useState<"community" | "tools">("community");
@@ -557,7 +594,13 @@ const VirtualView = ({ onStartCall }: { onStartCall: () => void }) => {
   );
 };
 
-const MessagesView = ({ onOpenChat }: { onOpenChat: (target: ChatTarget) => void }) => (
+const MessagesView = ({
+  onOpenChat,
+  onOpenProfile,
+}: {
+  onOpenChat: (target: ChatTarget) => void;
+  onOpenProfile: (profile: DetailProfile) => void;
+}) => (
   <div className="px-5 pt-14 pb-8 animate-msg h-full flex flex-col">
     <div className="flex items-center justify-between mb-6">
       <h2 className="font-serif text-2xl font-bold">私密信箱</h2>
@@ -569,19 +612,18 @@ const MessagesView = ({ onOpenChat }: { onOpenChat: (target: ChatTarget) => void
       <div className="text-xs text-white/50 mb-3 ml-1 font-bold">专属伴侣 & 新匹配</div>
       <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
         <AvatarStory onClick={() => onOpenChat({ name: "苏菲(AI)", isAI: true })} img="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" label="苏菲 (AI)" active />
-        <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
-          <div className="relative w-16 h-16 rounded-full glass-panel p-1 border-white/10">
-            <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=100&q=80" className="w-full h-full object-cover rounded-full blur-[2px]" alt="Match" />
-            <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/10">
-              <Heart className="w-6 h-6 text-pink-400 fill-pink-400" />
-            </div>
-          </div>
-          <span className="text-xs font-bold text-white/60 mt-1">12 喜欢</span>
-        </div>
-        <AvatarStory img="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80" label="Alex" />
+        {previewUsers.map((profile) => (
+          <AvatarStory
+            key={profile.id}
+            onClick={() => onOpenProfile(profile)}
+            img={profile.photo || "/icon-192.png"}
+            label={profile.displayName}
+            badge={profile.unread}
+          />
+        ))}
       </div>
     </div>
-    <div className="flex-1 space-y-2">
+    <div className="flex-1 space-y-2 overflow-y-auto pr-1">
       <div className="flex items-center gap-4 p-3 rounded-2xl bg-white/5 border border-rose-500/30 shadow-sm cursor-pointer active:scale-[0.98] transition-transform" onClick={() => onOpenChat({ name: "苏菲 (专属 AI)", isAI: true })}>
         <div className="relative w-12 h-12 flex-shrink-0">
           <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" className="w-full h-full object-cover rounded-full border border-rose-400/50" alt="AI" />
@@ -595,15 +637,39 @@ const MessagesView = ({ onOpenChat }: { onOpenChat: (target: ChatTarget) => void
           <p className="text-sm text-white/70 truncate font-medium">“晚上准备做什么呀，要不要视频连线？”</p>
         </div>
       </div>
+      {previewUsers.map((profile) => (
+        <button
+          key={profile.id}
+          onClick={() => onOpenProfile(profile)}
+          className="w-full flex items-center gap-4 p-3 rounded-2xl bg-white/5 border border-white/10 shadow-sm cursor-pointer active:scale-[0.98] transition-transform text-left"
+        >
+          <div className="relative w-12 h-12 flex-shrink-0 overflow-hidden rounded-full border border-white/20">
+            <img src={profile.photo} className="w-full h-full object-cover" alt={profile.displayName} />
+            {profile.online && <span className="absolute right-0 bottom-0 w-3 h-3 rounded-full bg-green-400 border-2 border-[#12060c]" />}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex justify-between items-center mb-1">
+              <span className="font-serif text-white font-bold text-[15px]">{profile.displayName}</span>
+              <span className="text-xs text-white/40 font-medium">{profile.chatTime}</span>
+            </div>
+            <p className="text-sm text-white/62 truncate font-medium">{profile.chatPreview}</p>
+          </div>
+          <div className="flex flex-col items-end gap-1">
+            <span className="px-1.5 py-0.5 rounded-full bg-pink-500/15 border border-pink-400/20 text-[10px] text-pink-200 font-bold">{profile.compatibility}%</span>
+            {!!profile.unread && <span className="w-4 h-4 rounded-full bg-pink-500 text-[10px] flex items-center justify-center text-white font-bold">{profile.unread}</span>}
+          </div>
+        </button>
+      ))}
     </div>
   </div>
 );
 
-const AvatarStory = ({ img, label, active, onClick }: { img: string; label: string; active?: boolean; onClick?: () => void }) => (
+const AvatarStory = ({ img, label, active, badge, onClick }: { img: string; label: string; active?: boolean; badge?: number; onClick?: () => void }) => (
   <div className="flex flex-col items-center gap-1.5 flex-shrink-0 cursor-pointer" onClick={onClick}>
     <div className="relative w-16 h-16">
       {active && <div className="avatar-ring text-rose-400" />}
       <img src={img} className="w-full h-full object-cover rounded-full border-[2px] border-rose-400/50 relative z-10 shadow-md" alt={label} />
+      {!!badge && <div className="absolute -top-1 -right-1 z-20 w-5 h-5 bg-pink-500 rounded-full flex items-center justify-center text-[10px] text-white font-bold">{badge}</div>}
       {active && (
         <div className="absolute -bottom-1 -right-1 z-20 w-5 h-5 bg-[#0d0508] rounded-full flex items-center justify-center border border-rose-500/30">
           <div className="w-3 h-3 bg-rose-400 rounded-full animate-pulse" />
@@ -643,6 +709,133 @@ const ProfileView = () => (
     </div>
   </div>
 );
+
+const ProfileDetailModal = ({
+  profile,
+  onClose,
+  onChat,
+}: {
+  profile: DetailProfile;
+  onClose: () => void;
+  onChat: () => void;
+}) => {
+  const detailLines = buildProfileDetails(profile);
+
+  return (
+    <div className="absolute inset-0 z-50 bg-[#0b0508] flex flex-col animate-msg overflow-hidden">
+      <div className="absolute inset-0 opacity-40 blur-3xl">
+        <img src={profile.photo} alt="" className="w-full h-full object-cover" />
+      </div>
+
+      <div className="relative z-10 flex-1 overflow-y-auto">
+        <div className="relative h-[430px] overflow-hidden">
+          <img src={profile.photo} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0b0508] via-black/20 to-black/35" />
+
+          <div className="absolute top-12 left-4 right-4 flex items-center justify-between">
+            <button onClick={onClose} className="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-white active:scale-95">
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button className="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-white/80 active:scale-95">
+              <MoreHorizontal className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="absolute left-5 right-5 bottom-6 text-white">
+            <div className="flex items-end justify-between gap-4 mb-3">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="font-serif text-4xl font-black drop-shadow-lg">{profile.displayName}</h2>
+                  <span className="text-xl font-semibold text-white/85">{profile.age}</span>
+                  {profile.verified && <Check className="w-5 h-5 text-pink-300 drop-shadow" />}
+                </div>
+                <p className="text-sm text-white/80 flex items-center gap-1">
+                  <MapPin className="w-4 h-4" /> {profile.location} · {profile.distance}
+                </p>
+              </div>
+              <div className="w-16 h-16 rounded-2xl glass-panel flex flex-col items-center justify-center border-pink-300/30">
+                <span className="text-[10px] text-pink-200">契合</span>
+                <span className="text-2xl font-black text-pink-200">{profile.compatibility}%</span>
+              </div>
+            </div>
+            <p className="text-sm leading-relaxed text-white/90 font-medium">{profile.bio}</p>
+          </div>
+        </div>
+
+        <div className="relative z-10 px-5 pb-28 -mt-2 space-y-4">
+          <div className="glass-panel rounded-3xl p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.25em] text-pink-300/70 font-bold">PROFILE</div>
+                <h3 className="font-serif text-xl font-black text-white mt-1">{profile.profession} · {profile.mbti}</h3>
+              </div>
+              {profile.online && <span className="px-2.5 py-1 rounded-full bg-green-400/12 border border-green-300/25 text-[10px] text-green-200 font-bold">在线</span>}
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {detailLines.map((item) => (
+                <div key={item.label} className="rounded-2xl bg-white/6 border border-white/10 p-3">
+                  <div className="text-[10px] text-white/42 mb-1">{item.label}</div>
+                  <div className="text-xs text-white/90 font-bold leading-snug">{item.value}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="glass-panel rounded-3xl p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="w-4 h-4 text-pink-300" />
+              <h3 className="text-sm font-bold text-white">AI 心动解读</h3>
+            </div>
+            <p className="text-sm leading-relaxed text-white/78">
+              你们的共同点在「{profile.tags[0]?.label}」和「{profile.tags[1]?.label}」上很明显。适合用轻松的问题开场，先接住她的兴趣，再把话题慢慢落到一次具体见面。
+            </p>
+          </div>
+
+          <div className="glass-panel rounded-3xl p-4">
+            <div className="text-[10px] uppercase tracking-[0.25em] text-white/35 font-bold mb-3">TAGS</div>
+            <div className="flex flex-wrap gap-2">
+              {profile.tags.map((tag) => (
+                <span key={tag.label} className="px-3 py-1.5 rounded-full bg-white/8 border border-white/12 text-xs text-white/85 font-medium">
+                  {tag.emoji} {tag.label}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="glass-panel rounded-3xl p-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-bold text-white mb-1">适合这样开场</div>
+                <p className="text-xs text-white/60 leading-relaxed">“看到你也喜欢{profile.tags[0]?.label}，突然有点想知道你最近被什么打动过。”</p>
+              </div>
+              <button className="w-10 h-10 rounded-full bg-pink-500/20 border border-pink-300/30 flex items-center justify-center text-pink-200">
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute left-4 right-4 bottom-5 z-20 grid grid-cols-[1fr_1.4fr] gap-3">
+        <button onClick={onClose} className="h-[52px] py-3 rounded-2xl glass-panel text-white/75 font-bold active:scale-95">继续看看</button>
+        <button onClick={onChat} className="h-[52px] py-3 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold shadow-[0_10px_28px_rgba(255,94,160,0.35)] active:scale-95 flex items-center justify-center gap-2">
+          <MessageSquare className="w-4 h-4" /> 去聊天
+        </button>
+      </div>
+    </div>
+  );
+};
+
+function buildProfileDetails(profile: DetailProfile) {
+  return [
+    { label: "身份", value: profile.profession },
+    { label: "人格", value: profile.mbti },
+    { label: "距离", value: profile.distance },
+    { label: "城市", value: profile.location },
+    { label: "状态", value: profile.online ? "刚刚活跃" : "最近在线" },
+    { label: "信号", value: profile.verified ? "已认证" : "待了解" },
+  ];
+}
 
 const PixelVideoCallModal = ({ onClose }: { onClose: () => void }) => {
   const [timer, setTimer] = useState(0);
