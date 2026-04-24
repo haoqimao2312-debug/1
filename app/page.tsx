@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { AnimatePresence, motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import {
   Heart,
   User,
@@ -328,19 +328,34 @@ export default function App() {
 
 const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) => void }) => {
   const [profileIndex, setProfileIndex] = useState(0);
-  const [flyDirection, setFlyDirection] = useState<"left" | "right" | null>(null);
+  const [leavingCard, setLeavingCard] = useState<{ profile: DetailProfile; direction: "left" | "right" } | null>(null);
   const [lastAction, setLastAction] = useState<"like" | "pass" | "super" | null>(null);
   const featured = matchOrder[profileIndex % matchOrder.length];
   const nextProfiles = Array.from({ length: Math.min(3, matchOrder.length - 1) }, (_, i) => matchOrder[(profileIndex + i + 1) % matchOrder.length]);
 
   const moveNext = (action: "like" | "pass" | "super") => {
-    if (flyDirection) return;
+    if (leavingCard) return;
     setLastAction(action);
-    setFlyDirection(action === "pass" ? "left" : "right");
+    setLeavingCard({ profile: featured, direction: action === "pass" ? "left" : "right" });
+    setProfileIndex((idx) => (idx + 1) % matchOrder.length);
     window.setTimeout(() => {
-      setProfileIndex((idx) => (idx + 1) % matchOrder.length);
-      setFlyDirection(null);
-    }, 320);
+      setLeavingCard(null);
+    }, 220);
+  };
+
+  useEffect(() => {
+    matchOrder.forEach((profile) => {
+      if (!profile.photo) return;
+      const image = new Image();
+      image.src = profile.photo;
+    });
+  }, []);
+
+  const jumpToProfile = (profile: DetailProfile) => {
+    const nextIndex = matchOrder.findIndex((item) => item.id === profile.id);
+    if (nextIndex >= 0) {
+      setProfileIndex(nextIndex);
+    }
   };
 
   return (
@@ -370,15 +385,19 @@ const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) 
           </div>
         ))}
 
-        <AnimatePresence mode="wait">
-          <SwipeProfileCard
-            key={featured.id}
-            profile={featured}
-            flyDirection={flyDirection}
-            onOpenProfile={onOpenProfile}
-            onSwipe={moveNext}
+        <SwipeProfileCard
+          key={featured.id}
+          profile={featured}
+          onOpenProfile={onOpenProfile}
+          onSwipe={moveNext}
+        />
+        {leavingCard && (
+          <FlyingProfileCard
+            key={`${leavingCard.profile.id}-${leavingCard.direction}`}
+            profile={leavingCard.profile}
+            direction={leavingCard.direction}
           />
-        </AnimatePresence>
+        )}
 
         <div className="absolute left-1/2 -translate-x-1/2 bottom-4 px-3 py-1.5 rounded-full bg-black/35 border border-white/10 backdrop-blur-xl text-[10px] text-white/55 font-bold pointer-events-none">
           ← 不喜欢　右滑喜欢 →
@@ -395,7 +414,7 @@ const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) 
         {nextProfiles.map((profile) => (
           <button
             key={profile.id}
-            onClick={() => onOpenProfile(profile)}
+            onClick={() => jumpToProfile(profile)}
             className="w-20 h-20 rounded-2xl overflow-hidden relative flex-shrink-0 border border-white/12 bg-white/5"
           >
             <img src={profile.photo} alt={profile.displayName} className="w-full h-full object-cover" />
@@ -422,12 +441,10 @@ const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) 
 
 const SwipeProfileCard = ({
   profile,
-  flyDirection,
   onOpenProfile,
   onSwipe,
 }: {
   profile: DetailProfile;
-  flyDirection: "left" | "right" | null;
   onOpenProfile: (profile: DetailProfile) => void;
   onSwipe: (action: "like" | "pass") => void;
 }) => {
@@ -441,23 +458,17 @@ const SwipeProfileCard = ({
       className="absolute inset-0 glass-panel rounded-[32px] overflow-hidden shadow-2xl shadow-pink-900/20 text-left cursor-grab active:cursor-grabbing touch-none"
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.18}
+      dragElastic={0.12}
       style={{ x, rotate }}
-      initial={{ opacity: 0, scale: 0.94, y: 18 }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-        y: 0,
-        x: flyDirection === "left" ? -520 : flyDirection === "right" ? 520 : 0,
-        rotate: flyDirection === "left" ? -24 : flyDirection === "right" ? 24 : 0,
-      }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ type: "spring", stiffness: 260, damping: 28 }}
+      whileDrag={{ scale: 1.015 }}
+      initial={{ opacity: 1, scale: 1, y: 0 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 420, damping: 34, mass: 0.7 }}
       onDragEnd={(_, info) => {
         const offset = info.offset.x;
         const velocity = info.velocity.x;
-        if (offset > 115 || velocity > 700) onSwipe("like");
-        else if (offset < -115 || velocity < -700) onSwipe("pass");
+        if (offset > 82 || velocity > 450) onSwipe("like");
+        else if (offset < -82 || velocity < -450) onSwipe("pass");
       }}
       onDoubleClick={() => onOpenProfile(profile)}
     >
@@ -519,6 +530,32 @@ const SwipeProfileCard = ({
     </motion.div>
   );
 };
+
+const FlyingProfileCard = ({
+  profile,
+  direction,
+}: {
+  profile: DetailProfile;
+  direction: "left" | "right";
+}) => (
+  <motion.div
+    className="absolute inset-0 glass-panel rounded-[32px] overflow-hidden shadow-2xl shadow-pink-900/20 pointer-events-none"
+    initial={{ x: 0, rotate: 0, opacity: 1, scale: 1 }}
+    animate={{
+      x: direction === "left" ? -560 : 560,
+      rotate: direction === "left" ? -24 : 24,
+      opacity: 0,
+      scale: 0.96,
+    }}
+    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+  >
+    <img src={profile.photo} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover" />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/25 to-transparent" />
+    <div className={`absolute top-9 ${direction === "left" ? "right-6 rotate-[12deg] border-white/50 text-white/85" : "left-6 rotate-[-12deg] border-pink-300 text-pink-100"} px-4 py-2 rounded-2xl border-2 bg-black/28 backdrop-blur-xl font-black tracking-[0.2em] text-xl`}>
+      {direction === "left" ? "NOPE" : "LIKE"}
+    </div>
+  </motion.div>
+);
 
 const ExploreView = () => {
   const [subTab, setSubTab] = useState<"community" | "tools">("community");
