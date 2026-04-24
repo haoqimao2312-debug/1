@@ -8,6 +8,7 @@ import {
   Mic,
   Send,
   ChevronLeft,
+  ChevronRight,
   Sparkles,
   Moon,
   Phone,
@@ -27,6 +28,16 @@ import {
   SwitchCamera,
   Upload,
   Zap,
+  Settings,
+  LogOut,
+  Bell,
+  Lock,
+  HelpCircle,
+  Shield,
+  Info,
+  CreditCard,
+  Gift,
+  Users,
 } from "lucide-react";
 import { matchOrder, previewUsers, type PreviewUser } from "@/lib/mock-data/users/preview-users";
 
@@ -583,6 +594,107 @@ const FlyingProfileCard = ({
   </motion.div>
 );
 
+type CommunityPost = {
+  id: number;
+  name: string;
+  avatar: string;
+  time: string;
+  mood: string;
+  content: string;
+  images: string[];
+  likes: number;
+  comments: number;
+  aiReply?: { name: string; text: string };
+};
+
+const communityPosts: CommunityPost[] = [
+  {
+    id: 1,
+    name: "想吃小蛋糕",
+    avatar: "https://images.unsplash.com/photo-1524502397800-2eeaad7c3fe5?auto=format&fit=crop&w=100&q=80",
+    time: "10分钟前",
+    mood: "渴望拥抱",
+    content: "今天下雨了，没有带伞，被淋成了落汤鸡。好想喝一杯热乎乎的奶茶啊... 😭",
+    images: [
+      "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=300&q=80",
+    ],
+    likes: 32,
+    comments: 5,
+    aiReply: { name: "苏菲", text: "赶紧洗个热水澡换身干衣服呀！给你一个大大的虚拟拥抱，别感冒啦！" },
+  },
+  {
+    id: 2,
+    name: "星河漫步",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80",
+    time: "23分钟前",
+    mood: "深夜emo",
+    content: "凌晨三点，又是一个人看星星的夜晚。突然想到很多事，有点想哭 🌌",
+    images: [
+      "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&w=300&q=80",
+      "https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?auto=format&fit=crop&w=300&q=80",
+      "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?auto=format&fit=crop&w=300&q=80",
+    ],
+    likes: 128,
+    comments: 24,
+    aiReply: { name: "星河", text: "星星也在陪你呀！深夜的情绪总是特别深，要不要和我聊聊？" },
+  },
+  {
+    id: 3,
+    name: "柠檬不加糖",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80",
+    time: "1小时前",
+    mood: "想吐槽",
+    content: "今天又被老板骂了...明明不是我的锅，凭什么让我背？在线求一个能听我吐槽两小时的朋友 💢",
+    images: [],
+    likes: 67,
+    comments: 18,
+  },
+  {
+    id: 4,
+    name: "午夜诗人",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80",
+    time: "2小时前",
+    mood: "失眠中",
+    content: "睡不着，煮了杯咖啡，翻开那本一直没读完的书。此刻只想和自己独处一会 ☕📖",
+    images: [
+      "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=300&q=80",
+      "https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=300&q=80",
+    ],
+    likes: 89,
+    comments: 11,
+    aiReply: { name: "月光", text: "独处也是一种浪漫～愿你在字里行间找到一点点温柔的慰藉。" },
+  },
+  {
+    id: 5,
+    name: "小太阳",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80",
+    time: "3小时前",
+    mood: "想分享快乐",
+    content: "周末和朋友去吃了超好吃的甜品！草莓芝士蛋糕太幸福了～分享给大家看看 🍓🍰",
+    images: [
+      "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=300&q=80",
+      "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=300&q=80",
+      "https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=300&q=80",
+    ],
+    likes: 201,
+    comments: 37,
+  },
+  {
+    id: 6,
+    name: "蓝色海岸线",
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80",
+    time: "5小时前",
+    mood: "逃离日常",
+    content: "好想请个假去海边走走... 每天挤地铁的我只能靠云旅游续命了 🌊",
+    images: [
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=300&q=80",
+    ],
+    likes: 154,
+    comments: 22,
+    aiReply: { name: "小海", text: "要不我们现在就开启虚拟海边漫步？我陪你听海浪声，好不好？" },
+  },
+];
+
 const ExploreView = () => {
   const [subTab, setSubTab] = useState<"community" | "tools">("community");
 
@@ -605,51 +717,61 @@ const ExploreView = () => {
       </div>
 
       {subTab === "community" ? (
-        <div className="space-y-5 animate-msg">
-          <div className="glass-panel rounded-3xl p-4 shadow-lg shadow-black/20 border-white/5">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400/40 to-purple-400/40 border border-white/10 overflow-hidden">
-                  <img src="https://images.unsplash.com/photo-1524502397800-2eeaad7c3fe5?auto=format&fit=crop&w=100&q=80" className="w-full h-full object-cover" alt="avatar" />
+        <div className="space-y-4 animate-msg">
+          {communityPosts.map((post) => (
+            <div key={post.id} className="glass-panel rounded-3xl p-4 shadow-lg shadow-black/20 border-white/5">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400/40 to-purple-400/40 border border-white/10 overflow-hidden">
+                    <img src={post.avatar} className="w-full h-full object-cover" alt="avatar" />
+                  </div>
+                  <div>
+                    <div className="text-[13px] font-bold text-white/90">{post.name}</div>
+                    <div className="text-[9px] text-white/40 font-medium">{post.time} · {post.mood}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-[13px] font-bold text-white/90">想吃小蛋糕</div>
-                  <div className="text-[9px] text-white/40 font-medium">10分钟前 · 渴望拥抱</div>
-                </div>
-              </div>
-              <button className="text-white/30">
-                <MoreHorizontal className="w-5 h-5" />
-              </button>
-            </div>
-            <p className="text-[14px] text-white/80 leading-relaxed mb-3 font-medium px-1">今天下雨了，没有带伞，被淋成了落汤鸡。好想喝一杯热乎乎的奶茶啊... 😭</p>
-            <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 border border-white/10 shadow-inner relative group">
-              <img src="https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=600&q=80" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="post" />
-            </div>
-            <div className="flex items-center justify-between px-2 mb-4 text-white/40">
-              <div className="flex items-center gap-5">
-                <button className="flex items-center gap-1.5 hover:text-purple-400">
-                  <Heart className="w-4 h-4" /> <span className="text-xs">32</span>
-                </button>
-                <button className="flex items-center gap-1.5 text-purple-400">
-                  <MessageSquare className="w-4 h-4 fill-purple-500/20" /> <span className="text-xs">5</span>
+                <button className="text-white/30">
+                  <MoreHorizontal className="w-5 h-5" />
                 </button>
               </div>
-              <button>
-                <Share2 className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="bg-gradient-to-r from-purple-500/10 to-transparent rounded-2xl p-3 border-l-2 border-purple-400 flex gap-3 shadow-inner backdrop-blur-sm">
-              <div className="w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center flex-shrink-0 border border-purple-400/50">
-                <Sparkles className="w-3 h-3 text-purple-300" />
-              </div>
-              <div>
-                <div className="text-[11px] text-purple-300 mb-1 font-bold flex items-center gap-2">
-                  AI 暖友 · 苏菲 <span className="px-1.5 py-0.5 bg-purple-500/20 rounded text-[8px] text-purple-200">秒回</span>
+              <p className="text-[14px] text-white/80 leading-relaxed mb-3 font-medium px-1">{post.content}</p>
+              {post.images.length > 0 && (
+                <div className={`grid gap-1.5 mb-4 ${post.images.length === 1 ? "grid-cols-3" : "grid-cols-3"}`}>
+                  {post.images.map((src, idx) => (
+                    <div key={idx} className={`aspect-square rounded-xl overflow-hidden border border-white/10 shadow-inner relative group ${post.images.length === 1 ? "col-span-1" : ""}`}>
+                      <img src={src} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={`post-${idx}`} />
+                    </div>
+                  ))}
                 </div>
-                <p className="text-[12px] text-white/80 font-medium">赶紧洗个热水澡换身干衣服呀！给你一个大大的虚拟拥抱，别感冒啦！</p>
+              )}
+              <div className="flex items-center justify-between px-2 mb-3 text-white/40">
+                <div className="flex items-center gap-5">
+                  <button className="flex items-center gap-1.5 hover:text-purple-400">
+                    <Heart className="w-4 h-4" /> <span className="text-xs">{post.likes}</span>
+                  </button>
+                  <button className="flex items-center gap-1.5 text-purple-400">
+                    <MessageSquare className="w-4 h-4 fill-purple-500/20" /> <span className="text-xs">{post.comments}</span>
+                  </button>
+                </div>
+                <button>
+                  <Share2 className="w-4 h-4" />
+                </button>
               </div>
+              {post.aiReply && (
+                <div className="bg-gradient-to-r from-purple-500/10 to-transparent rounded-2xl p-3 border-l-2 border-purple-400 flex gap-3 shadow-inner backdrop-blur-sm">
+                  <div className="w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center flex-shrink-0 border border-purple-400/50">
+                    <Sparkles className="w-3 h-3 text-purple-300" />
+                  </div>
+                  <div>
+                    <div className="text-[11px] text-purple-300 mb-1 font-bold flex items-center gap-2">
+                      AI 暖友 · {post.aiReply.name} <span className="px-1.5 py-0.5 bg-purple-500/20 rounded text-[8px] text-purple-200">秒回</span>
+                    </div>
+                    <p className="text-[12px] text-white/80 font-medium">{post.aiReply.text}</p>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          ))}
         </div>
       ) : (
         <div className="space-y-4 animate-msg">
@@ -856,35 +978,639 @@ const AvatarStory = ({ img, label, active, badge, onClick }: { img: string; labe
   </div>
 );
 
-const ProfileView = () => (
-  <div className="px-5 pt-14 pb-8 animate-msg flex flex-col">
-    <div className="flex items-center gap-4 mb-6">
-      <div className="w-20 h-20 rounded-full bg-white/10 border-2 border-white/20 shadow-md overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=200&q=80" className="w-full h-full object-cover" alt="Me" />
+type ProfileSubView =
+  | "main"
+  | "login"
+  | "membership"
+  | "likes"
+  | "matches"
+  | "visitors"
+  | "account"
+  | "notifications"
+  | "privacy"
+  | "help"
+  | "about";
+
+const SubPageHeader = ({ title, onBack }: { title: string; onBack: () => void }) => (
+  <div className="flex items-center gap-3 pt-12 pb-4 px-4 border-b border-white/5">
+    <button onClick={onBack} className="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-white/80 active:scale-95">
+      <ChevronLeft className="w-5 h-5" />
+    </button>
+    <h2 className="font-serif text-lg font-bold text-white flex-1">{title}</h2>
+  </div>
+);
+
+const LoginView = ({ onBack, onSuccess }: { onBack: () => void; onSuccess: () => void }) => {
+  const [step, setStep] = useState<"phone" | "code">("phone");
+  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const t = window.setTimeout(() => setCountdown(countdown - 1), 1000);
+    return () => window.clearTimeout(t);
+  }, [countdown]);
+
+  const phoneValid = /^1\d{10}$/.test(phone);
+
+  const sendCode = () => {
+    if (!phoneValid) return;
+    setStep("code");
+    setCountdown(60);
+  };
+
+  const verify = () => {
+    if (code.length === 6) onSuccess();
+  };
+
+  return (
+    <div className="absolute inset-0 z-40 bg-[#0b0508] animate-msg overflow-y-auto pb-24">
+      <SubPageHeader title={step === "phone" ? "登录 / 注册" : "输入验证码"} onBack={step === "code" ? () => setStep("phone") : onBack} />
+      <div className="px-6 pt-10">
+        <div className="mb-8">
+          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500/40 to-pink-500/40 border border-white/10 mx-auto flex items-center justify-center mb-5 shadow-xl shadow-purple-900/20">
+            <Sparkles className="w-10 h-10 text-white" />
+          </div>
+          <h3 className="font-serif text-2xl font-bold text-white text-center mb-2">欢迎来到 Matchu</h3>
+          <p className="text-xs text-white/50 text-center">AI 暖友一直在这里等你 💜</p>
+        </div>
+
+        {step === "phone" ? (
+          <>
+            <div className="glass-panel rounded-2xl p-4 mb-4 border-white/5 flex items-center gap-3">
+              <span className="text-sm text-white/60 font-medium">+86</span>
+              <div className="w-px h-5 bg-white/10" />
+              <input
+                type="tel"
+                maxLength={11}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+                placeholder="请输入手机号"
+                className="flex-1 bg-transparent outline-none text-white text-[15px] font-medium placeholder:text-white/30"
+              />
+            </div>
+            <button
+              onClick={sendCode}
+              disabled={!phoneValid}
+              className={`w-full py-3.5 rounded-2xl font-bold text-sm tracking-wide transition-all ${phoneValid ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-900/40 active:scale-[0.98]" : "bg-white/5 text-white/30"}`}
+            >
+              获取验证码
+            </button>
+            <p className="text-[10px] text-white/30 text-center mt-5 leading-relaxed px-4">
+              登录即代表同意《用户协议》与《隐私政策》<br />
+              未注册手机号将自动创建账号
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="text-xs text-white/50 mb-5 text-center">
+              验证码已发送至 <span className="text-white font-bold">+86 {phone.slice(0, 3)}****{phone.slice(-4)}</span>
+            </p>
+            <div className="flex gap-2 justify-between mb-6">
+              {[0, 1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className={`w-11 h-14 rounded-xl glass-panel border-white/10 flex items-center justify-center text-white text-xl font-bold ${code.length === i ? "border-purple-400/60 shadow-[0_0_14px_rgba(168,85,247,0.3)]" : ""}`}>
+                  {code[i] ?? ""}
+                </div>
+              ))}
+            </div>
+            <input
+              autoFocus
+              type="tel"
+              maxLength={6}
+              value={code}
+              onChange={(e) => {
+                const v = e.target.value.replace(/\D/g, "");
+                setCode(v);
+                if (v.length === 6) window.setTimeout(onSuccess, 200);
+              }}
+              className="absolute opacity-0 pointer-events-none"
+            />
+            <button
+              onClick={verify}
+              disabled={code.length !== 6}
+              className={`w-full py-3.5 rounded-2xl font-bold text-sm mb-3 transition-all ${code.length === 6 ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-900/40 active:scale-[0.98]" : "bg-white/5 text-white/30"}`}
+            >
+              确认登录
+            </button>
+            <button
+              onClick={() => countdown === 0 && setCountdown(60)}
+              disabled={countdown > 0}
+              className={`w-full text-xs font-medium ${countdown > 0 ? "text-white/30" : "text-purple-300"}`}
+            >
+              {countdown > 0 ? `${countdown}s 后可重发` : "重新发送验证码"}
+            </button>
+          </>
+        )}
       </div>
-      <div className="flex-1">
-        <h2 className="font-serif text-2xl font-bold mb-1 text-[#fdf8fa]">老大</h2>
-        <p className="text-xs text-white/50 font-medium flex items-center gap-1">
-          ID: 893204 · <MapPin className="w-3 h-3" /> 上海
+    </div>
+  );
+};
+
+type MembershipPlan = {
+  id: "month" | "quarter" | "year";
+  name: string;
+  price: number;
+  original: number;
+  unit: string;
+  tag?: string;
+  highlight?: boolean;
+};
+
+const membershipPlans: MembershipPlan[] = [
+  { id: "month", name: "月度会员", price: 28, original: 38, unit: "元/月" },
+  { id: "quarter", name: "季度会员", price: 68, original: 114, unit: "元/3月", tag: "省 40%", highlight: true },
+  { id: "year", name: "年度会员", price: 198, original: 456, unit: "元/年", tag: "最划算" },
+];
+
+const membershipBenefits: Array<{ icon: React.ReactNode; title: string; desc: string }> = [
+  { icon: <Sparkles className="w-5 h-5" />, title: "无限 AI 对话", desc: "不限次数与暖友聊天" },
+  { icon: <Mic className="w-5 h-5" />, title: "AI 语音通话", desc: "解锁真人感语音陪伴" },
+  { icon: <Heart className="w-5 h-5" />, title: "专属记忆", desc: "AI 会记住你的所有喜好" },
+  { icon: <Eye className="w-5 h-5" />, title: "查看访客", desc: "谁看过你一目了然" },
+  { icon: <Flame className="w-5 h-5" />, title: "每日超级喜欢", desc: "每天 5 次优先推荐" },
+  { icon: <Gift className="w-5 h-5" />, title: "会员标识", desc: "尊贵皇冠身份标志" },
+];
+
+const MembershipView = ({ onBack }: { onBack: () => void }) => {
+  const [selected, setSelected] = useState<"month" | "quarter" | "year">("quarter");
+  const [payMethod, setPayMethod] = useState<"wechat" | "alipay">("wechat");
+  const current = membershipPlans.find((p) => p.id === selected)!;
+
+  return (
+    <div className="absolute inset-0 z-40 bg-[#0b0508] animate-msg overflow-y-auto pb-24">
+      <SubPageHeader title="SVIP 会员中心" onBack={onBack} />
+      <div className="px-5 pt-5">
+        <div className="w-full rounded-3xl vip-card-glow p-5 mb-6 shadow-xl shadow-red-900/10 border border-red-300/10">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-14 h-14 rounded-full bg-white/10 border-2 border-[#e3a891]/40 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=200&q=80" className="w-full h-full object-cover" alt="me" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className="font-serif text-lg font-bold text-white">老大</span>
+                <Crown className="w-4 h-4 text-[#e3a891]" />
+              </div>
+              <div className="text-[11px] text-[#e3a891]/80 font-medium mt-0.5">会员有效期至 2026.08.23</div>
+            </div>
+          </div>
+          <div className="text-[11px] text-white/60 font-medium">已累计解锁 128 次 AI 语音 · 42 条专属记忆</div>
+        </div>
+
+        <h3 className="text-sm font-bold text-white/80 mb-3 px-1">选择套餐</h3>
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          {membershipPlans.map((plan) => (
+            <button
+              key={plan.id}
+              onClick={() => setSelected(plan.id)}
+              className={`relative rounded-2xl p-3 text-left transition-all ${selected === plan.id ? "bg-gradient-to-br from-[#e3a891]/25 to-[#b87c67]/15 border-2 border-[#e3a891]/70 shadow-lg shadow-[#e3a891]/20" : "glass-panel border-white/10 border-2"}`}
+            >
+              {plan.tag && (
+                <span className={`absolute -top-2 left-1/2 -translate-x-1/2 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap ${plan.highlight ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white" : "bg-[#e3a891] text-[#2d1622]"}`}>
+                  {plan.tag}
+                </span>
+              )}
+              <div className="text-[11px] font-bold text-white/80 mb-2">{plan.name}</div>
+              <div className="flex items-baseline gap-0.5 mb-1">
+                <span className="text-[9px] text-[#e3a891]">¥</span>
+                <span className="text-xl font-black text-[#e3a891] leading-none">{plan.price}</span>
+              </div>
+              <div className="text-[9px] text-white/40 line-through">原价 ¥{plan.original}</div>
+              <div className="text-[9px] text-white/50 mt-0.5">{plan.unit}</div>
+            </button>
+          ))}
+        </div>
+
+        <h3 className="text-sm font-bold text-white/80 mb-3 px-1">会员专属权益</h3>
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          {membershipBenefits.map((b, i) => (
+            <div key={i} className="glass-panel rounded-2xl p-3 border-white/5 flex gap-3 items-start">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#e3a891]/25 to-[#b87c67]/15 border border-[#e3a891]/30 flex items-center justify-center text-[#e3a891] flex-shrink-0">
+                {b.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[12px] font-bold text-white/90 mb-0.5">{b.title}</div>
+                <div className="text-[10px] text-white/50 leading-snug">{b.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="text-sm font-bold text-white/80 mb-3 px-1 text-center">支付方式</h3>
+        <div className="grid grid-cols-2 gap-3 mb-5 max-w-[300px] mx-auto">
+          {[
+            { id: "wechat" as const, label: "微信支付", color: "from-green-500/25 to-green-600/10", icon: "💬" },
+            { id: "alipay" as const, label: "支付宝", color: "from-blue-500/25 to-blue-600/10", icon: "🅰️" },
+          ].map((m) => (
+            <button
+              key={m.id}
+              onClick={() => setPayMethod(m.id)}
+              className={`relative rounded-2xl py-3 px-2 flex flex-col items-center gap-1.5 transition-all border ${payMethod === m.id ? "border-[#e3a891]/70 bg-white/5 shadow-md shadow-[#e3a891]/15" : "border-white/10 glass-panel"}`}
+            >
+              <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${m.color} border border-white/10 flex items-center justify-center text-base`}>
+                {m.icon}
+              </div>
+              <span className="text-[11px] font-bold text-white/90">{m.label}</span>
+            </button>
+          ))}
+        </div>
+
+        <button className="w-full py-3.5 rounded-2xl font-black text-sm bg-gradient-to-r from-[#e3a891] to-[#b87c67] text-[#2d1622] shadow-xl shadow-[#e3a891]/30 active:scale-[0.98] flex items-center justify-center gap-2 mb-4">
+          <CreditCard className="w-4 h-4" />
+          立即支付 ¥{current.price}
+        </button>
+
+        <p className="text-[10px] text-white/30 text-center leading-relaxed px-3 pb-4">
+          开通即同意《会员服务协议》，支持随时取消订阅。<br />
+          自动续费可在"账号与安全"中关闭。
         </p>
       </div>
     </div>
-    <div className="w-full h-32 rounded-3xl vip-card-glow p-5 mb-6 shadow-xl shadow-red-900/10 flex flex-col justify-between border border-red-300/10">
-      <div className="flex justify-between items-center z-10">
-        <div className="flex items-center gap-2 text-[#e3a891]">
-          <Crown className="w-5 h-5" />
-          <span className="font-serif font-black text-[15px] tracking-widest">SVIP 尊享会员</span>
+  );
+};
+
+const UserListView = ({ title, users, emptyHint, onBack }: { title: string; users: PreviewUser[]; emptyHint: string; onBack: () => void }) => (
+  <div className="absolute inset-0 z-40 bg-[#0b0508] animate-msg overflow-y-auto pb-24">
+    <SubPageHeader title={title} onBack={onBack} />
+    <div className="px-4 pt-4 pb-8">
+      {users.length === 0 ? (
+        <div className="flex flex-col items-center justify-center pt-24 text-white/40">
+          <Heart className="w-12 h-12 mb-4 opacity-40" />
+          <p className="text-sm font-medium">{emptyHint}</p>
         </div>
-      </div>
-      <div className="flex justify-between items-end z-10">
-        <div>
-          <div className="text-[10px] text-[#e3a891]/80 font-bold mb-1">解锁无限制 AI 语音与专属记忆</div>
+      ) : (
+        <div className="grid grid-cols-2 gap-3">
+          {users.map((u) => (
+            <div key={u.id} className="glass-panel rounded-2xl overflow-hidden border-white/5 relative group">
+              <div className="aspect-[3/4] relative">
+                {u.photo ? (
+                  <img src={u.photo} alt={u.displayName} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full" style={{ background: `linear-gradient(135deg, ${u.avatarGradientFrom}, ${u.avatarGradientTo})` }} />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                {u.online && (
+                  <span className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/80 text-[9px] font-bold text-white backdrop-blur-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white" /> 在线
+                  </span>
+                )}
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className="text-sm font-bold text-white truncate">{u.displayName}</span>
+                    <span className="text-[10px] text-white/70 font-medium">{u.age}</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-[10px] text-white/60">
+                    <MapPin className="w-2.5 h-2.5" />
+                    <span className="truncate">{u.location}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <button className="px-4 py-1.5 bg-gradient-to-r from-[#e3a891] to-[#b87c67] text-[#2d1622] text-xs font-bold rounded-full shadow-md">续费</button>
-      </div>
+      )}
     </div>
   </div>
 );
+
+const SimpleSubView = ({ title, children, onBack }: { title: string; children: React.ReactNode; onBack: () => void }) => (
+  <div className="absolute inset-0 z-40 bg-[#0b0508] animate-msg overflow-y-auto pb-24">
+    <SubPageHeader title={title} onBack={onBack} />
+    <div className="px-5 pt-5 pb-8">{children}</div>
+  </div>
+);
+
+type SettingsTone = "pink" | "purple" | "sky" | "indigo" | "amber" | "emerald" | "cyan" | "rose" | "fuchsia" | "teal";
+
+type ToneStyle = { icon: string; glow: string; particle: string };
+
+const settingsToneStyles: Record<SettingsTone, ToneStyle> = {
+  pink:     { icon: "text-pink-300",     glow: "rgba(244,114,182,0.55)", particle: "#f9a8d4" },
+  purple:   { icon: "text-purple-300",   glow: "rgba(168,85,247,0.55)",  particle: "#d8b4fe" },
+  sky:      { icon: "text-sky-300",      glow: "rgba(56,189,248,0.55)",  particle: "#7dd3fc" },
+  indigo:   { icon: "text-indigo-300",   glow: "rgba(129,140,248,0.55)", particle: "#a5b4fc" },
+  amber:    { icon: "text-amber-300",    glow: "rgba(251,191,36,0.6)",   particle: "#fcd34d" },
+  emerald:  { icon: "text-emerald-300",  glow: "rgba(52,211,153,0.55)",  particle: "#6ee7b7" },
+  cyan:     { icon: "text-cyan-300",     glow: "rgba(34,211,238,0.55)",  particle: "#67e8f9" },
+  rose:     { icon: "text-rose-300",     glow: "rgba(251,113,133,0.55)", particle: "#fda4af" },
+  fuchsia:  { icon: "text-fuchsia-300",  glow: "rgba(232,121,249,0.55)", particle: "#f0abfc" },
+  teal:     { icon: "text-teal-300",     glow: "rgba(45,212,191,0.55)",  particle: "#5eead4" },
+};
+
+const dangerToneStyle: ToneStyle = {
+  icon: "text-rose-300",
+  glow: "rgba(244,63,94,0.55)",
+  particle: "#fda4af",
+};
+
+const SettingsRow = ({ icon, title, desc, onClick, danger, chevron = true, right, tone }: { icon?: React.ReactNode; title: string; desc?: string; onClick?: () => void; danger?: boolean; chevron?: boolean; right?: React.ReactNode; tone?: SettingsTone }) => {
+  const [burst, setBurst] = useState(0);
+  const style: ToneStyle | null = danger ? dangerToneStyle : tone ? settingsToneStyles[tone] : null;
+
+  const sizedIcon = React.isValidElement<{ className?: string }>(icon)
+    ? React.cloneElement(icon, {
+        className: (icon.props.className ?? "")
+          .replace(/\bw-\d+(\.\d+)?\b/g, "w-7")
+          .replace(/\bh-\d+(\.\d+)?\b/g, "h-7") || "w-7 h-7",
+      })
+    : icon;
+
+  const handleClick = () => {
+    if (!onClick) return;
+    setBurst((b) => b + 1);
+    window.setTimeout(() => onClick(), 260);
+  };
+
+  return (
+    <button
+      onClick={onClick ? handleClick : undefined}
+      className="w-full flex items-center gap-3 px-4 py-3.5 glass-panel border-white/5 active:bg-white/5 active:scale-[0.99] transition-all"
+    >
+      {icon && (
+        <div className="relative flex-shrink-0 w-11 h-11 flex items-center justify-center">
+          {style && (
+            <div
+              className="absolute inset-0 rounded-full blur-md opacity-20 pointer-events-none"
+              style={{ background: style.glow }}
+            />
+          )}
+          <motion.span
+            className={`relative ${style?.icon ?? "text-white/70"}`}
+            style={style ? { filter: `drop-shadow(0 1px 2px rgba(0,0,0,0.4))` } : undefined}
+            animate={burst > 0 ? { scale: [1, 0.82, 1.15, 1] } : undefined}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            {sizedIcon}
+          </motion.span>
+
+          {burst > 0 && style && (
+            <div key={burst} className="absolute left-1/2 top-1/2 pointer-events-none">
+              <motion.span
+                initial={{ scale: 0.3, opacity: 0.7, x: "-50%", y: "-50%" }}
+                animate={{ scale: 2.6, opacity: 0 }}
+                transition={{ duration: 0.55, ease: "easeOut" }}
+                className="absolute w-11 h-11 rounded-full border-2"
+                style={{ borderColor: style.particle, boxShadow: `0 0 14px ${style.particle}` }}
+              />
+              <motion.span
+                initial={{ scale: 0.2, opacity: 0.55, x: "-50%", y: "-50%" }}
+                animate={{ scale: 1.8, opacity: 0 }}
+                transition={{ duration: 0.45, ease: "easeOut" }}
+                className="absolute w-11 h-11 rounded-full"
+                style={{ background: `radial-gradient(circle, ${style.particle} 0%, transparent 70%)` }}
+              />
+              {Array.from({ length: 10 }).map((_, i) => {
+                const angle = (i / 10) * Math.PI * 2 + (i % 2 === 0 ? 0.15 : -0.15);
+                const dist = 26 + (i % 3) * 8;
+                const size = i % 3 === 0 ? 7 : i % 3 === 1 ? 5 : 4;
+                return (
+                  <motion.span
+                    key={i}
+                    initial={{ x: 0, y: 0, opacity: 1, scale: 0.3 }}
+                    animate={{
+                      x: Math.cos(angle) * dist,
+                      y: Math.sin(angle) * dist,
+                      opacity: 0,
+                      scale: 1,
+                    }}
+                    transition={{ duration: 0.65 + (i % 3) * 0.08, ease: [0.16, 1, 0.3, 1], delay: (i % 4) * 0.02 }}
+                    className="absolute rounded-full"
+                    style={{
+                      width: size,
+                      height: size,
+                      marginLeft: -size / 2,
+                      marginTop: -size / 2,
+                      background: style.particle,
+                      boxShadow: `0 0 6px ${style.particle}`,
+                    }}
+                  />
+                );
+              })}
+              <motion.span
+                initial={{ y: 0, opacity: 0, scale: 0.5, x: "-50%" }}
+                animate={{ y: -34, opacity: [0, 1, 1, 0], scale: 1.1 }}
+                transition={{ duration: 0.75, ease: "easeOut" }}
+                className="absolute text-[14px] leading-none"
+              >
+                ✨
+              </motion.span>
+            </div>
+          )}
+        </div>
+      )}
+      <div className="flex-1 text-left min-w-0">
+        <div className={`text-[13px] font-bold ${danger ? "text-rose-400" : "text-white/90"}`}>{title}</div>
+        {desc && <div className="text-[10px] text-white/40 mt-0.5 truncate">{desc}</div>}
+      </div>
+      {right}
+      {chevron && !right && <ChevronRight className="w-4 h-4 text-white/30 flex-shrink-0" />}
+    </button>
+  );
+};
+
+const Toggle = ({ on, onToggle }: { on: boolean; onToggle: () => void }) => (
+  <button onClick={(e) => { e.stopPropagation(); onToggle(); }} className={`w-10 h-6 rounded-full transition-colors ${on ? "bg-purple-500" : "bg-white/15"} flex items-center px-0.5`}>
+    <span className={`w-5 h-5 rounded-full bg-white shadow-md transition-transform ${on ? "translate-x-4" : "translate-x-0"}`} />
+  </button>
+);
+
+const ProfileView = () => {
+  const [subView, setSubView] = useState<ProfileSubView>("main");
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [notifPush, setNotifPush] = useState(true);
+  const [notifAI, setNotifAI] = useState(true);
+  const [notifNight, setNotifNight] = useState(false);
+  const [privHideOnline, setPrivHideOnline] = useState(false);
+  const [privIncognito, setPrivIncognito] = useState(false);
+  const [privAutoRenew, setPrivAutoRenew] = useState(true);
+
+  const likedUsers = previewUsers.slice(0, 6);
+  const matchedUsers = previewUsers.slice(1, 5);
+  const visitors = previewUsers.slice(2, 8);
+
+  const goBack = () => setSubView("main");
+
+  if (subView === "login")
+    return <LoginView onBack={goBack} onSuccess={() => { setIsLoggedIn(true); goBack(); }} />;
+  if (subView === "membership") return <MembershipView onBack={goBack} />;
+  if (subView === "likes")
+    return <UserListView title={`我喜欢的人 · ${likedUsers.length}`} users={likedUsers} emptyHint="还没喜欢过任何人" onBack={goBack} />;
+  if (subView === "matches")
+    return <UserListView title={`我的匹配 · ${matchedUsers.length}`} users={matchedUsers} emptyHint="继续划动，遇见对的人" onBack={goBack} />;
+  if (subView === "visitors")
+    return <UserListView title={`谁看过我 · ${visitors.length}`} users={visitors} emptyHint="暂时还没有访客" onBack={goBack} />;
+
+  if (subView === "account")
+    return (
+      <SimpleSubView title="账号与安全" onBack={goBack}>
+        <div className="space-y-2">
+          <SettingsRow tone="sky" icon={<Phone className="w-5 h-5" />} title="手机号" desc="138****2341" />
+          <SettingsRow tone="purple" icon={<User className="w-5 h-5" />} title="昵称" desc="老大" />
+          <SettingsRow tone="teal" icon={<MapPin className="w-5 h-5" />} title="所在城市" desc="上海" />
+          <SettingsRow tone="indigo" icon={<Lock className="w-5 h-5" />} title="修改密码" />
+          <SettingsRow tone="emerald" icon={<Shield className="w-5 h-5" />} title="实名认证" desc="已认证" right={<Check className="w-4 h-4 text-emerald-400" />} chevron={false} />
+          <SettingsRow tone="amber" icon={<CreditCard className="w-5 h-5" />} title="自动续费" desc="SVIP 到期自动续费" right={<Toggle on={privAutoRenew} onToggle={() => setPrivAutoRenew(!privAutoRenew)} />} chevron={false} />
+          <SettingsRow icon={<X className="w-5 h-5" />} title="注销账号" danger />
+        </div>
+      </SimpleSubView>
+    );
+
+  if (subView === "notifications")
+    return (
+      <SimpleSubView title="通知设置" onBack={goBack}>
+        <div className="space-y-2">
+          <SettingsRow tone="amber" icon={<Bell className="w-7 h-7 fill-current" />} title="推送通知" desc="消息、匹配、暖友提醒" right={<Toggle on={notifPush} onToggle={() => setNotifPush(!notifPush)} />} chevron={false} />
+          <SettingsRow tone="fuchsia" icon={<Sparkles className="w-5 h-5" />} title="AI 暖友消息" desc="AI 主动关心你时提醒" right={<Toggle on={notifAI} onToggle={() => setNotifAI(!notifAI)} />} chevron={false} />
+          <SettingsRow tone="indigo" icon={<Moon className="w-7 h-7 fill-current" />} title="夜间免打扰" desc="22:00 - 8:00 不提醒" right={<Toggle on={notifNight} onToggle={() => setNotifNight(!notifNight)} />} chevron={false} />
+        </div>
+      </SimpleSubView>
+    );
+
+  if (subView === "privacy")
+    return (
+      <SimpleSubView title="隐私设置" onBack={goBack}>
+        <div className="space-y-2">
+          <SettingsRow tone="sky" icon={<Eye className="w-5 h-5" />} title="隐身在线" desc="不显示在线状态" right={<Toggle on={privHideOnline} onToggle={() => setPrivHideOnline(!privHideOnline)} />} chevron={false} />
+          <SettingsRow tone="emerald" icon={<Shield className="w-5 h-5" />} title="匿名浏览" desc="不留下访客记录（SVIP）" right={<Toggle on={privIncognito} onToggle={() => setPrivIncognito(!privIncognito)} />} chevron={false} />
+          <SettingsRow tone="rose" icon={<Lock className="w-5 h-5" />} title="黑名单" desc="0 人" />
+          <SettingsRow tone="purple" icon={<User className="w-5 h-5" />} title="屏蔽的用户" desc="0 人" />
+        </div>
+      </SimpleSubView>
+    );
+
+  if (subView === "help")
+    return (
+      <SimpleSubView title="帮助与反馈" onBack={goBack}>
+        <div className="space-y-2">
+          <SettingsRow tone="cyan" icon={<HelpCircle className="w-5 h-5" />} title="常见问题" />
+          <SettingsRow tone="fuchsia" icon={<MessageSquare className="w-7 h-7 fill-current" />} title="意见反馈" desc="告诉我们你的想法" />
+          <SettingsRow tone="emerald" icon={<Phone className="w-5 h-5" />} title="联系客服" desc="9:00 - 23:00 在线" />
+        </div>
+      </SimpleSubView>
+    );
+
+  if (subView === "about")
+    return (
+      <SimpleSubView title="关于 Matchu" onBack={goBack}>
+        <div className="flex flex-col items-center py-8 mb-6">
+          <div className="relative mb-4">
+            <div className="absolute -inset-2 bg-purple-500/30 blur-xl rounded-full animate-pulse" />
+            <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-400 via-pink-400 to-rose-400 border border-white/20 flex items-center justify-center shadow-2xl shadow-purple-900/40">
+              <Sparkles className="w-10 h-10 text-white drop-shadow-md" />
+            </div>
+          </div>
+          <div className="font-serif text-2xl font-bold text-white mb-1">Matchu</div>
+          <div className="text-[11px] text-white/50 font-medium">v1.0.0 · AI 陪伴社交 💜</div>
+        </div>
+        <div className="space-y-2">
+          <SettingsRow tone="indigo" icon={<Info className="w-5 h-5" />} title="用户协议" />
+          <SettingsRow tone="emerald" icon={<Shield className="w-5 h-5" />} title="隐私政策" />
+          <SettingsRow tone="pink" icon={<Heart className="w-7 h-7 fill-current" />} title="给我们好评" />
+        </div>
+      </SimpleSubView>
+    );
+
+  if (!isLoggedIn) {
+    return (
+      <div className="px-5 pt-14 pb-8 animate-msg flex flex-col items-center">
+        <div className="w-24 h-24 rounded-full bg-white/5 border-2 border-white/10 mb-6 flex items-center justify-center">
+          <User className="w-10 h-10 text-white/40" />
+        </div>
+        <h2 className="font-serif text-xl font-bold text-white mb-2">你还没有登录</h2>
+        <p className="text-xs text-white/50 text-center mb-8 px-6 leading-relaxed">
+          登录后可以收藏喜欢的人、<br />查看谁看过你、解锁 AI 暖友陪伴
+        </p>
+        <button
+          onClick={() => setSubView("login")}
+          className="w-full py-3.5 rounded-2xl font-bold text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-900/40 active:scale-[0.98]"
+        >
+          立即登录 / 注册
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="px-5 pt-14 pb-8 animate-msg flex flex-col">
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-20 h-20 rounded-full bg-white/10 border-2 border-white/20 shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=200&q=80" className="w-full h-full object-cover" alt="Me" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <h2 className="font-serif text-2xl font-bold text-[#fdf8fa]">老大</h2>
+            <Crown className="w-4 h-4 text-[#e3a891]" />
+          </div>
+          <p className="text-xs text-white/50 font-medium flex items-center gap-1">
+            ID: 893204 · <MapPin className="w-3 h-3" /> 上海
+          </p>
+        </div>
+        <button onClick={() => setSubView("account")} className="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-white/60 active:scale-95">
+          <Settings className="w-4 h-4" />
+        </button>
+      </div>
+
+      <button
+        onClick={() => setSubView("membership")}
+        className="w-full rounded-3xl vip-card-glow p-5 mb-6 shadow-xl shadow-red-900/10 flex flex-col justify-between border border-red-300/10 text-left active:scale-[0.99] transition-transform"
+      >
+        <div className="flex justify-between items-center z-10 mb-3">
+          <div className="flex items-center gap-2 text-[#e3a891]">
+            <Crown className="w-5 h-5" />
+            <span className="font-serif font-black text-[15px] tracking-widest">SVIP 尊享会员</span>
+          </div>
+          <span className="text-[10px] text-[#e3a891]/70 font-medium">到期 08.23</span>
+        </div>
+        <div className="flex justify-between items-end z-10">
+          <div>
+            <div className="text-[10px] text-[#e3a891]/80 font-bold">解锁无限制 AI 语音与专属记忆</div>
+          </div>
+          <span className="px-4 py-1.5 bg-gradient-to-r from-[#e3a891] to-[#b87c67] text-[#2d1622] text-xs font-bold rounded-full shadow-md">续费</span>
+        </div>
+      </button>
+
+      <div className="space-y-2 mb-3">
+        <SettingsRow
+          tone="pink"
+          icon={<Heart className="w-7 h-7 fill-current" />}
+          title="我喜欢的人"
+          desc={`${likedUsers.length} 人 · 等 TA 也喜欢你`}
+          onClick={() => setSubView("likes")}
+        />
+        <SettingsRow
+          tone="fuchsia"
+          icon={<Users className="w-5 h-5" />}
+          title="我的匹配"
+          desc={`${matchedUsers.length} 对心动连线`}
+          onClick={() => setSubView("matches")}
+        />
+        <SettingsRow
+          tone="sky"
+          icon={<Eye className="w-5 h-5" />}
+          title="谁看过我"
+          desc={`${visitors.length} 位访客（SVIP 可见）`}
+          onClick={() => setSubView("visitors")}
+        />
+      </div>
+
+      <div className="space-y-2 mb-3">
+        <SettingsRow tone="indigo" icon={<User className="w-5 h-5" />} title="账号与安全" onClick={() => setSubView("account")} />
+        <SettingsRow tone="amber" icon={<Bell className="w-7 h-7 fill-current" />} title="通知设置" onClick={() => setSubView("notifications")} />
+        <SettingsRow tone="emerald" icon={<Shield className="w-5 h-5" />} title="隐私设置" onClick={() => setSubView("privacy")} />
+        <SettingsRow tone="cyan" icon={<HelpCircle className="w-5 h-5" />} title="帮助与反馈" onClick={() => setSubView("help")} />
+        <SettingsRow tone="purple" icon={<Sparkles className="w-5 h-5" />} title="关于 Matchu" onClick={() => setSubView("about")} />
+      </div>
+
+      <button
+        onClick={() => setIsLoggedIn(false)}
+        className="w-full py-3 rounded-2xl text-[13px] font-bold text-rose-400 glass-panel border-rose-500/20 active:bg-rose-500/10 flex items-center justify-center gap-2 mt-3"
+      >
+        <LogOut className="w-4 h-4" />
+        退出登录
+      </button>
+    </div>
+  );
+};
 
 const ProfileDetailModal = ({
   profile,
