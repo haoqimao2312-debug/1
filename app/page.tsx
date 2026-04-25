@@ -1284,23 +1284,25 @@ type SettingsTone = "pink" | "purple" | "sky" | "indigo" | "amber" | "emerald" |
 
 type ToneStyle = { icon: string; glow: string; particle: string };
 
+// 收敛到烛光暖调（参见 globals.css 主色 token）：珊瑚粉 / 暖玫瑰 / 琥珀金 / 金 / 暖紫灰 / 深紫玫瑰
+// 仍以 tone 名区分行，但全部锁在恋爱暖色谱内，确保和首页 / 匹配页一致
 const settingsToneStyles: Record<SettingsTone, ToneStyle> = {
-  pink:     { icon: "text-pink-300",     glow: "rgba(244,114,182,0.55)", particle: "#f9a8d4" },
-  purple:   { icon: "text-purple-300",   glow: "rgba(168,85,247,0.55)",  particle: "#d8b4fe" },
-  sky:      { icon: "text-sky-300",      glow: "rgba(56,189,248,0.55)",  particle: "#7dd3fc" },
-  indigo:   { icon: "text-indigo-300",   glow: "rgba(129,140,248,0.55)", particle: "#a5b4fc" },
-  amber:    { icon: "text-amber-300",    glow: "rgba(251,191,36,0.6)",   particle: "#fcd34d" },
-  emerald:  { icon: "text-emerald-300",  glow: "rgba(52,211,153,0.55)",  particle: "#6ee7b7" },
-  cyan:     { icon: "text-cyan-300",     glow: "rgba(34,211,238,0.55)",  particle: "#67e8f9" },
-  rose:     { icon: "text-rose-300",     glow: "rgba(251,113,133,0.55)", particle: "#fda4af" },
-  fuchsia:  { icon: "text-fuchsia-300",  glow: "rgba(232,121,249,0.55)", particle: "#f0abfc" },
-  teal:     { icon: "text-teal-300",     glow: "rgba(45,212,191,0.55)",  particle: "#5eead4" },
+  pink:     { icon: "text-[#ff8f6b]", glow: "rgba(255,143,107,0.55)", particle: "#ffb398" }, // 珊瑚粉 · 主色
+  rose:     { icon: "text-[#ff7a8c]", glow: "rgba(255,122,140,0.55)", particle: "#ffa3b1" }, // 暖玫瑰
+  fuchsia:  { icon: "text-[#e0879b]", glow: "rgba(224,135,155,0.55)", particle: "#f0aebd" }, // 玫瑰粉
+  purple:   { icon: "text-[#c89aa0]", glow: "rgba(184,122,128,0.55)", particle: "#d8b6ba" }, // 暖紫灰
+  indigo:   { icon: "text-[#b08086]", glow: "rgba(138,85,96,0.55)",   particle: "#c79aa1" }, // 深紫玫瑰
+  amber:    { icon: "text-[#ffd176]", glow: "rgba(255,209,118,0.60)", particle: "#ffe1a3" }, // 金
+  cyan:     { icon: "text-[#e8b86f]", glow: "rgba(232,184,111,0.55)", particle: "#f0cd92" }, // 琥珀金
+  sky:      { icon: "text-[#d4a870]", glow: "rgba(212,168,112,0.55)", particle: "#e2c094" }, // 淡金
+  teal:     { icon: "text-[#dba87a]", glow: "rgba(219,168,122,0.55)", particle: "#e8c2a0" }, // 暖驼
+  emerald:  { icon: "text-[#c89b6a]", glow: "rgba(200,155,106,0.55)", particle: "#dab891" }, // 暖驼金
 };
 
 const dangerToneStyle: ToneStyle = {
-  icon: "text-rose-300",
-  glow: "rgba(244,63,94,0.55)",
-  particle: "#fda4af",
+  icon: "text-[#ff7a8c]",
+  glow: "rgba(255,122,140,0.55)",
+  particle: "#ffa3b1",
 };
 
 const SettingsRow = ({ icon, title, desc, onClick, danger, chevron = true, right, tone }: { icon?: React.ReactNode; title: string; desc?: string; onClick?: () => void; danger?: boolean; chevron?: boolean; right?: React.ReactNode; tone?: SettingsTone }) => {
