@@ -1449,27 +1449,28 @@ const SimpleSubView = ({ title, children, onBack }: { title: string; children: R
 
 type SettingsTone = "pink" | "purple" | "sky" | "indigo" | "amber" | "emerald" | "cyan" | "rose" | "fuchsia" | "teal";
 
-type ToneStyle = { icon: string; glow: string; particle: string };
+type ToneStyle = { icon: string; glow: string; particle: string; border: string };
 
 // 收敛到烛光暖调（参见 globals.css 主色 token）：珊瑚粉 / 暖玫瑰 / 琥珀金 / 金 / 暖紫灰 / 深紫玫瑰
-// 仍以 tone 名区分行，但全部锁在恋爱暖色谱内，确保和首页 / 匹配页一致
+// 每个 tone 多带一条 border 色（particle 同色高 alpha），让设置行边框成为单独实体色，不再融入紫罗兰底
 const settingsToneStyles: Record<SettingsTone, ToneStyle> = {
-  pink:     { icon: "text-[#ff8f6b]", glow: "rgba(255,143,107,0.55)", particle: "#ffb398" }, // 珊瑚粉 · 主色
-  rose:     { icon: "text-[#ff7a8c]", glow: "rgba(255,122,140,0.55)", particle: "#ffa3b1" }, // 暖玫瑰
-  fuchsia:  { icon: "text-[#e0879b]", glow: "rgba(224,135,155,0.55)", particle: "#f0aebd" }, // 玫瑰粉
-  purple:   { icon: "text-[#c89aa0]", glow: "rgba(184,122,128,0.55)", particle: "#d8b6ba" }, // 暖紫灰
-  indigo:   { icon: "text-[#b08086]", glow: "rgba(138,85,96,0.55)",   particle: "#c79aa1" }, // 深紫玫瑰
-  amber:    { icon: "text-[#ffd176]", glow: "rgba(255,209,118,0.60)", particle: "#ffe1a3" }, // 金
-  cyan:     { icon: "text-[#e8b86f]", glow: "rgba(232,184,111,0.55)", particle: "#f0cd92" }, // 琥珀金
-  sky:      { icon: "text-[#d4a870]", glow: "rgba(212,168,112,0.55)", particle: "#e2c094" }, // 淡金
-  teal:     { icon: "text-[#dba87a]", glow: "rgba(219,168,122,0.55)", particle: "#e8c2a0" }, // 暖驼
-  emerald:  { icon: "text-[#c89b6a]", glow: "rgba(200,155,106,0.55)", particle: "#dab891" }, // 暖驼金
+  pink:     { icon: "text-[#ff8f6b]", glow: "rgba(255,143,107,0.55)", particle: "#ffb398", border: "rgba(255,143,107,0.55)" }, // 珊瑚粉 · 主色
+  rose:     { icon: "text-[#ff7a8c]", glow: "rgba(255,122,140,0.55)", particle: "#ffa3b1", border: "rgba(255,122,140,0.55)" }, // 暖玫瑰
+  fuchsia:  { icon: "text-[#e0879b]", glow: "rgba(224,135,155,0.55)", particle: "#f0aebd", border: "rgba(224,135,155,0.55)" }, // 玫瑰粉
+  purple:   { icon: "text-[#c89aa0]", glow: "rgba(184,122,128,0.55)", particle: "#d8b6ba", border: "rgba(200,140,150,0.55)" }, // 暖紫灰
+  indigo:   { icon: "text-[#b08086]", glow: "rgba(138,85,96,0.55)",   particle: "#c79aa1", border: "rgba(176,128,134,0.60)" }, // 深紫玫瑰
+  amber:    { icon: "text-[#ffd176]", glow: "rgba(255,209,118,0.60)", particle: "#ffe1a3", border: "rgba(255,209,118,0.60)" }, // 金
+  cyan:     { icon: "text-[#e8b86f]", glow: "rgba(232,184,111,0.55)", particle: "#f0cd92", border: "rgba(232,184,111,0.55)" }, // 琥珀金
+  sky:      { icon: "text-[#d4a870]", glow: "rgba(212,168,112,0.55)", particle: "#e2c094", border: "rgba(212,168,112,0.55)" }, // 淡金
+  teal:     { icon: "text-[#dba87a]", glow: "rgba(219,168,122,0.55)", particle: "#e8c2a0", border: "rgba(219,168,122,0.55)" }, // 暖驼
+  emerald:  { icon: "text-[#c89b6a]", glow: "rgba(200,155,106,0.55)", particle: "#dab891", border: "rgba(200,155,106,0.60)" }, // 暖驼金
 };
 
 const dangerToneStyle: ToneStyle = {
   icon: "text-[#ff7a8c]",
   glow: "rgba(255,122,140,0.55)",
   particle: "#ffa3b1",
+  border: "rgba(255,122,140,0.60)",
 };
 
 const SettingsRow = ({ icon, title, desc, onClick, danger, chevron = true, right, tone }: { icon?: React.ReactNode; title: string; desc?: string; onClick?: () => void; danger?: boolean; chevron?: boolean; right?: React.ReactNode; tone?: SettingsTone }) => {
@@ -1496,7 +1497,8 @@ const SettingsRow = ({ icon, title, desc, onClick, danger, chevron = true, right
   return (
     <button
       onClick={onClick ? handleClick : undefined}
-      className="w-full flex items-center gap-3 px-4 py-3.5 rounded-[20px] bg-gradient-to-br from-[#3a1a4a] to-[#2a1138] border border-[#7a4f9a]/22 active:scale-[0.99] active:brightness-110 transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_4px_12px_-4px_rgba(0,0,0,0.40)]"
+      style={style ? { borderColor: style.border } : undefined}
+      className="w-full flex items-center gap-3 px-4 py-3.5 rounded-[20px] bg-gradient-to-br from-[#3a1a4a] to-[#2a1138] border-2 border-[#7a4f9a]/35 active:scale-[0.99] active:brightness-110 transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_4px_12px_-4px_rgba(0,0,0,0.40)]"
     >
       {icon && (
         <div className="relative flex-shrink-0 w-11 h-11 flex items-center justify-center">
