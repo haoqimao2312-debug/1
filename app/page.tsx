@@ -1307,13 +1307,16 @@ const SettingsRow = ({ icon, title, desc, onClick, danger, chevron = true, right
   const [burst, setBurst] = useState(0);
   const style: ToneStyle | null = danger ? dangerToneStyle : tone ? settingsToneStyles[tone] : null;
 
-  const sizedIcon = React.isValidElement<{ className?: string }>(icon)
-    ? React.cloneElement(icon, {
-        className: (icon.props.className ?? "")
-          .replace(/\bw-\d+(\.\d+)?\b/g, "w-7")
-          .replace(/\bh-\d+(\.\d+)?\b/g, "h-7") || "w-7 h-7",
-      })
-    : icon;
+  const sizedIcon = (() => {
+    if (!React.isValidElement(icon)) return icon;
+    const el = icon as React.ReactElement<{ className?: string }>;
+    const original = el.props.className ?? "";
+    const resized =
+      original
+        .replace(/\bw-\d+(\.\d+)?\b/g, "w-7")
+        .replace(/\bh-\d+(\.\d+)?\b/g, "h-7") || "w-7 h-7";
+    return React.cloneElement(el, { className: resized });
+  })();
 
   const handleClick = () => {
     if (!onClick) return;
