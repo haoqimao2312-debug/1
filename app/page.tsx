@@ -808,24 +808,56 @@ const ExploreView = () => {
         </div>
       ) : (
         <div className="space-y-4 animate-msg">
-          <div className="glass-panel rounded-3xl p-5 relative overflow-hidden group border-white/5">
-            <div className="absolute right-0 top-0 w-32 h-32 bg-[#ff8f6b]/22 rounded-full blur-2xl" />
-            <div className="absolute -bottom-6 -left-4 w-24 h-24 bg-[#ffd176]/16 rounded-full blur-3xl" />
-            <div className="flex justify-between items-start mb-3 relative z-10">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#ff8f6b]/22 flex items-center justify-center border-2 border-[#ff8f6b]/45"
-                     style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.18), 0 2px 0 rgba(0,0,0,0.22)" }}>
-                  <span className="text-[20px] leading-none drop-shadow-[0_1px_0_rgba(0,0,0,0.35)]">💬</span>
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">AI 聊天破冰辅助</h3>
-                  <p className="text-[10px] text-white/50 font-medium">截图分析 TA 的潜台词</p>
-                </div>
+          <div
+            className="relative rounded-3xl p-4 overflow-hidden border-2 backdrop-blur-md bg-gradient-to-br from-[#ff8f6b]/24 via-[#ff8f6b]/10 to-[#ff8f6b]/3 border-[#ff8f6b]/40 active:scale-[0.99] active:translate-y-[1px] transition-all"
+            style={{
+              boxShadow:
+                "inset 0 1.5px 0 rgba(255,255,255,0.20), inset 0 -1.5px 0 rgba(0,0,0,0.25), 0 4px 0 rgba(0,0,0,0.32), 0 6px 16px -6px rgba(0,0,0,0.45)",
+            }}
+          >
+            {/* 双层 bokeh 暖光：珊瑚粉 + 金 */}
+            <div className="absolute -top-8 -right-8 w-36 h-36 rounded-full blur-2xl pointer-events-none bg-[#ff8f6b]/40" />
+            <div className="absolute -bottom-10 -left-6 w-32 h-32 rounded-full blur-3xl pointer-events-none bg-[#ffd176]/22" />
+
+            {/* 卡通吉祥物：右上角倾斜浮起的雪花（破冰） */}
+            <span
+              className="absolute top-2 right-3 text-[58px] leading-none select-none pointer-events-none z-10"
+              style={{
+                transform: 'rotate(-15deg)',
+                filter:
+                  'drop-shadow(0 3px 5px rgba(0,0,0,0.45)) drop-shadow(0 0 12px rgba(255,255,255,0.18))',
+              }}
+            >
+              ❄️
+            </span>
+
+            {/* 标题区 */}
+            <div className="relative z-20 flex items-center gap-3 mb-3 pr-14">
+              <div
+                className="w-11 h-11 rounded-2xl bg-[#ff8f6b]/24 flex items-center justify-center border-2 border-[#ff8f6b]/55 shrink-0"
+                style={{
+                  boxShadow:
+                    "inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.20), 0 2px 0 rgba(0,0,0,0.22)",
+                }}
+              >
+                <span className="text-[24px] leading-none drop-shadow-[0_1px_0_rgba(0,0,0,0.35)]">💬</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-black text-white text-[18px] leading-tight drop-shadow-[0_1px_0_rgba(0,0,0,0.5)]">
+                  AI 聊天破冰辅助
+                </h3>
+                <p className="text-[12px] text-white/75 leading-snug mt-0.5">截图分析 TA 的潜台词，告诉你怎么回</p>
               </div>
             </div>
-            <div className="w-full h-20 bg-black/20 border border-white/10 border-dashed rounded-xl flex flex-col items-center justify-center text-white/40 mb-3 cursor-pointer hover:bg-white/5">
-              <ImageIcon className="w-6 h-6 mb-1 opacity-70" />
-              <span className="text-[10px] font-bold">点击上传聊天截图</span>
+
+            {/* 上传区域 — 卡通虚线糖果框 */}
+            <div
+              className="relative z-20 w-full h-24 rounded-2xl border-2 border-dashed border-[#ff8f6b]/55 bg-[#ff8f6b]/8 flex flex-col items-center justify-center cursor-pointer active:scale-[0.985] transition-all"
+              style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)' }}
+            >
+              <span className="text-[28px] leading-none mb-1 drop-shadow-[0_2px_3px_rgba(0,0,0,0.35)]">📸</span>
+              <span className="text-[12px] font-black text-white/90">点击上传聊天截图</span>
+              <span className="text-[10px] text-white/55 mt-0.5">支持微信 / QQ / 探探</span>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3.5">
