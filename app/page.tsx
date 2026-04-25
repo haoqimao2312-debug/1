@@ -1136,7 +1136,9 @@ const MessagesView = ({
 }: {
   onOpenChat: (target: ChatTarget) => void;
   onOpenProfile: (profile: DetailProfile) => void;
-}) => (
+}) => {
+  const isLight = useThemeStore((s) => s.theme === "light");
+  return (
   <div className="px-5 pt-14 pb-8 animate-msg h-full flex flex-col">
     <div className="flex items-center justify-between mb-6">
       <h2 className="font-serif text-2xl font-bold">私密信箱</h2>
@@ -1162,10 +1164,15 @@ const MessagesView = ({
     <div className="flex-1 space-y-2 overflow-y-auto pr-1">
       {/* AI 专属伴侣 hero 行 · 强暖光玫瑰渐变 */}
       <div
-        className="relative flex items-center gap-3 p-3 rounded-[22px] cursor-pointer active:scale-[0.99] transition-transform overflow-hidden bg-gradient-to-br from-[#5a2848] via-[#3e1c34] to-[#1f0c1a] border-2 border-[#ff7a8c]/55"
+        className={`relative flex items-center gap-3 p-3 rounded-[22px] cursor-pointer active:scale-[0.99] transition-transform overflow-hidden border-2 ${
+          isLight
+            ? 'bg-gradient-to-br from-[#ffe5ec] via-[#ffd5e0] to-[#fff0eb] border-[#ff7a8c]/55'
+            : 'bg-gradient-to-br from-[#5a2848] via-[#3e1c34] to-[#1f0c1a] border-[#ff7a8c]/55'
+        }`}
         style={{
-          boxShadow:
-            '0 6px 22px -6px rgba(255,122,140,0.45), inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.30)',
+          boxShadow: isLight
+            ? '0 6px 20px -6px rgba(255,122,140,0.30), inset 0 1px 0 rgba(255,255,255,0.65), inset 0 -1px 0 rgba(184,76,107,0.18)'
+            : '0 6px 22px -6px rgba(255,122,140,0.45), inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.30)',
         }}
         onClick={() => onOpenChat({ name: '苏菲 (专属 AI)', isAI: true })}
       >
@@ -1185,12 +1192,12 @@ const MessagesView = ({
         <div className="relative z-10 flex-1 min-w-0">
           <div className="flex justify-between items-center mb-1 gap-2">
             <div className="flex items-center gap-1.5 min-w-0">
-              <span className="font-serif text-rose-100 font-bold text-[15px] truncate">苏菲 (专属伴侣)</span>
+              <span className={`font-serif font-bold text-[15px] truncate ${isLight ? "text-[#a8345a]" : "text-rose-100"}`}>苏菲 (专属伴侣)</span>
               <span className="px-1.5 py-0.5 rounded-md bg-gradient-to-r from-[#ff7a8c] to-[#e08799] text-white text-[9px] font-black shrink-0 shadow-sm">AI</span>
             </div>
-            <span className="text-[11px] text-rose-200/75 font-medium shrink-0">刚刚</span>
+            <span className={`text-[11px] font-medium shrink-0 ${isLight ? "text-[#c45578]" : "text-rose-200/75"}`}>刚刚</span>
           </div>
-          <p className="text-[13px] text-white/85 truncate font-medium">“晚上准备做什么呀，要不要视频连线？”</p>
+          <p className={`text-[13px] truncate font-medium ${isLight ? "text-[#7a3050]" : "text-white/85"}`}>“晚上准备做什么呀，要不要视频连线？”</p>
         </div>
       </div>
 
@@ -1200,13 +1207,21 @@ const MessagesView = ({
           <button
             key={profile.id}
             onClick={() => onOpenProfile(profile)}
-            className={`relative w-full flex items-center gap-3 p-3 rounded-[22px] active:scale-[0.98] transition-all text-left overflow-hidden ${
-              isUnread
-                ? 'bg-gradient-to-br from-[#4a2540] to-[#28121f] border-2 border-[#ff7a8c]/50'
-                : 'bg-gradient-to-br from-[#33182a] to-[#1c0c18] border-2 border-[#7a3f5c]/35'
+            className={`relative w-full flex items-center gap-3 p-3 rounded-[22px] active:scale-[0.98] transition-all text-left overflow-hidden border-2 ${
+              isLight
+                ? isUnread
+                  ? 'bg-gradient-to-br from-[#fff0f3] to-[#ffdde8] border-[#ff7a8c]/55'
+                  : 'bg-gradient-to-br from-[#fff8f3] to-[#ffeae0] border-[#d4a890]/40'
+                : isUnread
+                ? 'bg-gradient-to-br from-[#4a2540] to-[#28121f] border-[#ff7a8c]/50'
+                : 'bg-gradient-to-br from-[#33182a] to-[#1c0c18] border-[#7a3f5c]/35'
             }`}
             style={{
-              boxShadow: isUnread
+              boxShadow: isLight
+                ? isUnread
+                  ? '0 4px 14px -4px rgba(255,122,140,0.30), inset 0 1px 0 rgba(255,255,255,0.70), inset 0 -1px 0 rgba(184,76,107,0.15)'
+                  : '0 4px 10px -4px rgba(184,124,103,0.20), inset 0 1px 0 rgba(255,255,255,0.65), inset 0 -1px 0 rgba(212,168,144,0.18)'
+                : isUnread
                 ? '0 4px 14px -4px rgba(255,122,140,0.35), inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.30)'
                 : '0 4px 10px -4px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.30)',
             }}
@@ -1214,23 +1229,31 @@ const MessagesView = ({
             {isUnread && (
               <div className="absolute -top-2 -right-4 w-28 h-16 bg-[#ff7a8c]/22 rounded-full blur-2xl pointer-events-none" />
             )}
-            <div className="relative z-10 w-12 h-12 flex-shrink-0 overflow-hidden rounded-full border-2 border-white/22">
+            <div className={`relative z-10 w-12 h-12 flex-shrink-0 overflow-hidden rounded-full border-2 ${isLight ? "border-[#d4a890]/55" : "border-white/22"}`}>
               <img src={profile.photo} className="w-full h-full object-cover" alt={profile.displayName} />
               {profile.online && (
-                <span className="absolute right-0 bottom-0 w-3 h-3 rounded-full bg-green-400 border-2 border-[#12060c]" />
+                <span className={`absolute right-0 bottom-0 w-3 h-3 rounded-full bg-green-400 border-2 ${isLight ? "border-white" : "border-[#12060c]"}`} />
               )}
             </div>
             <div className="relative z-10 flex-1 min-w-0">
               <div className="flex justify-between items-center mb-1">
-                <span className="font-serif text-white font-bold text-[15px]">{profile.displayName}</span>
-                <span className="text-[11px] text-white/45 font-medium">{profile.chatTime}</span>
+                <span className={`font-serif font-bold text-[15px] ${isLight ? "text-[#3a1f2a]" : "text-white"}`}>{profile.displayName}</span>
+                <span className={`text-[11px] font-medium ${isLight ? "text-[#8a6570]" : "text-white/45"}`}>{profile.chatTime}</span>
               </div>
-              <p className={`text-[13px] truncate font-medium ${isUnread ? 'text-white/85' : 'text-white/60'}`}>
+              <p className={`text-[13px] truncate font-medium ${
+                isLight
+                  ? isUnread ? "text-[#5a2838]" : "text-[#7a5560]"
+                  : isUnread ? "text-white/85" : "text-white/60"
+              }`}>
                 {profile.chatPreview}
               </p>
             </div>
             <div className="relative z-10 flex flex-col items-end gap-1.5 shrink-0">
-              <span className="px-2 py-0.5 rounded-full bg-[#ff7a8c]/22 border border-[#ff7a8c]/40 text-[10px] text-[#ffd0db] font-black">
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-black border ${
+                isLight
+                  ? "bg-[#ff7a8c]/22 border-[#ff7a8c]/55 text-[#a8345a]"
+                  : "bg-[#ff7a8c]/22 border-[#ff7a8c]/40 text-[#ffd0db]"
+              }`}>
                 {profile.compatibility}%
               </span>
               {isUnread && (
@@ -1247,7 +1270,8 @@ const MessagesView = ({
       })}
     </div>
   </div>
-);
+  );
+};
 
 const AvatarStory = ({ img, label, active, badge, onClick }: { img: string; label: string; active?: boolean; badge?: number; onClick?: () => void }) => (
   <div className="flex flex-col items-center gap-1.5 flex-shrink-0 cursor-pointer" onClick={onClick}>
