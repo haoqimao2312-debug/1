@@ -828,19 +828,19 @@ const ExploreView = () => {
               <span className="text-[10px] font-bold">点击上传聊天截图</span>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-3">
-            <ToolTile icon="💖" mascot="🌹" title="恋爱人格"   desc="隐藏属性"   color="rose" />
-            <ToolTile icon="🔥" mascot="🎬" title="心动剧本"   desc="平行邂逅"   color="coral" />
-            <ToolTile icon="⭐" mascot="🪐" title="星座配对"   desc="今日心动"   color="gold" />
-            <ToolTile icon="🔮" mascot="🎴" title="塔罗占卜"   desc="抽桃花牌"   color="berry" />
-            <ToolTile icon="🧠" mascot="💭" title="MBTI 契合"  desc="谁最配你"   color="magenta" />
-            <ToolTile icon="🌡️" mascot="🌶️" title="暧昧温度"  desc="心动指数"   color="peach" />
-            <ToolTile icon="💑" mascot="🎀" title="虚拟恋人"   desc="专属陪伴"   color="plum" />
-            <ToolTile icon="🌙" mascot="☁️" title="梦境解码"   desc="梦到 TA"    color="mauve" />
-            <ToolTile icon="🎂" mascot="🎁" title="缘分生日"   desc="生辰命定"   color="amber" />
-            <ToolTile icon="💌" mascot="🖋️" title="AI 情书"    desc="心动手笔"   color="blush" />
-            <ToolTile icon="🌸" mascot="🍀" title="桃花运"     desc="心动方位"   color="coral" />
-            <ToolTile icon="💘" mascot="🎤" title="告白脚本"   desc="最稳话术"   color="rose" />
+          <div className="grid grid-cols-2 gap-3.5">
+            <ToolTile icon="💖" mascot="🌹" title="恋爱人格"   desc="AI 测出你的隐藏恋爱属性"      color="rose" />
+            <ToolTile icon="🔥" mascot="🎬" title="心动剧本"   desc="生成平行时空的专属故事"      color="coral" />
+            <ToolTile icon="⭐" mascot="🪐" title="星座配对"   desc="查看今日 12 星座心动指数"     color="gold" />
+            <ToolTile icon="🔮" mascot="🎴" title="塔罗占卜"   desc="抽一张牌看你的桃花走向"      color="berry" />
+            <ToolTile icon="🧠" mascot="💭" title="MBTI 契合"  desc="测你和 TA 的人格契合度"       color="magenta" />
+            <ToolTile icon="🌡️" mascot="🌶️" title="暧昧温度"  desc="上传聊天截图测心动指数"      color="peach" />
+            <ToolTile icon="💑" mascot="🎀" title="虚拟恋人"   desc="定制专属 AI 陪伴恋人"        color="plum" />
+            <ToolTile icon="🌙" mascot="☁️" title="梦境解码"   desc="解析梦中出现的情感线索"      color="mauve" />
+            <ToolTile icon="🎂" mascot="🎁" title="缘分生日"   desc="用生辰八字算注定的人"        color="amber" />
+            <ToolTile icon="💌" mascot="🖋️" title="AI 情书"    desc="一键生成动人心动情书"        color="blush" />
+            <ToolTile icon="🌸" mascot="🍀" title="桃花运"     desc="查看今日桃花方位与时辰"      color="coral" />
+            <ToolTile icon="💘" mascot="🎤" title="告白脚本"   desc="AI 设计最稳的告白话术"       color="rose" />
           </div>
         </div>
       )}
@@ -890,23 +890,23 @@ const ToolTile = ({ icon, title, desc, color, mascot }: { icon: string; title: s
   const s = toolStyles[color];
   return (
     <div
-      className={`relative rounded-[22px] p-3 aspect-square overflow-hidden border-2 backdrop-blur-md flex flex-col justify-between active:scale-[0.94] active:translate-y-[2px] transition-all ${s.tile}`}
+      className={`relative rounded-3xl p-4 aspect-square overflow-hidden border-2 backdrop-blur-md flex flex-col justify-between active:scale-[0.96] active:translate-y-[2px] transition-all ${s.tile}`}
       style={{
         // 卡通贴纸效果：顶部内嵌高光 + 底部内阴 + 实心偏移投影 + 软外阴
         boxShadow:
-          "inset 0 1.5px 0 rgba(255,255,255,0.20), inset 0 -1.5px 0 rgba(0,0,0,0.25), 0 4px 0 rgba(0,0,0,0.32), 0 6px 14px -6px rgba(0,0,0,0.45)",
+          "inset 0 1.5px 0 rgba(255,255,255,0.20), inset 0 -1.5px 0 rgba(0,0,0,0.25), 0 4px 0 rgba(0,0,0,0.32), 0 6px 16px -6px rgba(0,0,0,0.45)",
       }}
     >
-      <div className={`absolute -top-6 -right-6 w-24 h-24 rounded-full blur-2xl pointer-events-none ${s.bokeh}`} />
+      <div className={`absolute -top-8 -right-8 w-32 h-32 rounded-full blur-2xl pointer-events-none ${s.bokeh}`} />
 
       {/* 卡通吉祥物：右上角倾斜浮起的大 emoji */}
       {mascot && (
         <span
-          className="absolute top-1.5 right-1.5 text-[40px] leading-none select-none pointer-events-none z-10"
+          className="absolute top-2 right-2 text-[52px] leading-none select-none pointer-events-none z-10"
           style={{
             transform: 'rotate(-12deg)',
             filter:
-              'drop-shadow(0 3px 4px rgba(0,0,0,0.45)) drop-shadow(0 0 10px rgba(255,255,255,0.12))',
+              'drop-shadow(0 3px 5px rgba(0,0,0,0.45)) drop-shadow(0 0 12px rgba(255,255,255,0.12))',
           }}
         >
           {mascot}
@@ -914,17 +914,17 @@ const ToolTile = ({ icon, title, desc, color, mascot }: { icon: string; title: s
       )}
 
       <div
-        className={`relative z-20 w-9 h-9 rounded-2xl flex items-center justify-center border-2 ${s.icon}`}
+        className={`relative z-20 w-10 h-10 rounded-2xl flex items-center justify-center border-2 ${s.icon}`}
         style={{
           boxShadow:
             "inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.20), 0 2px 0 rgba(0,0,0,0.22)",
         }}
       >
-        <span className="text-[20px] leading-none drop-shadow-[0_1px_0_rgba(0,0,0,0.35)]">{icon}</span>
+        <span className="text-[22px] leading-none drop-shadow-[0_1px_0_rgba(0,0,0,0.35)]">{icon}</span>
       </div>
       <div className="relative z-20">
-        <h3 className="font-black text-white text-[12.5px] leading-tight drop-shadow-[0_1px_0_rgba(0,0,0,0.5)]">{title}</h3>
-        <p className="text-[9.5px] text-white/70 leading-tight mt-0.5">{desc}</p>
+        <h3 className="font-black text-white text-[16px] leading-tight drop-shadow-[0_1px_0_rgba(0,0,0,0.5)]">{title}</h3>
+        <p className="text-[11.5px] text-white/75 leading-snug mt-1 line-clamp-2">{desc}</p>
       </div>
     </div>
   );
