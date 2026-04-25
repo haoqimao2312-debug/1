@@ -123,6 +123,19 @@ const GlobalStyles = () => (
       background: rgba(255, 245, 238, 0.85) !important;
       border: 1px solid rgba(212, 168, 144, 0.35) !important;
     }
+    /* 照片叠加文字：白天模式仍保持白色（图片暗化处必须白字才看清）*/
+    [data-theme="light"] .photo-overlay,
+    [data-theme="light"] .photo-overlay .text-white { color: rgba(255,255,255,0.95) !important; }
+    [data-theme="light"] .photo-overlay .text-white\\/95 { color: rgba(255,255,255,0.95) !important; }
+    [data-theme="light"] .photo-overlay .text-white\\/90 { color: rgba(255,255,255,0.90) !important; }
+    [data-theme="light"] .photo-overlay .text-white\\/85 { color: rgba(255,255,255,0.85) !important; }
+    [data-theme="light"] .photo-overlay .text-white\\/80 { color: rgba(255,255,255,0.80) !important; }
+    [data-theme="light"] .photo-overlay .text-white\\/75 { color: rgba(255,255,255,0.75) !important; }
+    [data-theme="light"] .photo-overlay .text-white\\/70 { color: rgba(255,255,255,0.70) !important; }
+    [data-theme="light"] .photo-overlay .text-white\\/65 { color: rgba(255,255,255,0.65) !important; }
+    [data-theme="light"] .photo-overlay .text-white\\/60 { color: rgba(255,255,255,0.60) !important; }
+    [data-theme="light"] .photo-overlay .text-white\\/55 { color: rgba(255,255,255,0.55) !important; }
+    [data-theme="light"] .photo-overlay .text-white\\/50 { color: rgba(255,255,255,0.50) !important; }
     .avatar-ring {
       position: absolute;
       inset: -6px;
@@ -577,6 +590,7 @@ const SwipeProfileCard = ({
   onOpenProfile: (profile: DetailProfile) => void;
   onSwipe: (action: "like" | "pass", velocity?: number) => void;
 }) => {
+  const isLight = useThemeStore((s) => s.theme === "light");
   const rotate = useTransform(x, [-220, 0, 220], [-16, 0, 16]);
   const y = useTransform(x, [-220, 0, 220], [8, 0, 8]);
   const likeOpacity = useTransform(x, [18, 96], [0, 1]);
@@ -609,9 +623,17 @@ const SwipeProfileCard = ({
     >
       <div className="absolute -inset-6 bg-white/8 blur-3xl pointer-events-none" />
       <img src={profile.photo} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/22 to-white/10 pointer-events-none" />
-      <div className="absolute inset-x-7 top-0 h-px bg-gradient-to-r from-transparent via-white/65 to-transparent pointer-events-none" />
-      <div className="absolute inset-y-8 left-0 w-px bg-gradient-to-b from-transparent via-white/24 to-transparent pointer-events-none" />
+      {/* 底部信息阅读暗化层：白天版用紧底缘的暖玫瑰渐变（不再大面积纯黑） */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: isLight
+            ? "linear-gradient(to top, rgba(58,28,48,0.75) 0%, rgba(58,28,48,0.30) 22%, rgba(58,28,48,0.05) 38%, transparent 50%)"
+            : "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.22) 50%, rgba(255,255,255,0.10) 100%)",
+        }}
+      />
+      <div className={`absolute inset-x-7 top-0 h-px pointer-events-none ${isLight ? "bg-gradient-to-r from-transparent via-[#ff7a8c]/45 to-transparent" : "bg-gradient-to-r from-transparent via-white/65 to-transparent"}`} />
+      <div className={`absolute inset-y-8 left-0 w-px pointer-events-none ${isLight ? "bg-gradient-to-b from-transparent via-[#d4a890]/30 to-transparent" : "bg-gradient-to-b from-transparent via-white/24 to-transparent"}`} />
 
       <motion.div
         style={{ opacity: likeOpacity }}
@@ -632,12 +654,16 @@ const SwipeProfileCard = ({
           event.stopPropagation();
           onOpenProfile(profile);
         }}
-        className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-black/35 border border-white/20 backdrop-blur-xl text-[10px] text-white/80 font-bold flex items-center gap-1"
+        className={`absolute top-4 right-4 px-3 py-1.5 rounded-full border backdrop-blur-xl text-[10px] font-bold flex items-center gap-1 ${
+          isLight
+            ? "bg-white/75 border-[#ff7a8c]/45 text-[#a8345a]"
+            : "bg-black/35 border-white/20 text-white/80"
+        }`}
       >
-        <Eye className="w-3 h-3 text-pink-300" /> 查看详情
+        <Eye className={`w-3 h-3 ${isLight ? "text-[#ff7a8c]" : "text-pink-300"}`} /> 查看详情
       </button>
 
-      <div className="absolute bottom-0 left-0 right-0 p-6 text-white pointer-events-none">
+      <div className="photo-overlay absolute bottom-0 left-0 right-0 p-6 text-white pointer-events-none">
         <div className="flex items-end justify-between mb-3">
           <div>
             <div className="flex items-center gap-2 mb-1">
