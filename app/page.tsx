@@ -828,7 +828,7 @@ const ExploreView = () => {
               <span className="text-[10px] font-bold">点击上传聊天截图</span>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-3 gap-3">
             <ToolTile icon="💖" mascot="🌹" title="恋爱人格"   desc="隐藏属性"   color="rose" />
             <ToolTile icon="🔥" mascot="🎬" title="心动剧本"   desc="平行邂逅"   color="coral" />
             <ToolTile icon="⭐" mascot="🪐" title="星座配对"   desc="今日心动"   color="gold" />
@@ -890,38 +890,42 @@ const ToolTile = ({ icon, title, desc, color, mascot }: { icon: string; title: s
   const s = toolStyles[color];
   return (
     <div
-      className={`relative rounded-2xl pl-2.5 pr-2 py-2 overflow-hidden border-2 backdrop-blur-md flex items-center gap-2.5 active:scale-[0.96] active:translate-y-[1px] transition-all ${s.tile}`}
+      className={`relative rounded-[22px] p-3 aspect-square overflow-hidden border-2 backdrop-blur-md flex flex-col justify-between active:scale-[0.94] active:translate-y-[2px] transition-all ${s.tile}`}
       style={{
         // 卡通贴纸效果：顶部内嵌高光 + 底部内阴 + 实心偏移投影 + 软外阴
         boxShadow:
-          "inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.22), 0 3px 0 rgba(0,0,0,0.28), 0 5px 12px -5px rgba(0,0,0,0.40)",
+          "inset 0 1.5px 0 rgba(255,255,255,0.20), inset 0 -1.5px 0 rgba(0,0,0,0.25), 0 4px 0 rgba(0,0,0,0.32), 0 6px 14px -6px rgba(0,0,0,0.45)",
       }}
     >
-      <div className={`absolute -top-3 -right-3 w-20 h-20 rounded-full blur-2xl pointer-events-none ${s.bokeh}`} />
-      <div
-        className={`relative z-10 w-9 h-9 rounded-xl flex items-center justify-center border-2 shrink-0 ${s.icon}`}
-        style={{
-          boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.20), 0 2px 0 rgba(0,0,0,0.22)",
-        }}
-      >
-        <span className="text-[18px] leading-none drop-shadow-[0_1px_0_rgba(0,0,0,0.35)]">{icon}</span>
-      </div>
-      <div className="relative z-10 min-w-0 flex-1">
-        <h3 className="font-black text-white text-[12.5px] leading-tight truncate drop-shadow-[0_1px_0_rgba(0,0,0,0.5)]">{title}</h3>
-        <p className="text-[9.5px] text-white/65 leading-tight truncate mt-0.5">{desc}</p>
-      </div>
+      <div className={`absolute -top-6 -right-6 w-24 h-24 rounded-full blur-2xl pointer-events-none ${s.bokeh}`} />
+
+      {/* 卡通吉祥物：右上角倾斜浮起的大 emoji */}
       {mascot && (
         <span
-          className="relative z-10 text-[32px] leading-none shrink-0 -mr-0.5 select-none pointer-events-none"
+          className="absolute top-1.5 right-1.5 text-[40px] leading-none select-none pointer-events-none z-10"
           style={{
-            transform: 'rotate(-10deg)',
-            filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.45)) drop-shadow(0 0 6px rgba(255,255,255,0.10))',
+            transform: 'rotate(-12deg)',
+            filter:
+              'drop-shadow(0 3px 4px rgba(0,0,0,0.45)) drop-shadow(0 0 10px rgba(255,255,255,0.12))',
           }}
         >
           {mascot}
         </span>
       )}
+
+      <div
+        className={`relative z-20 w-9 h-9 rounded-2xl flex items-center justify-center border-2 ${s.icon}`}
+        style={{
+          boxShadow:
+            "inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.20), 0 2px 0 rgba(0,0,0,0.22)",
+        }}
+      >
+        <span className="text-[20px] leading-none drop-shadow-[0_1px_0_rgba(0,0,0,0.35)]">{icon}</span>
+      </div>
+      <div className="relative z-20">
+        <h3 className="font-black text-white text-[12.5px] leading-tight drop-shadow-[0_1px_0_rgba(0,0,0,0.5)]">{title}</h3>
+        <p className="text-[9.5px] text-white/70 leading-tight mt-0.5">{desc}</p>
+      </div>
     </div>
   );
 };
