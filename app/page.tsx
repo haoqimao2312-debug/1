@@ -809,7 +809,7 @@ const ExploreView = () => {
       ) : (
         <div className="space-y-4 animate-msg">
           <div
-            className="relative rounded-3xl p-4 overflow-hidden border-2 backdrop-blur-md bg-gradient-to-br from-[#ff8f6b]/24 via-[#ff8f6b]/10 to-[#ff8f6b]/3 border-[#ff8f6b]/40 active:scale-[0.99] active:translate-y-[1px] transition-all"
+            className="relative rounded-3xl p-4 overflow-hidden border-2 backdrop-blur-md bg-gradient-to-br from-[#ff8f6b]/26 via-[#ffc4d3]/14 to-[#ff7a8c]/6 border-[#ff8f6b]/45 active:scale-[0.99] active:translate-y-[1px] transition-all"
             style={{
               boxShadow:
                 "inset 0 1.5px 0 rgba(255,255,255,0.20), inset 0 -1.5px 0 rgba(0,0,0,0.25), 0 4px 0 rgba(0,0,0,0.32), 0 6px 16px -6px rgba(0,0,0,0.45)",
@@ -861,18 +861,18 @@ const ExploreView = () => {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3.5">
-            <ToolTile icon="💖" mascot="🌹" title="恋爱人格"   desc="AI 测出你的隐藏恋爱属性"      color="rose" />
-            <ToolTile icon="🔥" mascot="🎬" title="心动剧本"   desc="生成平行时空的专属故事"      color="coral" />
-            <ToolTile icon="⭐" mascot="🪐" title="星座配对"   desc="查看今日 12 星座心动指数"     color="gold" />
-            <ToolTile icon="🔮" mascot="🎴" title="塔罗占卜"   desc="抽一张牌看你的桃花走向"      color="berry" />
-            <ToolTile icon="🧠" mascot="💭" title="MBTI 契合"  desc="测你和 TA 的人格契合度"       color="magenta" />
-            <ToolTile icon="🌡️" mascot="🌶️" title="暧昧温度"  desc="上传聊天截图测心动指数"      color="peach" />
-            <ToolTile icon="💑" mascot="🎀" title="虚拟恋人"   desc="定制专属 AI 陪伴恋人"        color="plum" />
-            <ToolTile icon="🌙" mascot="☁️" title="梦境解码"   desc="解析梦中出现的情感线索"      color="mauve" />
-            <ToolTile icon="🎂" mascot="🎁" title="缘分生日"   desc="用生辰八字算注定的人"        color="amber" />
-            <ToolTile icon="💌" mascot="🖋️" title="AI 情书"    desc="一键生成动人心动情书"        color="blush" />
-            <ToolTile icon="🌸" mascot="🍀" title="桃花运"     desc="查看今日桃花方位与时辰"      color="coral" />
-            <ToolTile icon="💘" mascot="🎤" title="告白脚本"   desc="AI 设计最稳的告白话术"       color="rose" />
+            <ToolTile icon="💖" mascot="🌹" title="恋爱人格"   desc="AI 测出你的隐藏恋爱属性"      color="love" />
+            <ToolTile icon="🔥" mascot="🎬" title="心动剧本"   desc="生成平行时空的专属故事"      color="passion" />
+            <ToolTile icon="⭐" mascot="🪐" title="星座配对"   desc="查看今日 12 星座心动指数"     color="starlight" />
+            <ToolTile icon="🔮" mascot="🎴" title="塔罗占卜"   desc="抽一张牌看你的桃花走向"      color="mystic" />
+            <ToolTile icon="🧠" mascot="💭" title="MBTI 契合"  desc="测你和 TA 的人格契合度"       color="intellect" />
+            <ToolTile icon="🌡️" mascot="🌶️" title="暧昧温度"  desc="上传聊天截图测心动指数"      color="fever" />
+            <ToolTile icon="💑" mascot="🎀" title="虚拟恋人"   desc="定制专属 AI 陪伴恋人"        color="violet" />
+            <ToolTile icon="🌙" mascot="☁️" title="梦境解码"   desc="解析梦中出现的情感线索"      color="dream" />
+            <ToolTile icon="🎂" mascot="🎁" title="缘分生日"   desc="用生辰八字算注定的人"        color="celebrate" />
+            <ToolTile icon="💌" mascot="🖋️" title="AI 情书"    desc="一键生成动人心动情书"        color="letter" />
+            <ToolTile icon="🌸" mascot="🍀" title="桃花运"     desc="查看今日桃花方位与时辰"      color="blossom" />
+            <ToolTile icon="💘" mascot="🎤" title="告白脚本"   desc="AI 设计最稳的告白话术"       color="confess" />
           </div>
         </div>
       )}
@@ -880,42 +880,63 @@ const ExploreView = () => {
   );
 };
 
-type ToolColor = "rose" | "coral" | "gold" | "berry" | "magenta" | "peach" | "mauve" | "amber" | "blush" | "plum";
+type ToolColor =
+  | "love"       // 恋爱人格 · 玫瑰→珊瑚
+  | "passion"    // 心动剧本 · 珊瑚→金（落日）
+  | "starlight"  // 星座配对 · 金→暮紫（昼夜星空）
+  | "mystic"     // 塔罗占卜 · 莓果→深紫（神秘）
+  | "intellect"  // MBTI · 玫瑰→蓝紫（理智×情感）
+  | "fever"      // 暧昧温度 · 蜜桃→玫瑰（升温）
+  | "violet"     // 虚拟恋人 · 暮紫→樱粉
+  | "dream"      // 梦境解码 · 月夜紫→银粉
+  | "celebrate"  // 缘分生日 · 琥珀→玫瑰
+  | "letter"     // AI 情书 · 樱粉→玫瑰
+  | "blossom"    // 桃花运 · 珊瑚→樱粉
+  | "confess";   // 告白脚本 · 玫瑰→莓果
 
 type ToolStyle = { icon: string; tile: string; bokeh: string };
 
-// 每个工具块独立糖果配色：背景渐变 + 角落 bokeh + 图标三件套，全部锁在烛光暖色谱
+// 12 道双色渐变 · 三大色族（暖恋爱 / 玄学夜调 / 樱粉柔软），每张卡 from→via→to 三段式
 const toolStyles: Record<ToolColor, ToolStyle> = {
-  rose:    { icon: "bg-[#ff7a8c]/24 text-[#ffe0e7] border-[#ff7a8c]/55",
-             tile: "bg-gradient-to-br from-[#ff7a8c]/22 via-[#ff7a8c]/8 to-[#ff7a8c]/3 border-[#ff7a8c]/35",
-             bokeh: "bg-[#ff7a8c]/40" },
-  coral:   { icon: "bg-[#ff8f6b]/24 text-[#ffe1cc] border-[#ff8f6b]/55",
-             tile: "bg-gradient-to-br from-[#ff8f6b]/22 via-[#ff8f6b]/8 to-[#ff8f6b]/3 border-[#ff8f6b]/35",
-             bokeh: "bg-[#ff8f6b]/40" },
-  gold:    { icon: "bg-[#ffd176]/22 text-[#fff1bf] border-[#ffd176]/55",
-             tile: "bg-gradient-to-br from-[#ffd176]/22 via-[#ffd176]/8 to-[#ffd176]/3 border-[#ffd176]/40",
-             bokeh: "bg-[#ffd176]/35" },
-  berry:   { icon: "bg-[#b5476b]/30 text-[#ffc8d6] border-[#b5476b]/60",
-             tile: "bg-gradient-to-br from-[#b5476b]/26 via-[#b5476b]/10 to-[#b5476b]/4 border-[#b5476b]/45",
-             bokeh: "bg-[#e88aa8]/40" },
-  magenta: { icon: "bg-[#e0879b]/26 text-[#ffd6e0] border-[#e0879b]/55",
-             tile: "bg-gradient-to-br from-[#e0879b]/22 via-[#e0879b]/8 to-[#e0879b]/3 border-[#e0879b]/40",
-             bokeh: "bg-[#e0879b]/35" },
-  peach:   { icon: "bg-[#ffb88a]/24 text-[#ffe5cc] border-[#ffb88a]/55",
-             tile: "bg-gradient-to-br from-[#ffb88a]/22 via-[#ffb88a]/8 to-[#ffb88a]/3 border-[#ffb88a]/40",
-             bokeh: "bg-[#ffb88a]/40" },
-  mauve:   { icon: "bg-[#b87a80]/28 text-[#ead0d4] border-[#b87a80]/55",
-             tile: "bg-gradient-to-br from-[#b87a80]/24 via-[#b87a80]/10 to-[#b87a80]/3 border-[#b87a80]/45",
-             bokeh: "bg-[#d8b6ba]/35" },
-  amber:   { icon: "bg-[#e8b86f]/24 text-[#ffe6b8] border-[#e8b86f]/55",
-             tile: "bg-gradient-to-br from-[#e8b86f]/22 via-[#e8b86f]/8 to-[#e8b86f]/3 border-[#e8b86f]/40",
-             bokeh: "bg-[#e8b86f]/35" },
-  blush:   { icon: "bg-[#ffc4d3]/26 text-[#ffeaf0] border-[#ffc4d3]/60",
-             tile: "bg-gradient-to-br from-[#ffc4d3]/22 via-[#ffc4d3]/8 to-[#ffc4d3]/3 border-[#ffc4d3]/40",
-             bokeh: "bg-[#ffc4d3]/40" },
-  plum:    { icon: "bg-[#8a5560]/32 text-[#e6c8cc] border-[#8a5560]/60",
-             tile: "bg-gradient-to-br from-[#8a5560]/26 via-[#8a5560]/10 to-[#8a5560]/3 border-[#8a5560]/50",
-             bokeh: "bg-[#c79aa1]/35" },
+  // 暖恋爱族
+  love:       { icon: "bg-[#ff7a8c]/26 text-[#ffe0e7] border-[#ff7a8c]/60",
+                tile: "bg-gradient-to-br from-[#ff7a8c]/28 via-[#ff8f6b]/14 to-[#ff8f6b]/4 border-[#ff7a8c]/40",
+                bokeh: "bg-[#ff7a8c]/40" },
+  passion:    { icon: "bg-[#ff8f6b]/26 text-[#ffe1cc] border-[#ff8f6b]/60",
+                tile: "bg-gradient-to-br from-[#ff8f6b]/28 via-[#ffd176]/14 to-[#ffd176]/4 border-[#ff8f6b]/40",
+                bokeh: "bg-[#ffd176]/38" },
+  fever:      { icon: "bg-[#ffb88a]/26 text-[#ffe5cc] border-[#ffb88a]/60",
+                tile: "bg-gradient-to-br from-[#ffb88a]/28 via-[#ff7a8c]/14 to-[#ff7a8c]/4 border-[#ffb88a]/40",
+                bokeh: "bg-[#ff7a8c]/38" },
+  celebrate:  { icon: "bg-[#e8b86f]/26 text-[#ffe6b8] border-[#e8b86f]/60",
+                tile: "bg-gradient-to-br from-[#e8b86f]/28 via-[#ff8f6b]/14 to-[#ff7a8c]/5 border-[#e8b86f]/40",
+                bokeh: "bg-[#ff7a8c]/32" },
+  blossom:    { icon: "bg-[#ff8f6b]/26 text-[#ffe1cc] border-[#ff8f6b]/60",
+                tile: "bg-gradient-to-br from-[#ff8f6b]/26 via-[#ffc4d3]/16 to-[#ffc4d3]/4 border-[#ff8f6b]/40",
+                bokeh: "bg-[#ffc4d3]/40" },
+  confess:    { icon: "bg-[#ff7a8c]/28 text-[#ffd0db] border-[#ff7a8c]/60",
+                tile: "bg-gradient-to-br from-[#ff7a8c]/28 via-[#b5476b]/16 to-[#b5476b]/4 border-[#ff7a8c]/45",
+                bokeh: "bg-[#b5476b]/40" },
+  // 玄学夜调族
+  starlight:  { icon: "bg-[#ffd176]/24 text-[#fff1bf] border-[#ffd176]/60",
+                tile: "bg-gradient-to-br from-[#ffd176]/26 via-[#b08fc7]/18 to-[#6a4d7a]/8 border-[#ffd176]/40",
+                bokeh: "bg-[#b08fc7]/40" },
+  mystic:     { icon: "bg-[#b5476b]/32 text-[#ffc8d6] border-[#b5476b]/60",
+                tile: "bg-gradient-to-br from-[#b5476b]/28 via-[#5a3a6e]/18 to-[#5a3a6e]/5 border-[#b5476b]/45",
+                bokeh: "bg-[#5a3a6e]/50" },
+  intellect:  { icon: "bg-[#e0879b]/26 text-[#ffd6e0] border-[#e0879b]/60",
+                tile: "bg-gradient-to-br from-[#e0879b]/26 via-[#9b8fc7]/18 to-[#7a6aa8]/6 border-[#e0879b]/40",
+                bokeh: "bg-[#9b8fc7]/42" },
+  dream:      { icon: "bg-[#6a5a8a]/32 text-[#dbcde6] border-[#6a5a8a]/60",
+                tile: "bg-gradient-to-br from-[#6a5a8a]/30 via-[#9b8fc7]/16 to-[#d8b6ba]/6 border-[#6a5a8a]/45",
+                bokeh: "bg-[#9b8fc7]/40" },
+  // 樱粉柔软族
+  violet:     { icon: "bg-[#8a5560]/34 text-[#e6c8cc] border-[#8a5560]/60",
+                tile: "bg-gradient-to-br from-[#8a5560]/28 via-[#b87a80]/16 to-[#ffc4d3]/8 border-[#8a5560]/50",
+                bokeh: "bg-[#ffc4d3]/35" },
+  letter:     { icon: "bg-[#ffc4d3]/28 text-[#ffeaf0] border-[#ffc4d3]/65",
+                tile: "bg-gradient-to-br from-[#ffc4d3]/26 via-[#ff7a8c]/14 to-[#ff7a8c]/4 border-[#ffc4d3]/45",
+                bokeh: "bg-[#ff7a8c]/32" },
 };
 
 const ToolTile = ({ icon, title, desc, color, mascot }: { icon: string; title: string; desc: string; color: ToolColor; mascot?: string }) => {
