@@ -835,19 +835,19 @@ const ExploreView = () => {
               <span className="text-[10px] font-bold">点击上传聊天截图</span>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <ToolTile icon={<Heart className="w-5 h-5" />}        title="恋爱人格"     desc="测测你的隐藏属性"     color="rose" />
-            <ToolTile icon={<Flame className="w-5 h-5" />}        title="心动剧本"     desc="平行时空的邂逅"      color="coral" />
-            <ToolTile icon={<Star className="w-5 h-5" />}         title="AI 星座配对"   desc="12 星座今日心动指数"  color="gold" />
-            <ToolTile icon={<Wand2 className="w-5 h-5" />}        title="塔罗占卜"     desc="抽一张你的桃花牌"     color="berry" />
-            <ToolTile icon={<Brain className="w-5 h-5" />}        title="MBTI 契合"     desc="16 型人格谁最配你"   color="magenta" />
-            <ToolTile icon={<Thermometer className="w-5 h-5" />}  title="暧昧温度计"    desc="上传对话测心动指数"   color="peach" />
-            <ToolTile icon={<Users className="w-5 h-5" />}        title="虚拟恋人定制"  desc="解锁你的专属陪伴"     color="plum" />
-            <ToolTile icon={<Moon className="w-5 h-5" />}         title="梦境解码"     desc="梦到 TA 意味着…"     color="mauve" />
-            <ToolTile icon={<Cake className="w-5 h-5" />}         title="缘分生日"     desc="生辰看注定的人"       color="amber" />
-            <ToolTile icon={<Feather className="w-5 h-5" />}      title="AI 情书生成"   desc="一键写出心动情书"     color="blush" />
-            <ToolTile icon={<Compass className="w-5 h-5" />}      title="今日桃花运"    desc="今日心动方位指引"     color="coral" />
-            <ToolTile icon={<Mail className="w-5 h-5" />}         title="告白脚本"     desc="AI 设计最稳话术"     color="rose" />
+          <div className="grid grid-cols-3 gap-3">
+            <ToolTile icon={<Heart className="w-[18px] h-[18px]" />}       title="恋爱人格"     desc="隐藏属性"      color="rose" />
+            <ToolTile icon={<Flame className="w-[18px] h-[18px]" />}       title="心动剧本"     desc="平行邂逅"      color="coral" />
+            <ToolTile icon={<Star className="w-[18px] h-[18px]" />}        title="星座配对"     desc="今日心动"      color="gold" />
+            <ToolTile icon={<Wand2 className="w-[18px] h-[18px]" />}       title="塔罗占卜"     desc="抽桃花牌"      color="berry" />
+            <ToolTile icon={<Brain className="w-[18px] h-[18px]" />}       title="MBTI 契合"     desc="谁最配你"     color="magenta" />
+            <ToolTile icon={<Thermometer className="w-[18px] h-[18px]" />} title="暧昧温度"     desc="心动指数"      color="peach" />
+            <ToolTile icon={<Users className="w-[18px] h-[18px]" />}       title="虚拟恋人"     desc="专属陪伴"      color="plum" />
+            <ToolTile icon={<Moon className="w-[18px] h-[18px]" />}        title="梦境解码"     desc="梦到 TA"       color="mauve" />
+            <ToolTile icon={<Cake className="w-[18px] h-[18px]" />}        title="缘分生日"     desc="生辰命定"      color="amber" />
+            <ToolTile icon={<Feather className="w-[18px] h-[18px]" />}     title="AI 情书"      desc="心动手笔"      color="blush" />
+            <ToolTile icon={<Compass className="w-[18px] h-[18px]" />}     title="桃花运"      desc="心动方位"      color="coral" />
+            <ToolTile icon={<Mail className="w-[18px] h-[18px]" />}        title="告白脚本"     desc="最稳话术"      color="rose" />
           </div>
         </div>
       )}
@@ -895,21 +895,32 @@ const toolStyles: Record<ToolColor, ToolStyle> = {
 
 const ToolTile = ({ icon, title, desc, color }: { icon: React.ReactNode; title: string; desc: string; color: ToolColor }) => {
   const s = toolStyles[color];
+  // 加粗图标线条 → 卡通感
+  const chunkyIcon = React.isValidElement(icon)
+    ? React.cloneElement(icon as React.ReactElement<{ strokeWidth?: number }>, { strokeWidth: 2.6 })
+    : icon;
   return (
     <div
-      className={`relative rounded-3xl p-5 aspect-square overflow-hidden border backdrop-blur-md flex flex-col justify-between active:scale-[0.97] transition-transform ${s.tile}`}
+      className={`relative rounded-[22px] p-3 aspect-square overflow-hidden border-2 backdrop-blur-md flex flex-col justify-between active:scale-[0.94] active:translate-y-[2px] transition-all ${s.tile}`}
       style={{
+        // 卡通贴纸效果：顶部内嵌高光 + 底部内阴 + 实心偏移投影（像贴纸/积木叠出来）+ 软外阴
         boxShadow:
-          "inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.20), 0 8px 22px -10px rgba(0,0,0,0.35)",
+          "inset 0 1.5px 0 rgba(255,255,255,0.20), inset 0 -1.5px 0 rgba(0,0,0,0.25), 0 4px 0 rgba(0,0,0,0.32), 0 6px 14px -6px rgba(0,0,0,0.45)",
       }}
     >
-      <div className={`absolute -top-8 -right-8 w-28 h-28 rounded-full blur-2xl pointer-events-none ${s.bokeh}`} />
-      <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center border ${s.icon}`}>
-        {icon}
+      <div className={`absolute -top-6 -right-6 w-20 h-20 rounded-full blur-2xl pointer-events-none ${s.bokeh}`} />
+      <div
+        className={`relative z-10 w-9 h-9 rounded-2xl flex items-center justify-center border-2 ${s.icon}`}
+        style={{
+          boxShadow:
+            "inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.20), 0 2px 0 rgba(0,0,0,0.22)",
+        }}
+      >
+        {chunkyIcon}
       </div>
       <div className="relative z-10">
-        <h3 className="font-bold text-white mb-1 text-[15px] drop-shadow-[0_1px_0_rgba(0,0,0,0.4)]">{title}</h3>
-        <p className="text-[10px] text-white/65">{desc}</p>
+        <h3 className="font-black text-white text-[12.5px] leading-tight drop-shadow-[0_1px_0_rgba(0,0,0,0.5)]">{title}</h3>
+        <p className="text-[9.5px] text-white/70 leading-tight mt-0.5">{desc}</p>
       </div>
     </div>
   );
