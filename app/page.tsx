@@ -315,7 +315,7 @@ export function WarmUApp({
       case "match":
         return "from-[#26111a] to-[#12060c]";
       case "explore":
-        return "from-[#1a1325] to-[#0a0710]";
+        return "from-[#5a1f3d] to-[#23091a]";
       case "virtual":
         return "from-[#0a171c] to-[#04080a]";
       case "messages":
@@ -330,7 +330,7 @@ export function WarmUApp({
       case "match":
         return ["bg-pink-500/20", "bg-rose-500/20"];
       case "explore":
-        return ["bg-indigo-500/20", "bg-purple-500/20"];
+        return ["bg-pink-400/30", "bg-amber-300/20"];
       case "virtual":
         return ["bg-cyan-500/15", "bg-emerald-500/15"];
       case "messages":
@@ -817,10 +817,11 @@ const ExploreView = () => {
       ) : (
         <div className="space-y-4 animate-msg">
           <div className="glass-panel rounded-3xl p-5 relative overflow-hidden group border-white/5">
-            <div className="absolute right-0 top-0 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl" />
+            <div className="absolute right-0 top-0 w-32 h-32 bg-[#ff8f6b]/22 rounded-full blur-2xl" />
+            <div className="absolute -bottom-6 -left-4 w-24 h-24 bg-[#ffd176]/16 rounded-full blur-3xl" />
             <div className="flex justify-between items-start mb-3 relative z-10">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-300 border border-purple-500/30">
+                <div className="w-10 h-10 rounded-full bg-[#ff8f6b]/20 flex items-center justify-center text-[#ffb398] border border-[#ff8f6b]/40">
                   <MessageSquare className="w-5 h-5" />
                 </div>
                 <div>
