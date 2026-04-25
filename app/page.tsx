@@ -38,6 +38,14 @@ import {
   CreditCard,
   Gift,
   Users,
+  Star,
+  Brain,
+  Wand2,
+  Cake,
+  Mail,
+  Thermometer,
+  Compass,
+  Feather,
 } from "lucide-react";
 import { matchOrder, previewUsers, type PreviewUser } from "@/lib/mock-data/users/preview-users";
 
@@ -827,8 +835,18 @@ const ExploreView = () => {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <ToolTile icon={<Heart className="w-5 h-5" />} title="恋爱人格" desc="测测你的隐藏属性" color="rose" />
-            <ToolTile icon={<Flame className="w-5 h-5" />} title="心动剧本" desc="平行时空的邂逅" color="orange" />
+            <ToolTile icon={<Heart className="w-5 h-5" />}        title="恋爱人格"     desc="测测你的隐藏属性"     color="rose" />
+            <ToolTile icon={<Flame className="w-5 h-5" />}        title="心动剧本"     desc="平行时空的邂逅"      color="coral" />
+            <ToolTile icon={<Star className="w-5 h-5" />}         title="AI 星座配对"   desc="12 星座今日心动指数"  color="gold" />
+            <ToolTile icon={<Wand2 className="w-5 h-5" />}        title="塔罗占卜"     desc="抽一张你的桃花牌"     color="berry" />
+            <ToolTile icon={<Brain className="w-5 h-5" />}        title="MBTI 契合"     desc="16 型人格谁最配你"   color="magenta" />
+            <ToolTile icon={<Thermometer className="w-5 h-5" />}  title="暧昧温度计"    desc="上传对话测心动指数"   color="peach" />
+            <ToolTile icon={<Users className="w-5 h-5" />}        title="虚拟恋人定制"  desc="解锁你的专属陪伴"     color="plum" />
+            <ToolTile icon={<Moon className="w-5 h-5" />}         title="梦境解码"     desc="梦到 TA 意味着…"     color="mauve" />
+            <ToolTile icon={<Cake className="w-5 h-5" />}         title="缘分生日"     desc="生辰看注定的人"       color="amber" />
+            <ToolTile icon={<Feather className="w-5 h-5" />}      title="AI 情书生成"   desc="一键写出心动情书"     color="blush" />
+            <ToolTile icon={<Compass className="w-5 h-5" />}      title="今日桃花运"    desc="今日心动方位指引"     color="coral" />
+            <ToolTile icon={<Mail className="w-5 h-5" />}         title="告白脚本"     desc="AI 设计最稳话术"     color="rose" />
           </div>
         </div>
       )}
@@ -836,14 +854,29 @@ const ExploreView = () => {
   );
 };
 
-const ToolTile = ({ icon, title, desc, color }: { icon: React.ReactNode; title: string; desc: string; color: "rose" | "orange" }) => {
-  const colorClass = color === "rose" ? "bg-rose-500/20 text-rose-300 border-rose-500/30" : "bg-orange-500/20 text-orange-300 border-orange-500/30";
+type ToolColor = "rose" | "coral" | "gold" | "berry" | "magenta" | "peach" | "mauve" | "amber" | "blush" | "plum";
+
+const toolColors: Record<ToolColor, string> = {
+  rose:    "bg-[#ff7a8c]/18 text-[#ffa3b1] border-[#ff7a8c]/35", // 暖玫瑰
+  coral:   "bg-[#ff8f6b]/18 text-[#ffb398] border-[#ff8f6b]/35", // 珊瑚粉
+  gold:    "bg-[#ffd176]/16 text-[#ffd176] border-[#ffd176]/35", // 金
+  berry:   "bg-[#b5476b]/22 text-[#e88aa8] border-[#b5476b]/45", // 莓果
+  magenta: "bg-[#e0879b]/20 text-[#f0aebd] border-[#e0879b]/40", // 玫瑰粉
+  peach:   "bg-[#ffb88a]/20 text-[#ffcfa8] border-[#ffb88a]/35", // 蜜桃
+  mauve:   "bg-[#b87a80]/22 text-[#d8b6ba] border-[#b87a80]/40", // 暖紫灰
+  amber:   "bg-[#e8b86f]/18 text-[#f0cd92] border-[#e8b86f]/35", // 琥珀
+  blush:   "bg-[#ffc4d3]/14 text-[#ffd0db] border-[#ffc4d3]/30", // 樱花
+  plum:    "bg-[#8a5560]/25 text-[#c79aa1] border-[#8a5560]/45", // 深紫玫瑰
+};
+
+const ToolTile = ({ icon, title, desc, color }: { icon: React.ReactNode; title: string; desc: string; color: ToolColor }) => {
+  const colorClass = toolColors[color];
   return (
-    <div className="glass-panel rounded-3xl p-5 aspect-square relative border-white/5 flex flex-col justify-between">
+    <div className="glass-panel rounded-3xl p-5 aspect-square relative border-white/5 flex flex-col justify-between active:scale-[0.98] transition-transform">
       <div className={`w-10 h-10 rounded-full flex items-center justify-center border ${colorClass}`}>{icon}</div>
       <div>
-        <h3 className="font-bold text-white mb-1">{title}</h3>
-        <p className="text-[10px] text-white/50">{desc}</p>
+        <h3 className="font-bold text-white mb-1 text-[15px]">{title}</h3>
+        <p className="text-[10px] text-white/55">{desc}</p>
       </div>
     </div>
   );
