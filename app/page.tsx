@@ -280,7 +280,7 @@ export function WarmUApp({
       case "messages":
         return "from-[#1f1118] to-[#0d0508]";
       case "profile":
-        return "from-[#3a1225] via-[#241020] to-[#120711]";
+        return "from-[#1c1511] to-[#0a0604]";
     }
   };
 
@@ -295,7 +295,7 @@ export function WarmUApp({
       case "messages":
         return ["bg-rose-500/20", "bg-pink-500/20"];
       case "profile":
-        return ["bg-pink-300/25", "bg-rose-400/20"];
+        return ["bg-orange-500/10", "bg-red-500/10"];
     }
   };
 
@@ -1327,10 +1327,10 @@ const SettingsRow = ({ icon, title, desc, onClick, danger, chevron = true, right
   return (
     <button
       onClick={onClick ? handleClick : undefined}
-      className="w-full flex items-center gap-3 px-4 py-3.5 rounded-[24px] bg-white/[0.075] border border-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_32px_rgba(120,28,75,0.12)] backdrop-blur-2xl active:bg-white/10 active:scale-[0.99] transition-all"
+      className="w-full flex items-center gap-3 px-4 py-3.5 glass-panel border-white/5 active:bg-white/5 active:scale-[0.99] transition-all"
     >
       {icon && (
-        <div className="relative flex-shrink-0 w-11 h-11 rounded-2xl bg-white/8 border border-white/12 flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]">
+        <div className="relative flex-shrink-0 w-11 h-11 flex items-center justify-center">
           {style && (
             <div
               className="absolute inset-0 rounded-full blur-md opacity-20 pointer-events-none"
@@ -1402,11 +1402,11 @@ const SettingsRow = ({ icon, title, desc, onClick, danger, chevron = true, right
         </div>
       )}
       <div className="flex-1 text-left min-w-0">
-        <div className={`text-[13px] font-bold ${danger ? "text-rose-300" : "text-[#fff4f8]"}`}>{title}</div>
-        {desc && <div className="text-[10px] text-pink-100/45 mt-0.5 truncate">{desc}</div>}
+        <div className={`text-[13px] font-bold ${danger ? "text-rose-400" : "text-white/90"}`}>{title}</div>
+        {desc && <div className="text-[10px] text-white/40 mt-0.5 truncate">{desc}</div>}
       </div>
       {right}
-      {chevron && !right && <ChevronRight className="w-4 h-4 text-pink-100/35 flex-shrink-0" />}
+      {chevron && !right && <ChevronRight className="w-4 h-4 text-white/30 flex-shrink-0" />}
     </button>
   );
 };
@@ -1534,54 +1534,45 @@ const ProfileView = () => {
   }
 
   return (
-    <div className="relative px-5 pt-14 pb-8 animate-msg flex flex-col overflow-hidden">
-      <div className="absolute -top-20 -right-24 w-56 h-56 rounded-full bg-pink-300/20 blur-[70px] pointer-events-none" />
-      <div className="absolute top-32 -left-24 w-48 h-48 rounded-full bg-fuchsia-300/14 blur-[70px] pointer-events-none" />
-      <div className="relative flex items-center gap-4 mb-6">
-        <div className="relative w-20 h-20 rounded-full p-[3px] bg-gradient-to-br from-pink-200 via-rose-300 to-fuchsia-300 shadow-[0_0_30px_rgba(244,114,182,0.32)]">
-          <div className="w-full h-full rounded-full bg-white/10 border border-white/35 shadow-md overflow-hidden">
+    <div className="px-5 pt-14 pb-8 animate-msg flex flex-col">
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-20 h-20 rounded-full bg-white/10 border-2 border-white/20 shadow-md overflow-hidden">
           <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=200&q=80" className="w-full h-full object-cover" alt="Me" />
-          </div>
-          <div className="absolute -right-1 bottom-1 w-6 h-6 rounded-full bg-gradient-to-br from-pink-400 to-rose-400 border-2 border-[#3a1225] flex items-center justify-center shadow-lg shadow-pink-900/30">
-            <Heart className="w-3 h-3 text-white fill-white" />
-          </div>
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h2 className="font-serif text-2xl font-bold text-[#fff4f8] drop-shadow-[0_0_12px_rgba(244,114,182,0.25)]">老大</h2>
-            <Crown className="w-4 h-4 text-pink-200 fill-pink-200/25" />
+            <h2 className="font-serif text-2xl font-bold text-[#fdf8fa]">老大</h2>
+            <Crown className="w-4 h-4 text-[#e3a891]" />
           </div>
-          <p className="text-xs text-pink-100/58 font-medium flex items-center gap-1">
+          <p className="text-xs text-white/50 font-medium flex items-center gap-1">
             ID: 893204 · <MapPin className="w-3 h-3" /> 上海
           </p>
         </div>
-        <button onClick={() => setSubView("account")} className="w-10 h-10 rounded-full bg-white/9 border border-white/14 backdrop-blur-2xl flex items-center justify-center text-pink-100/70 active:scale-95 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]">
+        <button onClick={() => setSubView("account")} className="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-white/60 active:scale-95">
           <Settings className="w-4 h-4" />
         </button>
       </div>
 
       <button
         onClick={() => setSubView("membership")}
-        className="relative w-full rounded-[30px] bg-gradient-to-br from-pink-300/26 via-rose-400/18 to-fuchsia-500/12 p-5 mb-6 shadow-[0_18px_48px_rgba(194,24,91,0.20),inset_0_1px_0_rgba(255,255,255,0.22)] flex flex-col justify-between border border-pink-100/18 text-left active:scale-[0.99] transition-transform overflow-hidden backdrop-blur-2xl"
+        className="w-full rounded-3xl vip-card-glow p-5 mb-6 shadow-xl shadow-red-900/10 flex flex-col justify-between border border-red-300/10 text-left active:scale-[0.99] transition-transform"
       >
-        <div className="absolute -right-10 -top-12 w-36 h-36 rounded-full bg-white/16 blur-2xl" />
-        <div className="absolute left-0 bottom-0 w-full h-px bg-gradient-to-r from-transparent via-pink-100/55 to-transparent" />
         <div className="flex justify-between items-center z-10 mb-3">
-          <div className="flex items-center gap-2 text-pink-100">
+          <div className="flex items-center gap-2 text-[#e3a891]">
             <Crown className="w-5 h-5" />
             <span className="font-serif font-black text-[15px] tracking-widest">SVIP 尊享会员</span>
           </div>
-          <span className="text-[10px] text-pink-100/70 font-medium">到期 08.23</span>
+          <span className="text-[10px] text-[#e3a891]/70 font-medium">到期 08.23</span>
         </div>
         <div className="flex justify-between items-end z-10">
           <div>
-            <div className="text-[10px] text-pink-50/78 font-bold">解锁无限制 AI 语音与专属记忆</div>
+            <div className="text-[10px] text-[#e3a891]/80 font-bold">解锁无限制 AI 语音与专属记忆</div>
           </div>
-          <span className="px-4 py-1.5 bg-gradient-to-r from-pink-100 to-rose-200 text-[#7a2147] text-xs font-bold rounded-full shadow-[0_8px_20px_rgba(244,114,182,0.25)]">续费</span>
+          <span className="px-4 py-1.5 bg-gradient-to-r from-[#e3a891] to-[#b87c67] text-[#2d1622] text-xs font-bold rounded-full shadow-md">续费</span>
         </div>
       </button>
 
-      <div className="relative space-y-2 mb-3">
+      <div className="space-y-2 mb-3">
         <SettingsRow
           tone="pink"
           icon={<Heart className="w-7 h-7 fill-current" />}
@@ -1605,7 +1596,7 @@ const ProfileView = () => {
         />
       </div>
 
-      <div className="relative space-y-2 mb-3">
+      <div className="space-y-2 mb-3">
         <SettingsRow tone="indigo" icon={<User className="w-5 h-5" />} title="账号与安全" onClick={() => setSubView("account")} />
         <SettingsRow tone="amber" icon={<Bell className="w-7 h-7 fill-current" />} title="通知设置" onClick={() => setSubView("notifications")} />
         <SettingsRow tone="emerald" icon={<Shield className="w-5 h-5" />} title="隐私设置" onClick={() => setSubView("privacy")} />
@@ -1615,7 +1606,7 @@ const ProfileView = () => {
 
       <button
         onClick={() => setIsLoggedIn(false)}
-        className="w-full py-3 rounded-2xl text-[13px] font-bold text-rose-200 bg-white/[0.06] border border-rose-200/15 backdrop-blur-xl active:bg-rose-500/10 flex items-center justify-center gap-2 mt-3"
+        className="w-full py-3 rounded-2xl text-[13px] font-bold text-rose-400 glass-panel border-rose-500/20 active:bg-rose-500/10 flex items-center justify-center gap-2 mt-3"
       >
         <LogOut className="w-4 h-4" />
         退出登录
@@ -1977,24 +1968,24 @@ const TabBar = ({ activeTab, setActiveTab }: { activeTab: TabId; setActiveTab: (
   ];
 
   return (
-    <div className="absolute bottom-6 left-4 right-4 h-[68px] rounded-[2rem] flex items-center justify-between px-2 z-40 bg-[#201018]/72 border border-pink-100/14 backdrop-blur-2xl shadow-[0_16px_44px_rgba(80,10,46,0.45),inset_0_1px_0_rgba(255,255,255,0.14)]">
+    <div className="absolute bottom-6 left-4 right-4 h-[68px] glass-panel rounded-[2rem] flex items-center justify-between px-2 z-40 bg-[#000000]/60 shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
         if (tab.isCenter) {
           return (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)} className="relative flex flex-col items-center justify-center w-16 h-16 -mt-6">
-              <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 shadow-lg border-2 ${isActive ? "bg-gradient-to-br from-pink-400 via-fuchsia-400 to-rose-400 border-pink-100/80 shadow-[0_0_26px_rgba(244,114,182,0.75)]" : "bg-gradient-to-br from-pink-400 to-fuchsia-500 border-pink-200/60 shadow-pink-500/50"}`}>
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 shadow-lg border-2 ${isActive ? "bg-cyan-500 border-cyan-300 shadow-[0_0_20px_#22d3ee]" : "bg-gradient-to-br from-pink-500 to-purple-600 border-pink-300/50 shadow-pink-500/50"}`}>
                 <Icon className="w-6 h-6 text-white fill-white/20" strokeWidth={2.5} />
               </div>
-              <span className={`mt-1 text-[10px] font-bold ${isActive ? "text-pink-100" : "text-pink-100/55"}`}>{tab.label}</span>
+              <span className={`mt-1 text-[10px] font-bold ${isActive ? "text-cyan-400" : "text-white/60"}`}>{tab.label}</span>
             </button>
           );
         }
         return (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)} className="relative flex flex-col items-center justify-center w-12 h-14 transition-all duration-300">
-            <Icon className={`w-[22px] h-[22px] mb-1 transition-colors duration-300 ${isActive ? "text-pink-200 fill-pink-300/25 drop-shadow-[0_0_10px_rgba(244,114,182,0.6)]" : "text-pink-100/38"}`} strokeWidth={isActive ? 2.5 : 2} />
-            <span className={`text-[10px] font-bold transition-colors duration-300 ${isActive ? "text-pink-100" : "text-pink-100/38"}`}>{tab.label}</span>
+            <Icon className={`w-[22px] h-[22px] mb-1 transition-colors duration-300 ${isActive ? "text-pink-400 fill-pink-500/20" : "text-[#8a6b7d]"}`} strokeWidth={isActive ? 2.5 : 2} />
+            <span className={`text-[10px] font-bold transition-colors duration-300 ${isActive ? "text-pink-300" : "text-[#8a6b7d]"}`}>{tab.label}</span>
           </button>
         );
       })}
