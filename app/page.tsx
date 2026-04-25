@@ -133,21 +133,54 @@ const GlobalStyles = () => (
       z-index: 5;
     }
     .vip-card-glow {
-      background: linear-gradient(135deg, #2d1622 0%, #170710 100%);
       position: relative;
       overflow: hidden;
+      background:
+        radial-gradient(ellipse 110% 75% at 18% 0%, rgba(255,209,118,0.18), transparent 60%),
+        radial-gradient(ellipse 95% 80% at 85% 100%, rgba(255,143,107,0.22), transparent 65%),
+        linear-gradient(135deg, #3a1a26 0%, #220e18 55%, #170710 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,217,168,0.22),
+        inset 0 -1px 0 rgba(0,0,0,0.55),
+        inset 1px 0 0 rgba(255,209,118,0.10),
+        inset -1px 0 0 rgba(0,0,0,0.40),
+        inset 0 0 28px rgba(255,143,107,0.10),
+        0 14px 36px -16px rgba(255,143,107,0.45),
+        0 6px 18px -8px rgba(0,0,0,0.55);
     }
     .vip-card-glow::after {
       content: '';
       position: absolute;
       top: -50%; left: -50%; width: 200%; height: 200%;
-      background: linear-gradient(to right, rgba(255,182,193,0) 0%, rgba(255,182,193,0.15) 50%, rgba(255,182,193,0) 100%);
-      transform: rotate(30deg);
-      animation: sweep 6s infinite linear;
+      background: linear-gradient(to right, rgba(255,209,118,0) 0%, rgba(255,217,168,0.16) 50%, rgba(255,209,118,0) 100%);
+      transform: rotate(28deg);
+      animation: sweep 7s infinite linear;
+      pointer-events: none;
+      z-index: 2;
     }
     @keyframes sweep {
-      0% { transform: translateX(-100%) rotate(30deg); }
-      100% { transform: translateX(100%) rotate(30deg); }
+      0% { transform: translateX(-100%) rotate(28deg); }
+      100% { transform: translateX(100%) rotate(28deg); }
+    }
+    @keyframes vip-wave-flow {
+      0%   { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
+    }
+    .vip-wave-rose { animation: vip-wave-flow 16s linear infinite; }
+    .vip-wave-gold { animation: vip-wave-flow 11s linear infinite; }
+    .vip-renew-btn {
+      background: linear-gradient(180deg, #ffe1b8 0%, #e3a891 48%, #b87c67 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.60),
+        inset 0 -1px 0 rgba(83,38,28,0.35),
+        0 4px 10px -2px rgba(184,124,103,0.55),
+        0 1px 2px rgba(0,0,0,0.30);
+    }
+    .vip-renew-btn:active {
+      box-shadow:
+        inset 0 1px 2px rgba(83,38,28,0.45),
+        inset 0 -1px 0 rgba(255,255,255,0.20),
+        0 1px 2px rgba(0,0,0,0.20);
     }
     @keyframes spin-slow {
       from { transform: rotate(0deg); }
@@ -1557,20 +1590,63 @@ const ProfileView = () => {
 
       <button
         onClick={() => setSubView("membership")}
-        className="w-full rounded-3xl vip-card-glow p-5 mb-6 shadow-xl shadow-red-900/10 flex flex-col justify-between border border-red-300/10 text-left active:scale-[0.99] transition-transform"
+        className="relative w-full rounded-3xl vip-card-glow p-5 mb-6 text-left active:scale-[0.985] transition-transform"
       >
-        <div className="flex justify-between items-center z-10 mb-3">
-          <div className="flex items-center gap-2 text-[#e3a891]">
-            <Crown className="w-5 h-5" />
-            <span className="font-serif font-black text-[15px] tracking-widest">SVIP 尊享会员</span>
+        {/* 拟态暖光波浪层（玫瑰 + 金双层流动） */}
+        <svg
+          className="absolute left-0 right-0 bottom-0 w-[200%] h-20 vip-wave-rose pointer-events-none opacity-40 mix-blend-screen"
+          viewBox="0 0 1200 80"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="vipWaveRose" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stopColor="#ff8f6b" stopOpacity="0.85" />
+              <stop offset="1" stopColor="#ff7a8c" stopOpacity="0.85" />
+            </linearGradient>
+          </defs>
+          <path d="M0 50 Q 150 14 300 50 T 600 50 T 900 50 T 1200 50 V 80 H 0 Z" fill="url(#vipWaveRose)" />
+        </svg>
+        <svg
+          className="absolute left-0 right-0 bottom-0 w-[200%] h-16 vip-wave-gold pointer-events-none opacity-30 mix-blend-screen"
+          viewBox="0 0 1200 80"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="vipWaveGold" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stopColor="#ffd176" stopOpacity="0.9" />
+              <stop offset="1" stopColor="#e8b86f" stopOpacity="0.9" />
+            </linearGradient>
+          </defs>
+          <path d="M0 30 Q 200 70 400 30 T 800 30 T 1200 30 V 80 H 0 Z" fill="url(#vipWaveGold)" />
+        </svg>
+        {/* 角落金色 bokeh */}
+        <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-[#ffd176] opacity-[0.12] blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 flex justify-between items-center mb-3">
+          <div className="flex items-center gap-2 text-[#ffd9a8]">
+            <Crown
+              className="w-5 h-5"
+              style={{ filter: 'drop-shadow(0 1px 0 rgba(0,0,0,0.5)) drop-shadow(0 0 8px rgba(255,209,118,0.55))' }}
+            />
+            <span
+              className="font-serif font-black text-[15px] tracking-widest"
+              style={{ textShadow: '0 1px 0 rgba(0,0,0,0.45)' }}
+            >
+              SVIP 尊享会员
+            </span>
           </div>
-          <span className="text-[10px] text-[#e3a891]/70 font-medium">到期 08.23</span>
+          <span className="text-[10px] text-[#e3a891]/80 font-medium">到期 08.23</span>
         </div>
-        <div className="flex justify-between items-end z-10">
-          <div>
-            <div className="text-[10px] text-[#e3a891]/80 font-bold">解锁无限制 AI 语音与专属记忆</div>
+        <div className="relative z-10 flex justify-between items-end">
+          <div
+            className="text-[10px] text-[#ffd9a8]/85 font-bold"
+            style={{ textShadow: '0 1px 0 rgba(0,0,0,0.4)' }}
+          >
+            解锁无限制 AI 语音与专属记忆
           </div>
-          <span className="px-4 py-1.5 bg-gradient-to-r from-[#e3a891] to-[#b87c67] text-[#2d1622] text-xs font-bold rounded-full shadow-md">续费</span>
+          <span className="vip-renew-btn px-4 py-1.5 text-[#3a1a1f] text-xs font-black rounded-full">续费</span>
         </div>
       </button>
 
