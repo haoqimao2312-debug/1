@@ -38,14 +38,6 @@ import {
   CreditCard,
   Gift,
   Users,
-  Star,
-  Brain,
-  Wand2,
-  Cake,
-  Mail,
-  Thermometer,
-  Compass,
-  Feather,
 } from "lucide-react";
 import { matchOrder, previewUsers, type PreviewUser } from "@/lib/mock-data/users/preview-users";
 
@@ -821,8 +813,9 @@ const ExploreView = () => {
             <div className="absolute -bottom-6 -left-4 w-24 h-24 bg-[#ffd176]/16 rounded-full blur-3xl" />
             <div className="flex justify-between items-start mb-3 relative z-10">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#ff8f6b]/20 flex items-center justify-center text-[#ffb398] border border-[#ff8f6b]/40">
-                  <MessageSquare className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-2xl bg-[#ff8f6b]/22 flex items-center justify-center border-2 border-[#ff8f6b]/45"
+                     style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.18), 0 2px 0 rgba(0,0,0,0.22)" }}>
+                  <span className="text-[20px] leading-none drop-shadow-[0_1px_0_rgba(0,0,0,0.35)]">💬</span>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">AI 聊天破冰辅助</h3>
@@ -836,18 +829,18 @@ const ExploreView = () => {
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            <ToolTile icon={<Heart className="w-[18px] h-[18px]" />}       title="恋爱人格"     desc="隐藏属性"      color="rose" />
-            <ToolTile icon={<Flame className="w-[18px] h-[18px]" />}       title="心动剧本"     desc="平行邂逅"      color="coral" />
-            <ToolTile icon={<Star className="w-[18px] h-[18px]" />}        title="星座配对"     desc="今日心动"      color="gold" />
-            <ToolTile icon={<Wand2 className="w-[18px] h-[18px]" />}       title="塔罗占卜"     desc="抽桃花牌"      color="berry" />
-            <ToolTile icon={<Brain className="w-[18px] h-[18px]" />}       title="MBTI 契合"     desc="谁最配你"     color="magenta" />
-            <ToolTile icon={<Thermometer className="w-[18px] h-[18px]" />} title="暧昧温度"     desc="心动指数"      color="peach" />
-            <ToolTile icon={<Users className="w-[18px] h-[18px]" />}       title="虚拟恋人"     desc="专属陪伴"      color="plum" />
-            <ToolTile icon={<Moon className="w-[18px] h-[18px]" />}        title="梦境解码"     desc="梦到 TA"       color="mauve" />
-            <ToolTile icon={<Cake className="w-[18px] h-[18px]" />}        title="缘分生日"     desc="生辰命定"      color="amber" />
-            <ToolTile icon={<Feather className="w-[18px] h-[18px]" />}     title="AI 情书"      desc="心动手笔"      color="blush" />
-            <ToolTile icon={<Compass className="w-[18px] h-[18px]" />}     title="桃花运"      desc="心动方位"      color="coral" />
-            <ToolTile icon={<Mail className="w-[18px] h-[18px]" />}        title="告白脚本"     desc="最稳话术"      color="rose" />
+            <ToolTile icon="💖" title="恋爱人格"   desc="隐藏属性"   color="rose" />
+            <ToolTile icon="🔥" title="心动剧本"   desc="平行邂逅"   color="coral" />
+            <ToolTile icon="⭐" title="星座配对"   desc="今日心动"   color="gold" />
+            <ToolTile icon="🔮" title="塔罗占卜"   desc="抽桃花牌"   color="berry" />
+            <ToolTile icon="🧠" title="MBTI 契合"   desc="谁最配你"   color="magenta" />
+            <ToolTile icon="🌡️" title="暧昧温度"   desc="心动指数"   color="peach" />
+            <ToolTile icon="💑" title="虚拟恋人"   desc="专属陪伴"   color="plum" />
+            <ToolTile icon="🌙" title="梦境解码"   desc="梦到 TA"    color="mauve" />
+            <ToolTile icon="🎂" title="缘分生日"   desc="生辰命定"   color="amber" />
+            <ToolTile icon="💌" title="AI 情书"    desc="心动手笔"   color="blush" />
+            <ToolTile icon="🌸" title="桃花运"    desc="心动方位"   color="coral" />
+            <ToolTile icon="💘" title="告白脚本"   desc="最稳话术"   color="rose" />
           </div>
         </div>
       )}
@@ -893,12 +886,8 @@ const toolStyles: Record<ToolColor, ToolStyle> = {
              bokeh: "bg-[#c79aa1]/35" },
 };
 
-const ToolTile = ({ icon, title, desc, color }: { icon: React.ReactNode; title: string; desc: string; color: ToolColor }) => {
+const ToolTile = ({ icon, title, desc, color }: { icon: string; title: string; desc: string; color: ToolColor }) => {
   const s = toolStyles[color];
-  // 加粗图标线条 → 卡通感
-  const chunkyIcon = React.isValidElement(icon)
-    ? React.cloneElement(icon as React.ReactElement<{ strokeWidth?: number }>, { strokeWidth: 2.6 })
-    : icon;
   return (
     <div
       className={`relative rounded-[22px] p-3 aspect-square overflow-hidden border-2 backdrop-blur-md flex flex-col justify-between active:scale-[0.94] active:translate-y-[2px] transition-all ${s.tile}`}
@@ -916,7 +905,7 @@ const ToolTile = ({ icon, title, desc, color }: { icon: React.ReactNode; title: 
             "inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.20), 0 2px 0 rgba(0,0,0,0.22)",
         }}
       >
-        {chunkyIcon}
+        <span className="text-[20px] leading-none drop-shadow-[0_1px_0_rgba(0,0,0,0.35)]">{icon}</span>
       </div>
       <div className="relative z-10">
         <h3 className="font-black text-white text-[12.5px] leading-tight drop-shadow-[0_1px_0_rgba(0,0,0,0.5)]">{title}</h3>
