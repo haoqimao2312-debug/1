@@ -1498,7 +1498,7 @@ const SettingsRow = ({ icon, title, desc, onClick, danger, chevron = true, right
     <button
       onClick={onClick ? handleClick : undefined}
       style={style ? { borderColor: style.border } : undefined}
-      className="w-full flex items-center gap-3 px-4 py-3.5 rounded-[20px] bg-gradient-to-br from-[#6a3a82] to-[#42205a] border-2 border-[#7a4f9a]/35 active:scale-[0.99] active:brightness-110 transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_4px_14px_-4px_rgba(0,0,0,0.45)]"
+      className="w-full flex items-center gap-3 px-4 py-3.5 rounded-[20px] bg-gradient-to-br from-[#b06b86] to-[#7a3e54] border-2 border-[#7a4f9a]/35 active:scale-[0.99] active:brightness-110 transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_4px_14px_-4px_rgba(0,0,0,0.45)]"
     >
       {icon && (
         <div className="relative flex-shrink-0 w-11 h-11 flex items-center justify-center">
