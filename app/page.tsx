@@ -313,7 +313,7 @@ export function WarmUApp({
       case "messages":
         return "from-[#1f1118] to-[#0d0508]";
       case "profile":
-        return "from-[#3a0f1f] to-[#1a0610]";
+        return "from-[#4a1a32] to-[#1d0814]";
     }
   };
 
@@ -328,7 +328,7 @@ export function WarmUApp({
       case "messages":
         return ["bg-rose-500/20", "bg-pink-500/20"];
       case "profile":
-        return ["bg-pink-500/22", "bg-rose-500/20"];
+        return ["bg-pink-400/28", "bg-amber-300/18"];
     }
   };
 
