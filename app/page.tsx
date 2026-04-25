@@ -38,8 +38,10 @@ import {
   CreditCard,
   Gift,
   Users,
+  Sun,
 } from "lucide-react";
 import { matchOrder, previewUsers, type PreviewUser } from "@/lib/mock-data/users/preview-users";
+import { useThemeStore } from "@/lib/store/theme";
 
 type TabId = "match" | "explore" | "virtual" | "messages" | "profile";
 type ChatTarget = { name: string; isAI?: boolean };
@@ -73,6 +75,53 @@ const GlobalStyles = () => (
       background: rgba(255, 255, 255, 0.06);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* ====== 白天模式全局覆写 ====== */
+    [data-theme="light"] body { background-color: #fdf3ec; color: #3a1f2a; }
+
+    [data-theme="light"] .text-white { color: #3a1f2a; }
+    [data-theme="light"] .text-white\\/95 { color: rgba(58,31,42,0.95); }
+    [data-theme="light"] .text-white\\/90 { color: rgba(58,31,42,0.90); }
+    [data-theme="light"] .text-white\\/85 { color: rgba(58,31,42,0.85); }
+    [data-theme="light"] .text-white\\/80 { color: rgba(58,31,42,0.80); }
+    [data-theme="light"] .text-white\\/75 { color: rgba(58,31,42,0.75); }
+    [data-theme="light"] .text-white\\/70 { color: rgba(58,31,42,0.70); }
+    [data-theme="light"] .text-white\\/65 { color: rgba(58,31,42,0.65); }
+    [data-theme="light"] .text-white\\/62 { color: rgba(58,31,42,0.62); }
+    [data-theme="light"] .text-white\\/60 { color: rgba(58,31,42,0.60); }
+    [data-theme="light"] .text-white\\/55 { color: rgba(58,31,42,0.55); }
+    [data-theme="light"] .text-white\\/50 { color: rgba(58,31,42,0.50); }
+    [data-theme="light"] .text-white\\/45 { color: rgba(112,76,86,0.85); }
+    [data-theme="light"] .text-white\\/40 { color: rgba(122,86,96,0.85); }
+    [data-theme="light"] .text-white\\/35 { color: rgba(132,96,106,0.85); }
+    [data-theme="light"] .text-white\\/30 { color: rgba(140,108,118,0.85); }
+    [data-theme="light"] .text-white\\/25 { color: rgba(150,118,128,0.80); }
+    [data-theme="light"] .text-white\\/20 { color: rgba(160,128,138,0.80); }
+    [data-theme="light"] .text-\\[\\#fdf8fa\\] { color: #3a1f2a; }
+
+    [data-theme="light"] .glass-panel {
+      background: rgba(255, 245, 238, 0.62);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(212, 168, 144, 0.32);
+      box-shadow: 0 6px 22px rgba(184,124,103,0.14);
+    }
+    [data-theme="light"] .glass-input {
+      background: rgba(255, 245, 238, 0.75);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(212, 168, 144, 0.38);
+    }
+    /* 顶栏小图标 */
+    [data-theme="light"] .topbar-icon-box {
+      background: rgba(255, 245, 238, 0.7);
+      border: 1px solid rgba(212, 168, 144, 0.35);
+      color: #3a1f2a;
+    }
+    /* TabBar 外壳：白天换浅奶油底 */
+    [data-theme="light"] .glass-panel.bg-\\[\\#000000\\]\\/60 {
+      background: rgba(255, 245, 238, 0.85) !important;
+      border: 1px solid rgba(212, 168, 144, 0.35) !important;
     }
     .avatar-ring {
       position: absolute;
@@ -302,7 +351,20 @@ export function WarmUApp({
     setTimeout(() => setShowSplash(false), 800);
   };
 
+  const theme = useThemeStore((s) => s.theme);
+  const isLight = theme === "light";
+
   const getBgClass = (tab: TabId) => {
+    if (isLight) {
+      // 白天模式：奶油暖光 + 玫瑰糖霜，恋爱温度延续到日间
+      switch (tab) {
+        case "match":     return "from-[#fff0f3] to-[#ffd9e1]";
+        case "explore":   return "from-[#fff2e8] to-[#ffd9e2]";
+        case "virtual":   return "from-[#f0f5ff] to-[#dce6ff]";
+        case "messages":  return "from-[#fff0eb] to-[#ffd9d2]";
+        case "profile":   return "from-[#fff0f8] to-[#f5d8eb]";
+      }
+    }
     switch (tab) {
       case "match":
         return "from-[#26111a] to-[#12060c]";
@@ -318,6 +380,15 @@ export function WarmUApp({
   };
 
   const getOrbColors = (tab: TabId) => {
+    if (isLight) {
+      switch (tab) {
+        case "match":     return ["bg-pink-300/40", "bg-rose-200/35"];
+        case "explore":   return ["bg-pink-300/40", "bg-amber-200/35"];
+        case "virtual":   return ["bg-sky-300/30", "bg-indigo-200/25"];
+        case "messages":  return ["bg-rose-300/40", "bg-pink-200/35"];
+        case "profile":   return ["bg-[#e8a8c8]/45", "bg-amber-200/30"];
+      }
+    }
     switch (tab) {
       case "match":
         return ["bg-pink-500/20", "bg-rose-500/20"];
@@ -336,9 +407,9 @@ export function WarmUApp({
   const orbs = getOrbColors(activeTab);
 
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+    <div className={`min-h-screen ${isLight ? "bg-[#fdf3ec]" : "bg-[#050505]"} flex items-center justify-center transition-colors duration-700`} data-theme={theme}>
       <GlobalStyles />
-      <div className={`relative w-full h-screen overflow-hidden bg-gradient-to-br ${currentBg} text-white md:max-w-[390px] md:h-[844px] md:rounded-[40px] md:border-[8px] md:border-[#202020] md:shadow-2xl md:my-8 mx-auto md:max-h-screen transition-colors duration-1000`}>
+      <div className={`relative w-full h-screen overflow-hidden bg-gradient-to-br ${currentBg} ${isLight ? "text-[#3a1f2a]" : "text-white"} md:max-w-[390px] md:h-[844px] md:rounded-[40px] md:border-[8px] ${isLight ? "md:border-[#e8d2c4]" : "md:border-[#202020]"} md:shadow-2xl md:my-8 mx-auto md:max-h-screen transition-colors duration-1000`}>
         {showSplash && <SplashView onEnter={handleEnterApp} isLeaving={isLeavingSplash} />}
 
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -1524,6 +1595,7 @@ const dangerToneStyle: ToneStyle = {
 
 const SettingsRow = ({ icon, title, desc, onClick, danger, chevron = true, right, tone }: { icon?: React.ReactNode; title: string; desc?: string; onClick?: () => void; danger?: boolean; chevron?: boolean; right?: React.ReactNode; tone?: SettingsTone }) => {
   const [burst, setBurst] = useState(0);
+  const isLight = useThemeStore((s) => s.theme === "light");
   const style: ToneStyle | null = danger ? dangerToneStyle : tone ? settingsToneStyles[tone] : null;
 
   const sizedIcon = (() => {
@@ -1547,7 +1619,11 @@ const SettingsRow = ({ icon, title, desc, onClick, danger, chevron = true, right
     <button
       onClick={onClick ? handleClick : undefined}
       style={style ? { borderColor: style.border } : undefined}
-      className="w-full flex items-center gap-3 px-4 py-3.5 rounded-[20px] bg-gradient-to-br from-[#3d2c44] to-[#23172c] border-2 border-[#7a4f9a]/35 active:scale-[0.99] active:brightness-110 transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.10),inset_0_-1px_0_rgba(0,0,0,0.30),0_4px_14px_-4px_rgba(0,0,0,0.50)]"
+      className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-[20px] border-2 active:scale-[0.99] transition-all ${
+        isLight
+          ? "bg-gradient-to-br from-[#fff8f3] to-[#ffe2d2] border-[#d4a890]/45 active:brightness-95 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),inset_0_-1px_0_rgba(212,168,144,0.20),0_4px_12px_-4px_rgba(184,124,103,0.25)]"
+          : "bg-gradient-to-br from-[#3d2c44] to-[#23172c] border-[#7a4f9a]/35 active:brightness-110 shadow-[inset_0_1px_0_rgba(255,255,255,0.10),inset_0_-1px_0_rgba(0,0,0,0.30),0_4px_14px_-4px_rgba(0,0,0,0.50)]"
+      }`}
     >
       {icon && (
         <div className="relative flex-shrink-0 w-11 h-11 flex items-center justify-center">
@@ -1558,7 +1634,7 @@ const SettingsRow = ({ icon, title, desc, onClick, danger, chevron = true, right
             />
           )}
           <motion.span
-            className={`relative ${style?.icon ?? "text-white/70"}`}
+            className={`relative ${style?.icon ?? (isLight ? "text-[#7a5560]" : "text-white/70")}`}
             style={style ? { filter: `drop-shadow(0 1px 2px rgba(0,0,0,0.4))` } : undefined}
             animate={burst > 0 ? { scale: [1, 0.82, 1.15, 1] } : undefined}
             transition={{ duration: 0.5, ease: "easeOut" }}
@@ -1622,11 +1698,11 @@ const SettingsRow = ({ icon, title, desc, onClick, danger, chevron = true, right
         </div>
       )}
       <div className="flex-1 text-left min-w-0">
-        <div className={`text-[13px] font-bold ${danger ? "text-rose-400" : "text-white/90"}`}>{title}</div>
-        {desc && <div className="text-[10px] text-white/40 mt-0.5 truncate">{desc}</div>}
+        <div className={`text-[13px] font-bold ${danger ? "text-rose-500" : isLight ? "text-[#3a1f2a]" : "text-white/90"}`}>{title}</div>
+        {desc && <div className={`text-[10px] mt-0.5 truncate ${isLight ? "text-[#8a6570]" : "text-white/40"}`}>{desc}</div>}
       </div>
       {right}
-      {chevron && !right && <ChevronRight className="w-4 h-4 text-white/30 flex-shrink-0" />}
+      {chevron && !right && <ChevronRight className={`w-4 h-4 flex-shrink-0 ${isLight ? "text-[#a8888f]" : "text-white/30"}`} />}
     </button>
   );
 };
@@ -1636,6 +1712,22 @@ const Toggle = ({ on, onToggle }: { on: boolean; onToggle: () => void }) => (
     <span className={`w-5 h-5 rounded-full bg-white shadow-md transition-transform ${on ? "translate-x-4" : "translate-x-0"}`} />
   </button>
 );
+
+const ThemeToggleRow = () => {
+  const theme = useThemeStore((s) => s.theme);
+  const toggle = useThemeStore((s) => s.toggle);
+  const isLight = theme === "light";
+  return (
+    <SettingsRow
+      tone="purple"
+      icon={isLight ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+      title="外观主题"
+      desc={isLight ? "白天模式 · 奶油暖光" : "深色模式 · 暧昧低光"}
+      right={<Toggle on={isLight} onToggle={toggle} />}
+      chevron={false}
+    />
+  );
+};
 
 const ProfileView = () => {
   const [subView, setSubView] = useState<ProfileSubView>("main");
@@ -1860,6 +1952,7 @@ const ProfileView = () => {
       </div>
 
       <div className="space-y-2 mb-3">
+        <ThemeToggleRow />
         <SettingsRow tone="indigo" icon={<User className="w-5 h-5" />} title="账号与安全" onClick={() => setSubView("account")} />
         <SettingsRow tone="amber" icon={<Bell className="w-7 h-7 fill-current" />} title="通知设置" onClick={() => setSubView("notifications")} />
         <SettingsRow tone="emerald" icon={<Shield className="w-5 h-5" />} title="隐私设置" onClick={() => setSubView("privacy")} />
