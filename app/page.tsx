@@ -828,18 +828,18 @@ const ExploreView = () => {
               <span className="text-[10px] font-bold">点击上传聊天截图</span>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <ToolTile icon="💖" title="恋爱人格"   desc="隐藏属性"   color="rose" />
             <ToolTile icon="🔥" title="心动剧本"   desc="平行邂逅"   color="coral" />
             <ToolTile icon="⭐" title="星座配对"   desc="今日心动"   color="gold" />
             <ToolTile icon="🔮" title="塔罗占卜"   desc="抽桃花牌"   color="berry" />
-            <ToolTile icon="🧠" title="MBTI 契合"   desc="谁最配你"   color="magenta" />
-            <ToolTile icon="🌡️" title="暧昧温度"   desc="心动指数"   color="peach" />
+            <ToolTile icon="🧠" title="MBTI 契合"  desc="谁最配你"   color="magenta" />
+            <ToolTile icon="🌡️" title="暧昧温度"  desc="心动指数"   color="peach" />
             <ToolTile icon="💑" title="虚拟恋人"   desc="专属陪伴"   color="plum" />
             <ToolTile icon="🌙" title="梦境解码"   desc="梦到 TA"    color="mauve" />
             <ToolTile icon="🎂" title="缘分生日"   desc="生辰命定"   color="amber" />
             <ToolTile icon="💌" title="AI 情书"    desc="心动手笔"   color="blush" />
-            <ToolTile icon="🌸" title="桃花运"    desc="心动方位"   color="coral" />
+            <ToolTile icon="🌸" title="桃花运"     desc="心动方位"   color="coral" />
             <ToolTile icon="💘" title="告白脚本"   desc="最稳话术"   color="rose" />
           </div>
         </div>
@@ -890,26 +890,26 @@ const ToolTile = ({ icon, title, desc, color }: { icon: string; title: string; d
   const s = toolStyles[color];
   return (
     <div
-      className={`relative rounded-[22px] p-3 aspect-square overflow-hidden border-2 backdrop-blur-md flex flex-col justify-between active:scale-[0.94] active:translate-y-[2px] transition-all ${s.tile}`}
+      className={`relative rounded-2xl px-2.5 py-2 overflow-hidden border-2 backdrop-blur-md flex items-center gap-2.5 active:scale-[0.96] active:translate-y-[1px] transition-all ${s.tile}`}
       style={{
-        // 卡通贴纸效果：顶部内嵌高光 + 底部内阴 + 实心偏移投影（像贴纸/积木叠出来）+ 软外阴
+        // 卡通贴纸效果：顶部内嵌高光 + 底部内阴 + 实心偏移投影 + 软外阴
         boxShadow:
-          "inset 0 1.5px 0 rgba(255,255,255,0.20), inset 0 -1.5px 0 rgba(0,0,0,0.25), 0 4px 0 rgba(0,0,0,0.32), 0 6px 14px -6px rgba(0,0,0,0.45)",
+          "inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.22), 0 3px 0 rgba(0,0,0,0.28), 0 5px 12px -5px rgba(0,0,0,0.40)",
       }}
     >
-      <div className={`absolute -top-6 -right-6 w-20 h-20 rounded-full blur-2xl pointer-events-none ${s.bokeh}`} />
+      <div className={`absolute -top-4 -right-6 w-16 h-16 rounded-full blur-2xl pointer-events-none ${s.bokeh}`} />
       <div
-        className={`relative z-10 w-9 h-9 rounded-2xl flex items-center justify-center border-2 ${s.icon}`}
+        className={`relative z-10 w-9 h-9 rounded-xl flex items-center justify-center border-2 shrink-0 ${s.icon}`}
         style={{
           boxShadow:
             "inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.20), 0 2px 0 rgba(0,0,0,0.22)",
         }}
       >
-        <span className="text-[20px] leading-none drop-shadow-[0_1px_0_rgba(0,0,0,0.35)]">{icon}</span>
+        <span className="text-[18px] leading-none drop-shadow-[0_1px_0_rgba(0,0,0,0.35)]">{icon}</span>
       </div>
-      <div className="relative z-10">
-        <h3 className="font-black text-white text-[12.5px] leading-tight drop-shadow-[0_1px_0_rgba(0,0,0,0.5)]">{title}</h3>
-        <p className="text-[9.5px] text-white/70 leading-tight mt-0.5">{desc}</p>
+      <div className="relative z-10 min-w-0 flex-1">
+        <h3 className="font-black text-white text-[12.5px] leading-tight truncate drop-shadow-[0_1px_0_rgba(0,0,0,0.5)]">{title}</h3>
+        <p className="text-[9.5px] text-white/65 leading-tight truncate mt-0.5">{desc}</p>
       </div>
     </div>
   );
