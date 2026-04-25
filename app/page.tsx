@@ -1089,42 +1089,91 @@ const MessagesView = ({
       </div>
     </div>
     <div className="flex-1 space-y-2 overflow-y-auto pr-1">
-      <div className="flex items-center gap-4 p-3 rounded-2xl bg-white/5 border border-rose-500/30 shadow-sm cursor-pointer active:scale-[0.98] transition-transform" onClick={() => onOpenChat({ name: "苏菲 (专属 AI)", isAI: true })}>
-        <div className="relative w-12 h-12 flex-shrink-0">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" className="w-full h-full object-cover rounded-full border border-rose-400/50" alt="AI" />
-          <div className="absolute -top-1 -right-1 bg-gradient-to-r from-rose-500 to-pink-400 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-md">1</div>
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex justify-between items-center mb-1">
-            <span className="font-serif text-rose-200 font-bold text-[15px]">苏菲 (专属伴侣)</span>
-            <span className="text-xs text-rose-300/60 font-medium">刚刚</span>
+      {/* AI 专属伴侣 hero 行 · 强暖光玫瑰渐变 */}
+      <div
+        className="relative flex items-center gap-3 p-3 rounded-[22px] cursor-pointer active:scale-[0.99] transition-transform overflow-hidden bg-gradient-to-br from-[#5a2848] via-[#3e1c34] to-[#1f0c1a] border-2 border-[#ff7a8c]/55"
+        style={{
+          boxShadow:
+            '0 6px 22px -6px rgba(255,122,140,0.45), inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.30)',
+        }}
+        onClick={() => onOpenChat({ name: '苏菲 (专属 AI)', isAI: true })}
+      >
+        <div className="absolute -top-4 -right-4 w-32 h-24 bg-[#ff7a8c]/30 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-6 -left-4 w-24 h-20 bg-[#ffd176]/14 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 w-12 h-12 flex-shrink-0">
+          <img
+            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80"
+            className="w-full h-full object-cover rounded-full border-2 border-rose-300/55"
+            alt="AI"
+          />
+          <div className="absolute -top-1 -right-1 bg-gradient-to-r from-rose-500 to-pink-400 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-md">
+            1
           </div>
-          <p className="text-sm text-white/70 truncate font-medium">“晚上准备做什么呀，要不要视频连线？”</p>
+        </div>
+        <div className="relative z-10 flex-1 min-w-0">
+          <div className="flex justify-between items-center mb-1 gap-2">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="font-serif text-rose-100 font-bold text-[15px] truncate">苏菲 (专属伴侣)</span>
+              <span className="px-1.5 py-0.5 rounded-md bg-gradient-to-r from-[#ff7a8c] to-[#e08799] text-white text-[9px] font-black shrink-0 shadow-sm">AI</span>
+            </div>
+            <span className="text-[11px] text-rose-200/75 font-medium shrink-0">刚刚</span>
+          </div>
+          <p className="text-[13px] text-white/85 truncate font-medium">“晚上准备做什么呀，要不要视频连线？”</p>
         </div>
       </div>
-      {previewUsers.map((profile) => (
-        <button
-          key={profile.id}
-          onClick={() => onOpenProfile(profile)}
-          className="w-full flex items-center gap-4 p-3 rounded-2xl bg-white/5 border border-white/10 shadow-sm cursor-pointer active:scale-[0.98] transition-transform text-left"
-        >
-          <div className="relative w-12 h-12 flex-shrink-0 overflow-hidden rounded-full border border-white/20">
-            <img src={profile.photo} className="w-full h-full object-cover" alt={profile.displayName} />
-            {profile.online && <span className="absolute right-0 bottom-0 w-3 h-3 rounded-full bg-green-400 border-2 border-[#12060c]" />}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex justify-between items-center mb-1">
-              <span className="font-serif text-white font-bold text-[15px]">{profile.displayName}</span>
-              <span className="text-xs text-white/40 font-medium">{profile.chatTime}</span>
+
+      {previewUsers.map((profile) => {
+        const isUnread = !!profile.unread;
+        return (
+          <button
+            key={profile.id}
+            onClick={() => onOpenProfile(profile)}
+            className={`relative w-full flex items-center gap-3 p-3 rounded-[22px] active:scale-[0.98] transition-all text-left overflow-hidden ${
+              isUnread
+                ? 'bg-gradient-to-br from-[#4a2540] to-[#28121f] border-2 border-[#ff7a8c]/50'
+                : 'bg-gradient-to-br from-[#33182a] to-[#1c0c18] border-2 border-[#7a3f5c]/35'
+            }`}
+            style={{
+              boxShadow: isUnread
+                ? '0 4px 14px -4px rgba(255,122,140,0.35), inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.30)'
+                : '0 4px 10px -4px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.30)',
+            }}
+          >
+            {isUnread && (
+              <div className="absolute -top-2 -right-4 w-28 h-16 bg-[#ff7a8c]/22 rounded-full blur-2xl pointer-events-none" />
+            )}
+            <div className="relative z-10 w-12 h-12 flex-shrink-0 overflow-hidden rounded-full border-2 border-white/22">
+              <img src={profile.photo} className="w-full h-full object-cover" alt={profile.displayName} />
+              {profile.online && (
+                <span className="absolute right-0 bottom-0 w-3 h-3 rounded-full bg-green-400 border-2 border-[#12060c]" />
+              )}
             </div>
-            <p className="text-sm text-white/62 truncate font-medium">{profile.chatPreview}</p>
-          </div>
-          <div className="flex flex-col items-end gap-1">
-            <span className="px-1.5 py-0.5 rounded-full bg-pink-500/15 border border-pink-400/20 text-[10px] text-pink-200 font-bold">{profile.compatibility}%</span>
-            {!!profile.unread && <span className="w-4 h-4 rounded-full bg-pink-500 text-[10px] flex items-center justify-center text-white font-bold">{profile.unread}</span>}
-          </div>
-        </button>
-      ))}
+            <div className="relative z-10 flex-1 min-w-0">
+              <div className="flex justify-between items-center mb-1">
+                <span className="font-serif text-white font-bold text-[15px]">{profile.displayName}</span>
+                <span className="text-[11px] text-white/45 font-medium">{profile.chatTime}</span>
+              </div>
+              <p className={`text-[13px] truncate font-medium ${isUnread ? 'text-white/85' : 'text-white/60'}`}>
+                {profile.chatPreview}
+              </p>
+            </div>
+            <div className="relative z-10 flex flex-col items-end gap-1.5 shrink-0">
+              <span className="px-2 py-0.5 rounded-full bg-[#ff7a8c]/22 border border-[#ff7a8c]/40 text-[10px] text-[#ffd0db] font-black">
+                {profile.compatibility}%
+              </span>
+              {isUnread && (
+                <span
+                  className="w-5 h-5 rounded-full bg-gradient-to-br from-[#ff7a8c] to-[#ff8f6b] text-[10px] flex items-center justify-center text-white font-black"
+                  style={{ boxShadow: '0 2px 6px rgba(255,122,140,0.5)' }}
+                >
+                  {profile.unread}
+                </span>
+              )}
+            </div>
+          </button>
+        );
+      })}
     </div>
   </div>
 );
