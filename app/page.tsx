@@ -857,27 +857,59 @@ const ExploreView = () => {
 
 type ToolColor = "rose" | "coral" | "gold" | "berry" | "magenta" | "peach" | "mauve" | "amber" | "blush" | "plum";
 
-const toolColors: Record<ToolColor, string> = {
-  rose:    "bg-[#ff7a8c]/18 text-[#ffa3b1] border-[#ff7a8c]/35", // 暖玫瑰
-  coral:   "bg-[#ff8f6b]/18 text-[#ffb398] border-[#ff8f6b]/35", // 珊瑚粉
-  gold:    "bg-[#ffd176]/16 text-[#ffd176] border-[#ffd176]/35", // 金
-  berry:   "bg-[#b5476b]/22 text-[#e88aa8] border-[#b5476b]/45", // 莓果
-  magenta: "bg-[#e0879b]/20 text-[#f0aebd] border-[#e0879b]/40", // 玫瑰粉
-  peach:   "bg-[#ffb88a]/20 text-[#ffcfa8] border-[#ffb88a]/35", // 蜜桃
-  mauve:   "bg-[#b87a80]/22 text-[#d8b6ba] border-[#b87a80]/40", // 暖紫灰
-  amber:   "bg-[#e8b86f]/18 text-[#f0cd92] border-[#e8b86f]/35", // 琥珀
-  blush:   "bg-[#ffc4d3]/14 text-[#ffd0db] border-[#ffc4d3]/30", // 樱花
-  plum:    "bg-[#8a5560]/25 text-[#c79aa1] border-[#8a5560]/45", // 深紫玫瑰
+type ToolStyle = { icon: string; tile: string; bokeh: string };
+
+// 每个工具块独立糖果配色：背景渐变 + 角落 bokeh + 图标三件套，全部锁在烛光暖色谱
+const toolStyles: Record<ToolColor, ToolStyle> = {
+  rose:    { icon: "bg-[#ff7a8c]/24 text-[#ffe0e7] border-[#ff7a8c]/55",
+             tile: "bg-gradient-to-br from-[#ff7a8c]/22 via-[#ff7a8c]/8 to-[#ff7a8c]/3 border-[#ff7a8c]/35",
+             bokeh: "bg-[#ff7a8c]/40" },
+  coral:   { icon: "bg-[#ff8f6b]/24 text-[#ffe1cc] border-[#ff8f6b]/55",
+             tile: "bg-gradient-to-br from-[#ff8f6b]/22 via-[#ff8f6b]/8 to-[#ff8f6b]/3 border-[#ff8f6b]/35",
+             bokeh: "bg-[#ff8f6b]/40" },
+  gold:    { icon: "bg-[#ffd176]/22 text-[#fff1bf] border-[#ffd176]/55",
+             tile: "bg-gradient-to-br from-[#ffd176]/22 via-[#ffd176]/8 to-[#ffd176]/3 border-[#ffd176]/40",
+             bokeh: "bg-[#ffd176]/35" },
+  berry:   { icon: "bg-[#b5476b]/30 text-[#ffc8d6] border-[#b5476b]/60",
+             tile: "bg-gradient-to-br from-[#b5476b]/26 via-[#b5476b]/10 to-[#b5476b]/4 border-[#b5476b]/45",
+             bokeh: "bg-[#e88aa8]/40" },
+  magenta: { icon: "bg-[#e0879b]/26 text-[#ffd6e0] border-[#e0879b]/55",
+             tile: "bg-gradient-to-br from-[#e0879b]/22 via-[#e0879b]/8 to-[#e0879b]/3 border-[#e0879b]/40",
+             bokeh: "bg-[#e0879b]/35" },
+  peach:   { icon: "bg-[#ffb88a]/24 text-[#ffe5cc] border-[#ffb88a]/55",
+             tile: "bg-gradient-to-br from-[#ffb88a]/22 via-[#ffb88a]/8 to-[#ffb88a]/3 border-[#ffb88a]/40",
+             bokeh: "bg-[#ffb88a]/40" },
+  mauve:   { icon: "bg-[#b87a80]/28 text-[#ead0d4] border-[#b87a80]/55",
+             tile: "bg-gradient-to-br from-[#b87a80]/24 via-[#b87a80]/10 to-[#b87a80]/3 border-[#b87a80]/45",
+             bokeh: "bg-[#d8b6ba]/35" },
+  amber:   { icon: "bg-[#e8b86f]/24 text-[#ffe6b8] border-[#e8b86f]/55",
+             tile: "bg-gradient-to-br from-[#e8b86f]/22 via-[#e8b86f]/8 to-[#e8b86f]/3 border-[#e8b86f]/40",
+             bokeh: "bg-[#e8b86f]/35" },
+  blush:   { icon: "bg-[#ffc4d3]/26 text-[#ffeaf0] border-[#ffc4d3]/60",
+             tile: "bg-gradient-to-br from-[#ffc4d3]/22 via-[#ffc4d3]/8 to-[#ffc4d3]/3 border-[#ffc4d3]/40",
+             bokeh: "bg-[#ffc4d3]/40" },
+  plum:    { icon: "bg-[#8a5560]/32 text-[#e6c8cc] border-[#8a5560]/60",
+             tile: "bg-gradient-to-br from-[#8a5560]/26 via-[#8a5560]/10 to-[#8a5560]/3 border-[#8a5560]/50",
+             bokeh: "bg-[#c79aa1]/35" },
 };
 
 const ToolTile = ({ icon, title, desc, color }: { icon: React.ReactNode; title: string; desc: string; color: ToolColor }) => {
-  const colorClass = toolColors[color];
+  const s = toolStyles[color];
   return (
-    <div className="glass-panel rounded-3xl p-5 aspect-square relative border-white/5 flex flex-col justify-between active:scale-[0.98] transition-transform">
-      <div className={`w-10 h-10 rounded-full flex items-center justify-center border ${colorClass}`}>{icon}</div>
-      <div>
-        <h3 className="font-bold text-white mb-1 text-[15px]">{title}</h3>
-        <p className="text-[10px] text-white/55">{desc}</p>
+    <div
+      className={`relative rounded-3xl p-5 aspect-square overflow-hidden border backdrop-blur-md flex flex-col justify-between active:scale-[0.97] transition-transform ${s.tile}`}
+      style={{
+        boxShadow:
+          "inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.20), 0 8px 22px -10px rgba(0,0,0,0.35)",
+      }}
+    >
+      <div className={`absolute -top-8 -right-8 w-28 h-28 rounded-full blur-2xl pointer-events-none ${s.bokeh}`} />
+      <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center border ${s.icon}`}>
+        {icon}
+      </div>
+      <div className="relative z-10">
+        <h3 className="font-bold text-white mb-1 text-[15px] drop-shadow-[0_1px_0_rgba(0,0,0,0.4)]">{title}</h3>
+        <p className="text-[10px] text-white/65">{desc}</p>
       </div>
     </div>
   );
