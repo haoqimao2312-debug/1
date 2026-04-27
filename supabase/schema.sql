@@ -120,6 +120,12 @@ insert into storage.buckets (id, name, public)
 values ('profile-photos', 'profile-photos', true)
 on conflict (id) do update set public = excluded.public;
 
+insert into storage.buckets (id, name, public)
+values
+  ('user-avatars', 'user-avatars', true),
+  ('post-images', 'post-images', true)
+on conflict (id) do update set public = excluded.public;
+
 create table if not exists public.user_profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   display_name text not null default 'MatchU 用户',
