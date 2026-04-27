@@ -8,16 +8,18 @@ import { MessageBubble } from '@/components/chat/MessageBubble'
 import { TypingIndicator } from '@/components/chat/TypingIndicator'
 import { InputBar } from '@/components/chat/InputBar'
 import { AssistDrawer } from '@/components/chat/AssistDrawer'
-import { xiaoyu } from '@/lib/mock-data/users/xiaoyu'
 import {
   xiaoyuReply,
   assistSuggest,
   computeCompatibility,
   type AssistSuggestion,
+  type DynamicScriptedReply,
+  type ReplyPersona,
 } from '@/lib/ai/business'
 import { useChatStore } from '@/lib/store/chat'
 import { useUserStore } from '@/lib/store/user'
 import type { ChatMessage } from '@/lib/ai/types'
+import type { ChatPersonaData } from '@/lib/backend/types'
 
 export default function ChatPage({ params }: { params: Promise<{ userId: string }> }) {
   const { userId } = use(params)
@@ -33,26 +35,48 @@ export default function ChatPage({ params }: { params: Promise<{ userId: string 
   const [assistLoading, setAssistLoading] = useState(false)
   const [suggestions, setSuggestions] = useState<AssistSuggestion[]>([])
   const [busy, setBusy] = useState(false)
+  const [persona, setPersona] = useState<ChatPersonaData | null>(null)
+  const [personaLoading, setPersonaLoading] = useState(true)
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  const compatibility = computeCompatibility(userProfile.tags, xiaoyu.compatibleTags)
+  const compatibility = computeCompatibility(userProfile.tags, persona?.compatibleTags ?? [])
 
   // 首次进入且没有消息时，注入开场白
   useEffect(() => {
-    if (userId !== 'xiaoyu') return
-    if (messages.length === 0) {
-      void seedOpening()
-    }
+    void loadPersona()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId])
+
+  useEffect(() => {
+    if (!persona || messages.length > 0) return
+    void seedOpening(persona)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [persona?.id])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, isTyping])
 
-  async function seedOpening() {
-    for (let i = 0; i < xiaoyu.openingMessages.length; i++) {
-      const text = xiaoyu.openingMessages[i]
+  async function loadPersona() {
+    setPersonaLoading(true)
+    try {
+      const res = await fetch(`/api/personas/${encodeURIComponent(userId)}`)
+      if (!res.ok) {
+        setPersona(null)
+        return
+      }
+      const data = (await res.json()) as { persona: ChatPersonaData }
+      setPersona(data.persona)
+    } catch {
+      setPersona(null)
+    } finally {
+      setPersonaLoading(false)
+    }
+  }
+
+  async function seedOpening(currentPersona: ChatPersonaData) {
+    for (let i = 0; i < currentPersona.openingMessages.length; i++) {
+      const text = currentPersona.openingMessages[i]
       await sleep(i === 0 ? 300 : 900)
       setTyping(userId, true)
       await sleep(700 + Math.random() * 400)
@@ -85,7 +109,7 @@ export default function ChatPage({ params }: { params: Promise<{ userId: string 
     setTyping(userId, false)
 
     const history = [...useChatStore.getState().messages[userId]!, userMsg].slice(-10)
-    const reply = await xiaoyuReply({ chatHistory: history })
+    const reply = await xiaoyuReply({ chatHistory: history, persona: toReplyPersona(persona) })
     const assistantMsg: ChatMessage = {
       id: `a-${Date.now()}`,
       role: 'assistant',
@@ -125,7 +149,20 @@ export default function ChatPage({ params }: { params: Promise<{ userId: string 
     setAssistOpen(false)
   }
 
-  if (userId !== 'xiaoyu') {
+  if (personaLoading) {
+    return (
+      <Phone>
+        <StatusBar />
+        <AppBody>
+          <div className="flex-1 flex items-center justify-center text-[var(--ink-dim)]">
+            加载中...
+          </div>
+        </AppBody>
+      </Phone>
+    )
+  }
+
+  if (!persona) {
     return (
       <Phone>
         <StatusBar />
@@ -143,9 +180,9 @@ export default function ChatPage({ params }: { params: Promise<{ userId: string 
       <StatusBar />
       <AppBody>
         <ChatHeader
-          name={xiaoyu.displayName}
-          subtitle={xiaoyu.subtitle}
-          avatar={xiaoyu.avatar}
+          name={persona.displayName}
+          subtitle={persona.subtitle}
+          avatar={persona.avatar}
           compatibility={compatibility}
         />
         <div ref={scrollRef} className="flex-1 overflow-y-auto py-3">
@@ -177,4 +214,28 @@ export default function ChatPage({ params }: { params: Promise<{ userId: string 
 
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms))
+}
+
+function toReplyPersona(persona: ChatPersonaData | null): ReplyPersona | undefined {
+  if (!persona) return undefined
+  return {
+    fallbackReplies: persona.fallbackReplies,
+    scripted: persona.scripts
+      .filter((script) => script.enabled)
+      .map((script) => ({
+        triggers: {
+          keywords: script.keywords,
+          emotions: script.emotions.filter(isReplyEmotion),
+          turnRange: script.turnRange,
+        },
+        replies: script.replies,
+        once: script.once,
+      })),
+  }
+}
+
+type ReplyEmotion = NonNullable<NonNullable<DynamicScriptedReply['triggers']>['emotions']>[number]
+
+function isReplyEmotion(value: string): value is ReplyEmotion {
+  return ['tired', 'happy', 'sad', 'curious', 'greeting'].includes(value)
 }

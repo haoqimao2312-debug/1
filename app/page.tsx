@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import {
   Heart,
@@ -40,13 +40,23 @@ import {
   Users,
   Sun,
 } from "lucide-react";
-import { matchOrder, previewUsers, type PreviewUser } from "@/lib/mock-data/users/preview-users";
+import { fallbackProfiles } from "@/lib/backend/fallback";
+import type { ProfileCardData } from "@/lib/backend/types";
+import type { AppUserProfile, CommunityPostData } from "@/lib/backend/user-types";
+import {
+  authHeader,
+  getAuthSession,
+  signInWithEmail,
+  signOut,
+  signUpWithEmail,
+  type AuthSession,
+} from "@/lib/supabase/auth-client";
 import { useThemeStore } from "@/lib/store/theme";
 
 type TabId = "match" | "explore" | "virtual" | "messages" | "profile";
-type ChatTarget = { name: string; isAI?: boolean };
+type ChatTarget = { id?: string; name: string; photo?: string; isAI?: boolean };
 type ChatMessage = { id: number; type: "user" | "model"; text: string; time: string };
-type DetailProfile = PreviewUser;
+type DetailProfile = ProfileCardData;
 
 const GlobalStyles = () => (
   <style
@@ -358,6 +368,13 @@ export function WarmUApp({
   const [chatTarget, setChatTarget] = useState<ChatTarget | null>(null);
   const [videoCallActive, setVideoCallActive] = useState(false);
   const [detailProfile, setDetailProfile] = useState<DetailProfile | null>(null);
+  const [profiles, setProfiles] = useState<DetailProfile[]>(fallbackProfiles);
+  const [authSession, setAuthSession] = useState<AuthSession | null>(null);
+  const [currentUser, setCurrentUser] = useState<AppUserProfile | null>(null);
+  const matchProfiles = useMemo(
+    () => [...profiles].sort((a, b) => b.compatibility - a.compatibility),
+    [profiles]
+  );
 
   const handleEnterApp = () => {
     setIsLeavingSplash(true);
@@ -366,6 +383,67 @@ export function WarmUApp({
 
   const theme = useThemeStore((s) => s.theme);
   const isLight = theme === "light";
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadProfiles() {
+      try {
+        const res = await fetch("/api/profiles");
+        if (!res.ok) return;
+        const data = (await res.json()) as { profiles?: DetailProfile[] };
+        if (!cancelled && data.profiles?.length) {
+          setProfiles(data.profiles);
+        }
+      } catch {
+        // Keep local mock data as the offline-safe fallback.
+      }
+    }
+    void loadProfiles();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadAuth() {
+      const session = await getAuthSession().catch(() => null);
+      if (cancelled) return;
+      setAuthSession(session);
+      if (session) await loadCurrentUser(session, cancelled);
+      else setCurrentUser(null);
+    }
+
+    void loadAuth();
+    const onAuthChange = () => void loadAuth();
+    window.addEventListener("matchu-auth-change", onAuthChange);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("matchu-auth-change", onAuthChange);
+    };
+  }, []);
+
+  async function loadCurrentUser(session: AuthSession, cancelled = false) {
+    try {
+      const res = await fetch("/api/me", { headers: authHeader(session) });
+      if (!res.ok) return;
+      const data = (await res.json()) as { profile: AppUserProfile };
+      if (!cancelled) setCurrentUser(data.profile);
+    } catch {
+      if (!cancelled) setCurrentUser(null);
+    }
+  }
+
+  async function handleAuthSuccess(session: AuthSession) {
+    setAuthSession(session);
+    await loadCurrentUser(session);
+  }
+
+  async function handleLogout() {
+    await signOut();
+    setAuthSession(null);
+    setCurrentUser(null);
+  }
 
   const getBgClass = (tab: TabId) => {
     if (isLight) {
@@ -431,17 +509,25 @@ export function WarmUApp({
         </div>
 
         <div className="relative z-10 w-full h-full flex flex-col pb-20 overflow-y-auto">
-          {activeTab === "match" && <MatchView onOpenProfile={setDetailProfile} />}
-          {activeTab === "explore" && <ExploreView />}
+          {activeTab === "match" && <MatchView profiles={matchProfiles} onOpenProfile={setDetailProfile} />}
+          {activeTab === "explore" && <ExploreView session={authSession} onRequireLogin={() => setActiveTab("profile")} />}
           {activeTab === "virtual" && <VirtualView onStartCall={() => setVideoCallActive(true)} />}
-          {activeTab === "messages" && <MessagesView onOpenChat={(target) => setChatTarget(target)} onOpenProfile={setDetailProfile} />}
-          {activeTab === "profile" && <ProfileView />}
+          {activeTab === "messages" && <MessagesView profiles={profiles} onOpenChat={(target) => setChatTarget(target)} onOpenProfile={setDetailProfile} />}
+          {activeTab === "profile" && (
+            <ProfileView
+              session={authSession}
+              currentUser={currentUser}
+              onAuthSuccess={handleAuthSuccess}
+              onLogout={handleLogout}
+              onProfileUpdate={setCurrentUser}
+            />
+          )}
         </div>
 
         <TabBar activeTab={activeTab} setActiveTab={setActiveTab} />
         {detailProfile && <ProfileDetailModal profile={detailProfile} onClose={() => setDetailProfile(null)} onChat={() => {
           setDetailProfile(null);
-          setChatTarget({ name: detailProfile.displayName });
+          setChatTarget({ id: detailProfile.id, name: detailProfile.displayName, photo: detailProfile.photo });
         }} />}
         {chatTarget && <ChatModal target={chatTarget} onClose={() => setChatTarget(null)} />}
         {videoCallActive && <PixelVideoCallModal onClose={() => setVideoCallActive(false)} />}
@@ -454,20 +540,21 @@ export default function App() {
   return <WarmUApp />;
 }
 
-const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) => void }) => {
+const MatchView = ({ profiles, onOpenProfile }: { profiles: DetailProfile[]; onOpenProfile: (profile: DetailProfile) => void }) => {
   const [profileIndex, setProfileIndex] = useState(0);
   const [leavingCard, setLeavingCard] = useState<{ profile: DetailProfile; direction: "left" | "right"; velocity: number } | null>(null);
   const [lastAction, setLastAction] = useState<"like" | "pass" | "super" | null>(null);
   const dragX = useMotionValue(0);
   const dragProgress = useTransform(dragX, [-140, 0, 140], [1, 0, 1]);
-  const featured = matchOrder[profileIndex % matchOrder.length];
-  const nextProfiles = Array.from({ length: Math.min(2, matchOrder.length - 1) }, (_, i) => matchOrder[(profileIndex + i + 1) % matchOrder.length]);
+  const safeProfiles = profiles.length > 0 ? profiles : fallbackProfiles;
+  const featured = safeProfiles[profileIndex % safeProfiles.length];
+  const nextProfiles = Array.from({ length: Math.min(2, safeProfiles.length - 1) }, (_, i) => safeProfiles[(profileIndex + i + 1) % safeProfiles.length]);
 
   const moveNext = (action: "like" | "pass" | "super", velocity = 0) => {
     if (leavingCard) return;
     setLastAction(action);
     setLeavingCard({ profile: featured, direction: action === "pass" ? "left" : "right", velocity });
-    setProfileIndex((idx) => (idx + 1) % matchOrder.length);
+    setProfileIndex((idx) => (idx + 1) % safeProfiles.length);
     dragX.set(0);
     window.setTimeout(() => {
       setLeavingCard(null);
@@ -475,7 +562,7 @@ const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) 
   };
 
   useEffect(() => {
-    matchOrder.forEach((profile) => {
+    safeProfiles.forEach((profile) => {
       if (!profile.photo) return;
       const image = new Image();
       image.src = profile.photo;
@@ -490,7 +577,7 @@ const MatchView = ({ onOpenProfile }: { onOpenProfile: (profile: DetailProfile) 
           <p className="text-[10px] text-white/50 mt-1 font-medium">发现与你灵魂同频的人</p>
         </div>
         <div className="px-3 py-1.5 glass-panel rounded-full text-xs text-pink-300 font-bold flex items-center gap-1 border-pink-500/30">
-          <Activity className="w-3 h-3" /> 附近 {previewUsers.length + 7} 人
+          <Activity className="w-3 h-3" /> 附近 {safeProfiles.length + 7} 人
         </div>
       </header>
 
@@ -572,7 +659,7 @@ const StackProfileCard = ({
       style={{ scale, y, opacity }}
       transition={{ type: "spring", stiffness: 420, damping: 36 }}
     >
-      <img src={profile.photo} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover" />
+      <img src={profile.photo || "/icon-192.png"} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/86 via-black/24 to-white/8" />
       <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/55 to-transparent" />
     </motion.div>
@@ -622,7 +709,7 @@ const SwipeProfileCard = ({
       onDoubleClick={() => onOpenProfile(profile)}
     >
       <div className="absolute -inset-6 bg-white/8 blur-3xl pointer-events-none" />
-      <img src={profile.photo} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
+      <img src={profile.photo || "/icon-192.png"} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
       {/* 底部信息阅读暗化层：白天版用紧底缘的暖玫瑰渐变（不再大面积纯黑） */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -715,7 +802,7 @@ const FlyingProfileCard = ({
     }}
     transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
   >
-    <img src={profile.photo} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover" />
+    <img src={profile.photo || "/icon-192.png"} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover" />
     <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/25 to-white/10" />
     <div className="absolute inset-x-7 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
     <div className={`absolute top-9 ${direction === "left" ? "right-6 rotate-[12deg] border-white/50 text-white/85" : "left-6 rotate-[-12deg] border-pink-300 text-pink-100"} px-4 py-2 rounded-2xl border-2 bg-black/28 backdrop-blur-xl font-black tracking-[0.2em] text-xl`}>
@@ -725,7 +812,8 @@ const FlyingProfileCard = ({
 );
 
 type CommunityPost = {
-  id: number;
+  id: string | number;
+  userId?: string;
   name: string;
   avatar: string;
   time: string;
@@ -734,6 +822,7 @@ type CommunityPost = {
   images: string[];
   likes: number;
   comments: number;
+  likedByMe?: boolean;
   aiReply?: { name: string; text: string };
 };
 
@@ -825,8 +914,85 @@ const communityPosts: CommunityPost[] = [
   },
 ];
 
-const ExploreView = () => {
+const ExploreView = ({ session, onRequireLogin }: { session: AuthSession | null; onRequireLogin: () => void }) => {
   const [subTab, setSubTab] = useState<"community" | "tools">("community");
+  const [posts, setPosts] = useState<CommunityPost[]>(communityPosts);
+  const [postContent, setPostContent] = useState("");
+  const [postMood, setPostMood] = useState("");
+  const [postImages, setPostImages] = useState<File[]>([]);
+  const [posting, setPosting] = useState(false);
+  const [postError, setPostError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadPosts() {
+      try {
+        const currentSession = await getAuthSession().catch(() => session);
+        const res = await fetch("/api/posts", { headers: authHeader(currentSession ?? session) });
+        if (!res.ok) return;
+        const data = (await res.json()) as { posts?: CommunityPostData[] };
+        if (!cancelled && data.posts?.length) setPosts(data.posts);
+      } catch {
+        // Keep bundled mock posts when the backend is unavailable.
+      }
+    }
+    void loadPosts();
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.access_token]);
+
+  async function submitPost() {
+    const currentSession = await getAuthSession().catch(() => session);
+    if (!currentSession) {
+      onRequireLogin();
+      return;
+    }
+    if (!postContent.trim()) return;
+    setPosting(true);
+    setPostError("");
+    try {
+      const form = new FormData();
+      form.append("content", postContent.trim());
+      form.append("mood", postMood.trim());
+      postImages.slice(0, 3).forEach((file) => form.append("images", file));
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        headers: authHeader(currentSession),
+        body: form,
+      });
+      const data = (await res.json()) as { post?: CommunityPostData; error?: string };
+      if (!res.ok || !data.post) throw new Error(data.error ?? "发布失败");
+      setPosts((current) => [data.post!, ...current]);
+      setPostContent("");
+      setPostMood("");
+      setPostImages([]);
+    } catch (error) {
+      setPostError(error instanceof Error ? error.message : "发布失败");
+    } finally {
+      setPosting(false);
+    }
+  }
+
+  async function toggleLike(post: CommunityPost) {
+    const currentSession = await getAuthSession().catch(() => session);
+    if (!currentSession) {
+      onRequireLogin();
+      return;
+    }
+    try {
+      const res = await fetch(`/api/posts/${post.id}/like`, {
+        method: "POST",
+        headers: authHeader(currentSession),
+      });
+      const data = (await res.json()) as { post?: CommunityPostData };
+      if (res.ok && data.post) {
+        setPosts((current) => current.map((item) => item.id === post.id ? data.post! : item));
+      }
+    } catch {
+      // Non-blocking interaction; keep current UI state.
+    }
+  }
 
   return (
     <div className="px-4 pt-14 pb-8 animate-msg">
@@ -848,7 +1014,64 @@ const ExploreView = () => {
 
       {subTab === "community" ? (
         <div className="space-y-4 animate-msg">
-          {communityPosts.map((post) => (
+          <div className="glass-panel rounded-3xl p-4 shadow-lg shadow-black/20 border-white/5">
+            {session ? (
+              <>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-9 h-9 rounded-full bg-pink-500/20 flex items-center justify-center">
+                    <ImageIcon className="w-4 h-4 text-pink-200" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-white/90">发布树洞</div>
+                    <div className="text-[10px] text-white/40">文字 + 最多 3 张图片，发布后立即展示</div>
+                  </div>
+                </div>
+                <textarea
+                  value={postContent}
+                  onChange={(e) => setPostContent(e.target.value)}
+                  placeholder="今天想和 MatchU 广场说点什么？"
+                  className="w-full min-h-20 rounded-2xl bg-black/20 border border-white/10 px-4 py-3 text-sm text-white outline-none placeholder:text-white/30 resize-none"
+                />
+                <div className="flex gap-2 mt-3">
+                  <input
+                    value={postMood}
+                    onChange={(e) => setPostMood(e.target.value)}
+                    placeholder="心情标签"
+                    className="flex-1 rounded-2xl bg-black/20 border border-white/10 px-4 py-2 text-xs text-white outline-none placeholder:text-white/30"
+                  />
+                  <label className="rounded-2xl bg-white/8 border border-white/10 px-3 py-2 text-xs font-bold text-white/70 active:scale-95">
+                    图片
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => setPostImages(Array.from(e.target.files ?? []).slice(0, 3))}
+                    />
+                  </label>
+                </div>
+                {postImages.length > 0 && (
+                  <div className="mt-3 flex gap-2 text-[10px] text-white/45">
+                    {postImages.map((file) => <span key={file.name} className="rounded-full bg-white/8 px-2 py-1">{file.name}</span>)}
+                  </div>
+                )}
+                {postError && <div className="mt-3 text-xs font-bold text-rose-300">{postError}</div>}
+                <button
+                  onClick={submitPost}
+                  disabled={posting || !postContent.trim()}
+                  className="mt-3 w-full rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 py-3 text-sm font-black text-white disabled:opacity-45"
+                >
+                  {posting ? "发布中..." : "发布"}
+                </button>
+              </>
+            ) : (
+              <button onClick={onRequireLogin} className="w-full rounded-2xl border border-purple-300/25 bg-purple-500/10 py-3 text-sm font-black text-purple-100">
+                登录后发布树洞
+              </button>
+            )}
+          </div>
+
+          {posts.map((post) => (
             <div key={post.id} className="glass-panel rounded-3xl p-4 shadow-lg shadow-black/20 border-white/5">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
@@ -876,8 +1099,8 @@ const ExploreView = () => {
               )}
               <div className="flex items-center justify-between px-2 mb-3 text-white/40">
                 <div className="flex items-center gap-5">
-                  <button className="flex items-center gap-1.5 hover:text-purple-400">
-                    <Heart className="w-4 h-4" /> <span className="text-xs">{post.likes}</span>
+                  <button onClick={() => toggleLike(post)} className={`flex items-center gap-1.5 hover:text-purple-400 ${post.likedByMe ? "text-pink-300" : ""}`}>
+                    <Heart className={`w-4 h-4 ${post.likedByMe ? "fill-pink-400 text-pink-300" : ""}`} /> <span className="text-xs">{post.likes}</span>
                   </button>
                   <button className="flex items-center gap-1.5 text-purple-400">
                     <MessageSquare className="w-4 h-4 fill-purple-500/20" /> <span className="text-xs">{post.comments}</span>
@@ -1157,9 +1380,11 @@ const VirtualView = ({ onStartCall }: { onStartCall: () => void }) => {
 };
 
 const MessagesView = ({
+  profiles,
   onOpenChat,
   onOpenProfile,
 }: {
+  profiles: DetailProfile[];
   onOpenChat: (target: ChatTarget) => void;
   onOpenProfile: (profile: DetailProfile) => void;
 }) => {
@@ -1176,7 +1401,7 @@ const MessagesView = ({
       <div className="text-xs text-white/50 mb-3 ml-1 font-bold">专属伴侣 & 新匹配</div>
       <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
         <AvatarStory onClick={() => onOpenChat({ name: "苏菲(AI)", isAI: true })} img="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" label="苏菲 (AI)" active />
-        {previewUsers.map((profile) => (
+        {profiles.map((profile) => (
           <AvatarStory
             key={profile.id}
             onClick={() => onOpenProfile(profile)}
@@ -1227,7 +1452,7 @@ const MessagesView = ({
         </div>
       </div>
 
-      {previewUsers.map((profile) => {
+      {profiles.map((profile) => {
         const isUnread = !!profile.unread;
         return (
           <button
@@ -1256,7 +1481,7 @@ const MessagesView = ({
               <div className="absolute -top-2 -right-4 w-28 h-16 bg-[#ff7a8c]/22 rounded-full blur-2xl pointer-events-none" />
             )}
             <div className={`relative z-10 w-12 h-12 flex-shrink-0 overflow-hidden rounded-full border-2 ${isLight ? "border-[#d4a890]/55" : "border-white/22"}`}>
-              <img src={profile.photo} className="w-full h-full object-cover" alt={profile.displayName} />
+              <img src={profile.photo || "/icon-192.png"} className="w-full h-full object-cover" alt={profile.displayName} />
               {profile.online && (
                 <span className={`absolute right-0 bottom-0 w-3 h-3 rounded-full bg-green-400 border-2 ${isLight ? "border-white" : "border-[#12060c]"}`} />
               )}
@@ -1444,6 +1669,83 @@ const LoginView = ({ onBack, onSuccess }: { onBack: () => void; onSuccess: () =>
   );
 };
 
+const AuthLoginView = ({ onBack, onSuccess }: { onBack: () => void; onSuccess: (session: AuthSession) => void }) => {
+  const [mode, setMode] = useState<"login" | "register">("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  async function submit() {
+    if (!email.trim() || password.length < 6) return;
+    setLoading(true);
+    setMessage("");
+    try {
+      const session = mode === "login"
+        ? await signInWithEmail(email.trim(), password)
+        : await signUpWithEmail(email.trim(), password);
+      if (session) {
+        onSuccess(session);
+        return;
+      }
+      setMessage("注册邮件已发送，请先到邮箱确认后再登录。");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "登录失败");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="absolute inset-0 z-40 bg-[#0b0508] animate-msg overflow-y-auto pb-24">
+      <SubPageHeader title={mode === "login" ? "登录 MatchU" : "注册 MatchU"} onBack={onBack} />
+      <div className="px-6 pt-10">
+        <div className="mb-8">
+          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500/40 to-pink-500/40 border border-white/10 mx-auto flex items-center justify-center mb-5 shadow-xl shadow-purple-900/20">
+            <Sparkles className="w-10 h-10 text-white" />
+          </div>
+          <h3 className="font-serif text-2xl font-bold text-white text-center mb-2">欢迎来到 MatchU</h3>
+          <p className="text-xs text-white/50 text-center">登录后可以改头像、发树洞、保存你的心动记录</p>
+        </div>
+
+        <div className="space-y-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="邮箱"
+            className="w-full glass-panel rounded-2xl p-4 border-white/5 bg-white/5 outline-none text-white text-[15px] placeholder:text-white/30"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="密码（至少 6 位）"
+            className="w-full glass-panel rounded-2xl p-4 border-white/5 bg-white/5 outline-none text-white text-[15px] placeholder:text-white/30"
+          />
+          {message && <p className="text-xs text-rose-200 leading-relaxed">{message}</p>}
+          <button
+            onClick={submit}
+            disabled={loading || !email.trim() || password.length < 6}
+            className="w-full py-3.5 rounded-2xl font-bold text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-900/40 active:scale-[0.98] disabled:opacity-45"
+          >
+            {loading ? "处理中..." : mode === "login" ? "登录" : "注册"}
+          </button>
+          <button
+            onClick={() => {
+              setMode(mode === "login" ? "register" : "login");
+              setMessage("");
+            }}
+            className="w-full text-xs font-bold text-purple-200 py-2"
+          >
+            {mode === "login" ? "还没有账号？去注册" : "已有账号？去登录"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 type MembershipPlan = {
   id: "month" | "quarter" | "year";
   name: string;
@@ -1566,7 +1868,7 @@ const MembershipView = ({ onBack }: { onBack: () => void }) => {
   );
 };
 
-const UserListView = ({ title, users, emptyHint, onBack }: { title: string; users: PreviewUser[]; emptyHint: string; onBack: () => void }) => (
+const UserListView = ({ title, users, emptyHint, onBack }: { title: string; users: DetailProfile[]; emptyHint: string; onBack: () => void }) => (
   <div className="absolute inset-0 z-40 bg-[#0b0508] animate-msg overflow-y-auto pb-24">
     <SubPageHeader title={title} onBack={onBack} />
     <div className="px-4 pt-4 pb-8">
@@ -1779,9 +2081,134 @@ const ThemeToggleRow = () => {
   );
 };
 
-const ProfileView = () => {
+const AccountEditView = ({
+  session,
+  currentUser,
+  onBack,
+  onProfileUpdate,
+}: {
+  session: AuthSession | null;
+  currentUser: AppUserProfile | null;
+  onBack: () => void;
+  onProfileUpdate: (profile: AppUserProfile) => void;
+}) => {
+  const [displayName, setDisplayName] = useState(currentUser?.displayName ?? "");
+  const [age, setAge] = useState(currentUser?.age ? String(currentUser.age) : "");
+  const [city, setCity] = useState(currentUser?.city ?? "");
+  const [profession, setProfession] = useState(currentUser?.profession ?? "");
+  const [mbti, setMbti] = useState(currentUser?.mbti ?? "");
+  const [bio, setBio] = useState(currentUser?.bio ?? "");
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
+  async function uploadAvatar(file: File) {
+    if (!session) return;
+    setSaving(true);
+    setMessage("");
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("/api/me/avatar", {
+        method: "POST",
+        headers: authHeader(session),
+        body: form,
+      });
+      const data = (await res.json()) as { profile?: AppUserProfile; error?: string };
+      if (!res.ok || !data.profile) throw new Error(data.error ?? "头像上传失败");
+      onProfileUpdate(data.profile);
+      setMessage("头像已更新");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "头像上传失败");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function saveProfile() {
+    if (!session) return;
+    setSaving(true);
+    setMessage("");
+    try {
+      const res = await fetch("/api/me", {
+        method: "PATCH",
+        headers: { ...authHeader(session), "Content-Type": "application/json" },
+        body: JSON.stringify({
+          displayName,
+          age: age ? Number(age) : null,
+          city,
+          profession,
+          mbti,
+          bio,
+        }),
+      });
+      const data = (await res.json()) as { profile?: AppUserProfile; error?: string };
+      if (!res.ok || !data.profile) throw new Error(data.error ?? "保存失败");
+      onProfileUpdate(data.profile);
+      setMessage("资料已保存");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "保存失败");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <SimpleSubView title="账户与资料" onBack={onBack}>
+      <div className="space-y-4">
+        <div className="glass-panel rounded-3xl p-4 flex items-center gap-4">
+          <img src={currentUser?.avatarUrl || "/icon-192.png"} className="w-16 h-16 rounded-2xl object-cover" alt="avatar" />
+          <div className="flex-1">
+            <div className="text-sm font-bold text-white mb-1">头像</div>
+            <label className="inline-flex px-3 py-2 rounded-xl bg-white/8 border border-white/10 text-xs font-bold text-white/75">
+              上传新头像
+              <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])} />
+            </label>
+          </div>
+        </div>
+        <ProfileInput label="昵称" value={displayName} onChange={setDisplayName} />
+        <ProfileInput label="年龄" value={age} onChange={setAge} type="number" />
+        <ProfileInput label="城市" value={city} onChange={setCity} />
+        <ProfileInput label="职业" value={profession} onChange={setProfession} />
+        <ProfileInput label="MBTI" value={mbti} onChange={setMbti} />
+        <label className="block text-xs font-bold text-white/55">
+          简介
+          <textarea value={bio} onChange={(e) => setBio(e.target.value)} className="mt-2 w-full min-h-24 rounded-2xl bg-white/6 border border-white/10 px-4 py-3 text-sm text-white outline-none resize-none" />
+        </label>
+        {message && <div className="text-xs font-bold text-pink-200">{message}</div>}
+        <button onClick={saveProfile} disabled={saving || !displayName.trim()} className="w-full py-3.5 rounded-2xl font-bold text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white disabled:opacity-45">
+          {saving ? "保存中..." : "保存资料"}
+        </button>
+      </div>
+    </SimpleSubView>
+  );
+};
+
+const ProfileInput = ({ label, value, onChange, type = "text" }: { label: string; value: string; onChange: (value: string) => void; type?: string }) => (
+  <label className="block text-xs font-bold text-white/55">
+    {label}
+    <input
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="mt-2 w-full rounded-2xl bg-white/6 border border-white/10 px-4 py-3 text-sm text-white outline-none"
+    />
+  </label>
+);
+
+const ProfileView = ({
+  session,
+  currentUser,
+  onAuthSuccess,
+  onLogout,
+  onProfileUpdate,
+}: {
+  session: AuthSession | null;
+  currentUser: AppUserProfile | null;
+  onAuthSuccess: (session: AuthSession) => void;
+  onLogout: () => void;
+  onProfileUpdate: (profile: AppUserProfile) => void;
+}) => {
   const [subView, setSubView] = useState<ProfileSubView>("main");
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [notifPush, setNotifPush] = useState(true);
   const [notifAI, setNotifAI] = useState(true);
   const [notifNight, setNotifNight] = useState(false);
@@ -1789,14 +2216,14 @@ const ProfileView = () => {
   const [privIncognito, setPrivIncognito] = useState(false);
   const [privAutoRenew, setPrivAutoRenew] = useState(true);
 
-  const likedUsers = previewUsers.slice(0, 6);
-  const matchedUsers = previewUsers.slice(1, 5);
-  const visitors = previewUsers.slice(2, 8);
+  const likedUsers = fallbackProfiles.slice(0, 6);
+  const matchedUsers = fallbackProfiles.slice(1, 5);
+  const visitors = fallbackProfiles.slice(2, 8);
 
   const goBack = () => setSubView("main");
 
   if (subView === "login")
-    return <LoginView onBack={goBack} onSuccess={() => { setIsLoggedIn(true); goBack(); }} />;
+    return <AuthLoginView onBack={goBack} onSuccess={(nextSession) => { onAuthSuccess(nextSession); goBack(); }} />;
   if (subView === "membership") return <MembershipView onBack={goBack} />;
   if (subView === "likes")
     return <UserListView title={`我喜欢的人 · ${likedUsers.length}`} users={likedUsers} emptyHint="还没喜欢过任何人" onBack={goBack} />;
@@ -1806,19 +2233,7 @@ const ProfileView = () => {
     return <UserListView title={`谁看过我 · ${visitors.length}`} users={visitors} emptyHint="暂时还没有访客" onBack={goBack} />;
 
   if (subView === "account")
-    return (
-      <SimpleSubView title="账号与安全" onBack={goBack}>
-        <div className="space-y-2">
-          <SettingsRow tone="sky" icon={<Phone className="w-5 h-5" />} title="手机号" desc="138****2341" />
-          <SettingsRow tone="purple" icon={<User className="w-5 h-5" />} title="昵称" desc="老大" />
-          <SettingsRow tone="teal" icon={<MapPin className="w-5 h-5" />} title="所在城市" desc="上海" />
-          <SettingsRow tone="indigo" icon={<Lock className="w-5 h-5" />} title="修改密码" />
-          <SettingsRow tone="emerald" icon={<Shield className="w-5 h-5" />} title="实名认证" desc="已认证" right={<Check className="w-4 h-4 text-emerald-400" />} chevron={false} />
-          <SettingsRow tone="amber" icon={<CreditCard className="w-5 h-5" />} title="自动续费" desc="SVIP 到期自动续费" right={<Toggle on={privAutoRenew} onToggle={() => setPrivAutoRenew(!privAutoRenew)} />} chevron={false} />
-          <SettingsRow icon={<X className="w-5 h-5" />} title="注销账号" danger />
-        </div>
-      </SimpleSubView>
-    );
+    return <AccountEditView session={session} currentUser={currentUser} onBack={goBack} onProfileUpdate={onProfileUpdate} />;
 
   if (subView === "notifications")
     return (
@@ -1875,7 +2290,7 @@ const ProfileView = () => {
       </SimpleSubView>
     );
 
-  if (!isLoggedIn) {
+  if (!session) {
     return (
       <div className="px-5 pt-14 pb-8 animate-msg flex flex-col items-center">
         <div className="w-24 h-24 rounded-full bg-white/5 border-2 border-white/10 mb-6 flex items-center justify-center">
@@ -1883,7 +2298,7 @@ const ProfileView = () => {
         </div>
         <h2 className="font-serif text-xl font-bold text-white mb-2">你还没有登录</h2>
         <p className="text-xs text-white/50 text-center mb-8 px-6 leading-relaxed">
-          登录后可以收藏喜欢的人、<br />查看谁看过你、解锁 AI 暖友陪伴
+          登录后可以更换头像、发布树洞、保存你的心动记录
         </p>
         <button
           onClick={() => setSubView("login")}
@@ -1898,17 +2313,31 @@ const ProfileView = () => {
   return (
     <div className="px-5 pt-14 pb-8 animate-msg flex flex-col">
       <div className="flex items-center gap-4 mb-6">
-        <div className="w-20 h-20 rounded-full bg-white/10 border-2 border-white/20 shadow-md overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=200&q=80" className="w-full h-full object-cover" alt="Me" />
-        </div>
+        <button
+          onClick={() => setSubView("account")}
+          className="relative w-20 h-20 rounded-full bg-white/10 border-2 border-white/20 shadow-md overflow-hidden active:scale-95 group"
+          aria-label="编辑头像和资料"
+        >
+          <img src={currentUser?.avatarUrl || "/icon-192.png"} className="w-full h-full object-cover" alt="Me" />
+          <span className="absolute inset-x-0 bottom-0 bg-black/55 py-1 text-[10px] font-bold text-white group-hover:bg-black/70">
+            换头像
+          </span>
+        </button>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h2 className="font-serif text-2xl font-bold text-[#fdf8fa]">老大</h2>
+            <h2 className="font-serif text-2xl font-bold text-[#fdf8fa]">{currentUser?.displayName ?? "MatchU 用户"}</h2>
             <Crown className="w-4 h-4 text-[#e3a891]" />
           </div>
           <p className="text-xs text-white/50 font-medium flex items-center gap-1">
-            ID: 893204 · <MapPin className="w-3 h-3" /> 上海
+            ID: {currentUser?.id.slice(0, 8) ?? "loading"} · <MapPin className="w-3 h-3" /> {currentUser?.city || "未设置城市"}
           </p>
+          <button
+            onClick={() => setSubView("account")}
+            className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/10 border border-white/12 px-3 py-1.5 text-[11px] font-bold text-white/80 active:scale-95"
+          >
+            <ImageIcon className="w-3.5 h-3.5" />
+            编辑资料 / 更换头像
+          </button>
         </div>
         <button onClick={() => setSubView("account")} className="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-white/60 active:scale-95">
           <Settings className="w-4 h-4" />
@@ -2003,7 +2432,7 @@ const ProfileView = () => {
 
       <div className="space-y-2 mb-3">
         <ThemeToggleRow />
-        <SettingsRow tone="indigo" icon={<User className="w-5 h-5" />} title="账号与安全" onClick={() => setSubView("account")} />
+        <SettingsRow tone="indigo" icon={<ImageIcon className="w-5 h-5" />} title="编辑资料与头像" desc="昵称、头像、城市、职业、MBTI" onClick={() => setSubView("account")} />
         <SettingsRow tone="amber" icon={<Bell className="w-7 h-7 fill-current" />} title="通知设置" onClick={() => setSubView("notifications")} />
         <SettingsRow tone="emerald" icon={<Shield className="w-5 h-5" />} title="隐私设置" onClick={() => setSubView("privacy")} />
         <SettingsRow tone="cyan" icon={<HelpCircle className="w-5 h-5" />} title="帮助与反馈" onClick={() => setSubView("help")} />
@@ -2011,7 +2440,7 @@ const ProfileView = () => {
       </div>
 
       <button
-        onClick={() => setIsLoggedIn(false)}
+        onClick={onLogout}
         className="w-full py-3 rounded-2xl text-[13px] font-bold text-rose-400 glass-panel border-rose-500/20 active:bg-rose-500/10 flex items-center justify-center gap-2 mt-3"
       >
         <LogOut className="w-4 h-4" />
@@ -2031,16 +2460,17 @@ const ProfileDetailModal = ({
   onChat: () => void;
 }) => {
   const detailLines = buildProfileDetails(profile);
+  const photo = profile.photo || "/icon-192.png";
 
   return (
     <div className="absolute inset-0 z-50 bg-[#0b0508] flex flex-col animate-msg overflow-hidden">
       <div className="absolute inset-0 opacity-40 blur-3xl">
-        <img src={profile.photo} alt="" className="w-full h-full object-cover" />
+        <img src={photo} alt="" className="w-full h-full object-cover" />
       </div>
 
       <div className="relative z-10 flex-1 overflow-y-auto">
         <div className="relative h-[430px] overflow-hidden">
-          <img src={profile.photo} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover" />
+          <img src={photo} alt={profile.displayName} className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b0508] via-black/20 to-black/35" />
 
           <div className="absolute top-12 left-4 right-4 flex items-center justify-between">
@@ -2291,7 +2721,7 @@ const ChatModal = ({ target, onClose }: { target: ChatTarget; onClose: () => voi
 
   const bgImage = target?.isAI
     ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
-    : "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80";
+    : target?.photo || "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80";
 
   return (
     <div className="absolute inset-0 z-50 bg-[#12060c] flex flex-col animate-msg">

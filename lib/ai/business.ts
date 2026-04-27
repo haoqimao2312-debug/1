@@ -1,6 +1,6 @@
 import { streamText } from './mock'
 import { quizQuestions } from '@/lib/mock-data/quiz'
-import { xiaoyu, type ScriptedReply } from '@/lib/mock-data/users/xiaoyu'
+import { xiaoyu } from '@/lib/mock-data/users/xiaoyu'
 import { detectEmotion, type DetectedEmotion } from './emotion'
 import type { ChatMessage } from './types'
 
@@ -74,43 +74,71 @@ export async function analyzeQuizTurn(input: QuizTurnInput): Promise<QuizTurnRes
   }
 }
 
+export type DynamicScriptedReply = {
+  triggers?: {
+    keywords?: string[]
+    emotions?: DetectedEmotion[]
+    turnRange?: [number, number] | null
+  }
+  replies: string[]
+  once?: boolean
+}
+
+export type ReplyPersona = {
+  fallbackReplies: string[]
+  scripted?: DynamicScriptedReply[]
+}
+
 function pickScriptedReply(
   lastUserText: string,
-  usedReplies: Set<string>
+  usedReplies: Set<string>,
+  persona: ReplyPersona,
+  turnCount: number
 ): string {
   const emotion = detectEmotion(lastUserText)
+  const scripted = persona.scripted ?? []
 
   // 优先级 1: 关键词匹配
-  const keywordMatches = xiaoyu.scripted.filter((s: ScriptedReply) =>
-    s.triggers?.keywords?.some((k) => lastUserText.includes(k))
-  )
+  const keywordMatches = scripted.filter((s) => s.triggers?.keywords?.some((k) => lastUserText.includes(k)))
   // 优先级 2: 情绪匹配
-  const emotionMatches = xiaoyu.scripted.filter((s: ScriptedReply) =>
+  const emotionMatches = scripted.filter((s) =>
     emotion !== 'neutral' && s.triggers?.emotions?.includes(emotion)
   )
 
-  const candidates = [...keywordMatches, ...emotionMatches]
+  const turnMatches = scripted.filter((s) => {
+    const range = s.triggers?.turnRange
+    return range ? turnCount >= range[0] && turnCount <= range[1] : false
+  })
+
+  const candidates = [...keywordMatches, ...emotionMatches, ...turnMatches]
   for (const group of candidates) {
+    if (group.once && group.replies.every((r) => usedReplies.has(r))) continue
     const fresh = group.replies.filter((r) => !usedReplies.has(r))
     const pool = fresh.length > 0 ? fresh : group.replies
     if (pool.length > 0) return pool[Math.floor(Math.random() * pool.length)]
   }
 
   // 兜底
-  const fresh = xiaoyu.fallbackReplies.filter((r) => !usedReplies.has(r))
-  const pool = fresh.length > 0 ? fresh : xiaoyu.fallbackReplies
-  return pool[Math.floor(Math.random() * pool.length)]
+  const fresh = persona.fallbackReplies.filter((r) => !usedReplies.has(r))
+  const pool = fresh.length > 0 ? fresh : persona.fallbackReplies
+  return pool[Math.floor(Math.random() * pool.length)] ?? '嗯嗯，我在听'
 }
 
 export async function xiaoyuReply(opts: {
   chatHistory: ChatMessage[]
+  persona?: ReplyPersona
 }): Promise<{ stream: AsyncIterable<string>; fullText: string }> {
   const lastUser = [...opts.chatHistory].reverse().find((m) => m.role === 'user')
   const used = new Set(opts.chatHistory.filter((m) => m.role === 'assistant').map((m) => m.content))
+  const persona = opts.persona ?? {
+    fallbackReplies: xiaoyu.fallbackReplies,
+    scripted: xiaoyu.scripted as DynamicScriptedReply[],
+  }
+  const turnCount = opts.chatHistory.filter((m) => m.role === 'user').length
 
   const text = lastUser
-    ? pickScriptedReply(lastUser.content, used)
-    : xiaoyu.fallbackReplies[0]
+    ? pickScriptedReply(lastUser.content, used, persona, turnCount)
+    : persona.fallbackReplies[0] ?? '嗯嗯，我在听'
 
   return { stream: streamText(text), fullText: text }
 }
